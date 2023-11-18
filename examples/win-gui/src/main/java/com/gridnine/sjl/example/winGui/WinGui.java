@@ -51,9 +51,7 @@ public class WinGui {
         //Disable default layout of the frame
         win.setLayout(null);
         //Make the window visible
-        btn.addActionListener((e) ->{
-            System.exit(0);
-        });
+        btn.addActionListener((e) -> System.exit(0));
         win.setVisible(true);
     }
 }
