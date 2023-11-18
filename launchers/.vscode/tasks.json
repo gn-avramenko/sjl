@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "go",
+			"label": "build win-gui",
+			"command": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/src/win-gui"
+			},
+			"args": [
+				"-o ..\\..\\build\\win-gui.exe",
+				"main.go"
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "build",
+			"detail": "cd c:\\Users\\vova\\IdeaProjects\\sjl\\launchers; go build ./..."
+		}
+	]
+}
