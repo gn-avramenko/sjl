@@ -11,6 +11,7 @@ BOOL debugFlag = false;
 HANDLE logFileStream;
 wstring basePath;
 wstring sjlDir;
+#define OTHER_ERROR_CODE 10
 
 VOID CALLBACK TimerProc(
     HWND hwnd,        // handle of window for timer messages
@@ -75,13 +76,13 @@ void execute(HINSTANCE hInstance)
                                0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
         if (!SetTimer(hWnd, ID_TIMER, 1000 /* 1s */, TimerProc))
         {
-            dwExitCode = 11;
+            dwExitCode = OTHER_ERROR_CODE;
             return;
         }
     }
     else
     {
-        dwExitCode = 11;
+        dwExitCode = OTHER_ERROR_CODE;
         return;
     }
     MSG msg;
@@ -127,7 +128,7 @@ void throwException(wstring message)
 {
     ULONG_PTR lpArguments[1]{};
     lpArguments[0] = (ULONG_PTR)(message.c_str());
-    RaiseException(1, EXCEPTION_NONCONTINUABLE, 1, lpArguments);
+    RaiseException(OTHER_ERROR_CODE, EXCEPTION_NONCONTINUABLE, 1, lpArguments);
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -162,10 +163,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         debug(L"launcher is running in debug mode");
     }
 
-    // execute( hInstance);
+    execute( hInstance);
     if (debugFlag)
     {
         CloseHandle(logFileStream);
     }
-    return 0;
+    return dwExitCode;
 }
