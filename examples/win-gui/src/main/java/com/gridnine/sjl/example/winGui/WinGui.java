@@ -26,6 +26,7 @@ import java.awt.*;
 
 public class WinGui {
     public static void main(String[] args) {
+        System.out.println("Hello world");
         //Declare frame object
         JFrame win = new JFrame();
         //Set the title

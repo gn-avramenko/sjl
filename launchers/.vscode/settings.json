@@ -6,6 +6,8 @@
         "xstring": "cpp",
         "iosfwd": "cpp",
         "fstream": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "*.tcc": "cpp",
+        "stdexcept": "cpp"
     }
 }
