@@ -9,7 +9,7 @@ repositories{
 }
 java{
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
 
@@ -26,7 +26,7 @@ task("dist") {
             val jdkArchiveFile = File(distDir, "jdk.zip")
             uri("https://corretto.aws/downloads/latest/amazon-corretto-17-x64-windows-jdk.zip").toURL().openStream().use {ins ->
                 jdkArchiveFile.outputStream().use { os ->
-                    ins.transferTo(os)
+                    ins.copyTo(os)
                     os.flush()
                 }
             }

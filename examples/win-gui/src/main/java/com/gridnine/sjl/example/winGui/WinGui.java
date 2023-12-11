@@ -32,7 +32,7 @@ public class WinGui {
         //Set the title
         win.setTitle("Java Swing Example-2");
         //Set the window size
-        win.setSize(400, 200);
+        win.setSize(400, 300);
         //Create label object
         JLabel lbl = new JLabel("Simple Java Swing application");
         //Set label font color
@@ -47,12 +47,17 @@ public class WinGui {
         btn.setBounds(150, 100, 80, 30);
         //Add button to frame
         win.add(btn);
+        JButton btn2 = new JButton("Restart");
+        btn2.addActionListener((e) -> System.exit(79));
+        btn2.setBounds(150, 150, 80, 30);
+        win.add(btn2);
         //Set window position
         win.setLocationRelativeTo(null);
         //Disable default layout of the frame
         win.setLayout(null);
         //Make the window visible
         btn.addActionListener((e) -> System.exit(0));
+
         win.setVisible(true);
     }
 }

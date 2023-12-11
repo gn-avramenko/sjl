@@ -1,0 +1,14 @@
+#include "resource.h"
+
+#pragma code_page(65001)
+
+IDI_WINLAUNCHER         ICON                    "wingui.ico"
+
+STRINGTABLE
+BEGIN
+  IDS_MAIN_CLASS                    "com/gridnine/sjl/example/winGui/WinGui"
+  IDS_CLASS_PATH                    "win-gui.jar"
+  IDS_JVM_PATH                      "..\\..\\..\\examples\\win-gui\\dist\\jdk"
+  IDS_VM_OPTIONS                    "-Xms128m|-Xmx??256m"
+  IDS_VM_OPTIONS_FILE               "win-gui.options"
+END

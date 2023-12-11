@@ -13,6 +13,8 @@ wstring basePath;
 wstring sjlDir;
 #define OTHER_ERROR_CODE 10
 
+void debug(wstring);
+
 VOID CALLBACK TimerProc(
     HWND hwnd,        // handle of window for timer messages
     UINT uMsg,        // WM_TIMER message
@@ -32,6 +34,11 @@ VOID CALLBACK TimerProc(
 
 void execute(HINSTANCE hInstance)
 {
+    WNDCLASSA wndClass = {
+        CS_DBLCLKS, (WNDPROC)WindowProc,
+        0, 0, 0, 0, 0, 0, 0, "SJL_WRAPPER"};
+    RegisterClassA(&wndClass);
+
     STARTUPINFOW si;
     ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
     ZeroMemory(&si, sizeof(STARTUPINFO));
@@ -62,8 +69,8 @@ void execute(HINSTANCE hInstance)
         si.hStdError = errorFile;
         si.hStdOutput = outFile;
     }
-        
-   // wstring distPath = basePath;    
+
+    // wstring distPath = basePath;
     wstring distPath = L"C:\\IdeaProjects\\sjl\\examples\\win-gui\\dist";
     wstring execPath = distPath;
     execPath += L"\\jdk\\bin\\javaw.exe";
@@ -71,9 +78,18 @@ void execute(HINSTANCE hInstance)
     if (CreateProcessW(NULL, &cmdLine[0], NULL, NULL,
                        TRUE, 1000, NULL, distPath.c_str(), &si, &pi))
     {
-        hWnd = CreateWindowExW(WS_EX_TOOLWINDOW, L"STATIC", L"",
-                               WS_POPUP | SS_BITMAP,
-                               0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+        // hWnd = CreateWindowExA(WS_EX_TOOLWINDOW, "SJL_WRAPPER", "",
+        //                        WS_POPUP | SS_BITMAP,
+        //                        0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+        hWnd = CreateWindowA(
+            "SJL_WRAPPER",
+            "Message Listener Window",
+            WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT, // default horizontal position
+            CW_USEDEFAULT, // default vertical position
+            0, // default width
+            0, // default height
+            NULL, NULL, NULL, NULL);
         if (!SetTimer(hWnd, ID_TIMER, 1000 /* 1s */, TimerProc))
         {
             dwExitCode = OTHER_ERROR_CODE;
@@ -88,6 +104,7 @@ void execute(HINSTANCE hInstance)
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
     {
+        // cout << "got message" << msg.message << "\n";
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -136,6 +153,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR lpCmdLine,
                      int nCmdShow)
 {
+
     string cmdLineStr = lpCmdLine;
     debugFlag = cmdLineStr.find("-debug") != string::npos;
     debugFlag = true;
@@ -163,10 +181,33 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         debug(L"launcher is running in debug mode");
     }
 
-    execute( hInstance);
+    execute(hInstance);
     if (debugFlag)
     {
         CloseHandle(logFileStream);
     }
     return dwExitCode;
+}
+
+LRESULT CALLBACK WindowProc(
+    HWND hWindow,
+    UINT uMsg,
+    WPARAM wParam,
+    LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_CLOSE:
+        std::cout << "exiting from wm close";
+        DestroyWindow(hWindow);
+        break;
+    case WM_DESTROY:
+        std::cout << "exiting from wm destroy";
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWindow, uMsg, wParam, lParam);
+    }
+
+    return 0;
 }
