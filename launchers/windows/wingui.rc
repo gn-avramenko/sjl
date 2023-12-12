@@ -7,8 +7,10 @@ IDI_WINLAUNCHER         ICON                    "wingui.ico"
 STRINGTABLE
 BEGIN
   IDS_MAIN_CLASS                    "com/gridnine/sjl/example/winGui/WinGui"
-  IDS_CLASS_PATH                    "win-gui.jar"
+  IDS_CLASS_PATH                    "..\\..\\..\\examples\\win-gui\\dist\\win-gui.jar"
   IDS_JVM_PATH                      "..\\..\\..\\examples\\win-gui\\dist\\jdk"
   IDS_VM_OPTIONS                    "-Xms128m|-Xmx??256m"
   IDS_VM_OPTIONS_FILE               "win-gui.options"
+  IDS_RESTART_EXIT_CODE             "79"
+  IDS_MUTEX_NAME                    "SJL"
 END
