@@ -13,4 +13,5 @@ BEGIN
   IDS_VM_OPTIONS_FILE               "win-gui.options"
   IDS_RESTART_EXIT_CODE             "79"
   IDS_MUTEX_NAME                    "SJL"
+  IDS_SJL_DIR                       ".sjl"
 END

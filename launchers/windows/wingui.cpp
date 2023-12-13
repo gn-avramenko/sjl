@@ -27,6 +27,11 @@
 #include "jni_md.h"
 
 using namespace std;
+// some constants
+#define UPDATE_MODE_TYPE 1
+#define UPDATE_MODE_FMOVE_SOURCE 2
+#define UPDATE_MODE_FMOVE_TARGET 3
+#define UPDATE_MODE_FDELETE_SOURCE 4
 
 // global variables
 DWORD dwExitCode = 0;
@@ -38,6 +43,7 @@ wstring program_params;
 wstring jvm_path;
 wstring exception_message;
 wstring sjl_path;
+HANDLE mutex = NULL;
 HANDLE log_file;
 
 // functions declaration
@@ -46,18 +52,22 @@ void debug(wstring message);
 void debug(string message);
 void close_log_file_handle();
 void trim_line(char *line);
+void trim_line(wchar_t *line);
 void add_option(string token, vector<string> &vmOptionLines);
 string to_string(const std::wstring &str);
 void init_paths();
 wstring get_wstring_param(int id);
 void init_debug_file();
 bool is_file_exist(wstring path);
+bool is_directory(wstring path);
 void throw_exception(wstring message);
 HANDLE init_utf8_file(wstring file_name);
 void init_sjl_dir();
 void create_mutex();
 string get_string_param(int id);
 wstring to_wstring(string s);
+void copy_directory(wstring source, wstring target);
+void remove_directory(wstring dir);
 
 // jni declarations
 typedef JNIIMPORT jint(JNICALL *JNI_createJavaVM)(JavaVM **pvm, JNIEnv **env, void *args);
@@ -67,9 +77,12 @@ void(JNICALL jniExitHook)(jint code)
 	debug("exited");
 	dwExitCode = code;
 	string restartCode = get_string_param(IDS_RESTART_EXIT_CODE);
+	if(mutex){
+		ReleaseMutex(mutex);
+	}
 	close_log_file_handle();
 	if(code == stoi(restartCode)){
-		ShellExecuteW(NULL, L"open", executable_path.c_str(), program_params.c_str(), NULL, SW_SHOWDEFAULT);
+		ShellExecuteW(NULL, L"open", executable_path.c_str(), (program_params+L" -sjl-restart").c_str(), NULL, SW_SHOWDEFAULT);
 	}
 }
 
@@ -83,13 +96,84 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	debug_flag = cmdLineStr.find("-sjl-debug") != string::npos || true;
 	try
 	{
+		if(cmdLineStr.find("-sjl-restart") != string::npos){
+			Sleep(200);
+		}		
 		init_paths();
 		init_debug_file();
 		debug("command line is :" + ((string)lpCmdLine));
 		create_mutex();
 		_wchdir(base_path.c_str());
 		debug(L"Working dir:\t" + base_path);
+		wstring update_dir = sjl_path+L"\\update";
+		wstring update_script_file_name = update_dir+L"\\update.script";
+		if(is_file_exist(update_script_file_name)){
+			FILE *f;
+			vector<wstring> updateLines;
+			if (!fopen_s(&f, to_string(update_script_file_name).c_str(), "rt"))
+			{
 
+				wchar_t buffer[4096];
+				while (fgetws(buffer, sizeof(buffer), f))
+				{
+					trim_line(buffer);
+					wstring line = buffer;
+					updateLines.push_back(line);
+				}
+				fclose(f);
+			}
+			int mode = UPDATE_MODE_TYPE;
+			wstring sourceFile;
+			for(int n = 0; n< updateLines.size(); n++){
+				wstring line = updateLines[n];
+				if(mode == UPDATE_MODE_TYPE){
+					if(line.compare(L"fmove:") == 0){
+						mode = UPDATE_MODE_FMOVE_SOURCE;
+						continue;		
+					}
+					if(line.compare(L"fdelete:") == 0){
+						mode = UPDATE_MODE_FDELETE_SOURCE;
+						continue;		
+					}
+					throw_exception(L"undefined mode " + line);
+				}
+				if(mode == UPDATE_MODE_FDELETE_SOURCE){
+					if(is_file_exist(line)){
+						if(is_directory(line)){
+							remove_directory(line);
+						} else {
+							DeleteFileW(line.c_str());
+						}	
+					}
+					mode = UPDATE_MODE_TYPE;
+					continue;
+				}
+				if(mode == UPDATE_MODE_FMOVE_SOURCE){
+					sourceFile = line;
+					mode = UPDATE_MODE_FMOVE_TARGET;
+					continue;
+				}
+				if(mode == UPDATE_MODE_FMOVE_TARGET){
+					wstring target_file = line;
+					if(is_file_exist(target_file)){
+						if(is_directory(target_file)){
+							remove_directory(target_file);
+						} else {
+							DeleteFileW(target_file.c_str());
+						}
+					}
+					if(is_directory(sourceFile)){
+						copy_directory(sourceFile, target_file);	
+					} else {
+						CopyFileW(sourceFile.c_str(), target_file.c_str(), false);
+					}
+					mode = UPDATE_MODE_TYPE;
+					continue;
+				}
+			}
+			remove_directory(update_dir);
+		}
+		
 		vector<string> vmOptionLines;
 		string path = get_string_param(IDS_VM_OPTIONS_FILE);
 		if (!path.empty())
@@ -105,7 +189,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					trim_line(buffer);
 					if (strlen(buffer) > 0 && buffer[0] != '#' && strcmp(buffer, "-server") != 0)
 					{
-						std::string line(buffer);
+						string line(buffer);
 						vmOptionLines.push_back(line);
 					}
 				}
@@ -250,6 +334,19 @@ void trim_line(char *line)
 	}
 }
 
+void trim_line(wchar_t *line)
+{
+	wchar_t *p = line + wcslen(line) - 1;
+	if (p >= line && *p == '\n')
+	{
+		*p-- = '\0';
+	}
+	while (p >= line && (*p == ' ' || *p == '\t'))
+	{
+		*p-- = '\0';
+	}
+}
+
 void add_option(string token, vector<string> &vmOptionLines)
 {
 	int markerPos = token.find("??");
@@ -344,13 +441,22 @@ void init_debug_file()
 	}
 }
 
+bool is_directory(wstring path)
+{
+    DWORD attrib = GetFileAttributesW(path.c_str());
+
+    return (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0 && ( GetLastError() != ERROR_FILE_NOT_FOUND ) ;
+}
+
 bool is_file_exist(wstring path)
 {
 	LPCWSTR szPath = path.c_str();
 	DWORD dwAttrib = GetFileAttributesW(szPath);
 
-	return dwAttrib != INVALID_FILE_ATTRIBUTES;
+	return dwAttrib != INVALID_FILE_ATTRIBUTES && ( GetLastError() != ERROR_FILE_NOT_FOUND ) ;
 }
+
+
 
 HANDLE init_utf8_file(wstring file_name)
 {
@@ -373,7 +479,7 @@ HANDLE init_utf8_file(wstring file_name)
 
 void init_sjl_dir()
 {
-	sjl_path = base_path + L"\\.sjl";
+	sjl_path = base_path + L"\\"+get_wstring_param(IDS_SJL_DIR);
 	if (!is_file_exist(sjl_path) && !CreateDirectoryW(sjl_path.c_str(), NULL))
 	{
 		throw_exception(L"unable to create directory " + sjl_path);
@@ -396,7 +502,7 @@ void create_mutex()
 		security.nLength = sizeof(SECURITY_ATTRIBUTES);
 		security.bInheritHandle = TRUE;
 		security.lpSecurityDescriptor = NULL;
-		CreateMutexW(&security, FALSE, mutexName.c_str());
+		mutex = CreateMutexW(&security, FALSE, mutexName.c_str());
 
 		if (GetLastError() == ERROR_ALREADY_EXISTS)
 		{
@@ -425,4 +531,39 @@ wstring to_wstring(string s)
     std::wstring ws(s.size(), L' '); // Overestimate number of code points.
     ws.resize(std::mbstowcs(&ws[0], s.c_str(), s.size()));
 	return ws;
+}
+
+void remove_directory(wstring dir) 
+{
+	dir.push_back(L'\0');
+	SHFILEOPSTRUCTW file_op = {
+        NULL,
+        FO_DELETE,
+        dir.c_str(),
+        L"",
+        FOF_NOCONFIRMATION |
+        FOF_NOERRORUI |
+        FOF_SILENT,
+        false,
+        0,
+        L"" };
+    int result = SHFileOperationW(&file_op);	
+}
+
+void copy_directory(wstring source, wstring target) 
+{
+	source.push_back(L'\0');
+	target.push_back(L'\0');
+    SHFILEOPSTRUCTW file_op = {
+        NULL,
+        FO_COPY,
+        source.c_str(),
+        target.c_str(),
+        FOF_NOCONFIRMATION |
+        FOF_NOERRORUI |
+        FOF_SILENT,
+        false,
+        0,
+        L"" };
+    SHFileOperationW(&file_op);
 }
