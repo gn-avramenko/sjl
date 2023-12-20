@@ -104,7 +104,30 @@ void(JNICALL jniExitHook)(jint code)
 			newParams = newParams + L" -sjl-restart";
 		}
 
-		ShellExecuteW(NULL, L"open", executable_path.c_str(), newParams.c_str(), NULL, SW_RESTORE);		
+		ShellExecuteW(NULL, L"open", executable_path.c_str(), newParams.c_str(), NULL, SW_RESTORE);
+		if(true){
+			return;
+		}
+		STARTUPINFOW si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		// Start the child process.
+		CreateProcessW(NULL,																   // No module name (use command line)
+							 L"c:\\IdeaProjects\\sjl\\launchers\\windows\\build\\wingui-debug.exe",
+							NULL,																   // Process handle not inheritable
+							NULL,																   // Thread handle not inheritable
+							FALSE,																   // Set handle inheritance to FALSE
+							0,																	   // No creation flags
+							NULL,																   // Use parent's environment block
+							NULL,																   // Use parent's starting directory
+							&si,																   // Pointer to STARTUPINFO structure
+							&pi);																   // Pointer to PROCESS_INFORMATION structure
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
 }
 
@@ -134,7 +157,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{
 			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\build\\sample.bmp");
 			Sleep(2000);
-			hide_current_splash();			
+			hide_current_splash();
+		}
+		if (true)
+		{
+			Sleep(2000);
+			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\build\\sample.bmp");
+			Sleep(2000);
+			hide_current_splash();
 		}
 		wstring update_dir = sjl_path + L"\\update";
 		wstring update_script_file_name = update_dir + L"\\update.script";
@@ -440,8 +470,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			debug("error occurred invoking main method");
 			throw_exception(L"Error invoking main method");
 		}
-		activate_window();
-	    jvm->DestroyJavaVM();
+	    activate_window();
+		jvm->DestroyJavaVM();
 		debug("jvm was destroyed");
 		MSG msg;
 		while (GetMessage(&msg, NULL, 0, 0))
@@ -746,6 +776,34 @@ BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
+BOOL CALLBACK func2(HWND hwnd, LPARAM lParam)
+{
+	if(hwnd == splash_window_handle){
+		int res = ShowWindow(hwnd, SW_HIDE);
+		PostMessageW(hwnd, WM_CLOSE, 0, 0);
+		return FALSE;
+	}	
+	return TRUE;
+}
+
+DWORD WINAPI activate_window_function(LPVOID lpParam)
+{
+	Sleep(50);
+	EnumWindows(enumwndfn, 1);
+	return false;
+}
+
+void activate_window()
+{
+	DWORD threadId;
+	CreateThread(
+		NULL,
+		0,
+		activate_window_function,
+		NULL,
+		0,
+		&threadId);
+}
 
 DWORD WINAPI show_splash_function(LPVOID lpParam)
 {
@@ -810,7 +868,8 @@ void show_splash(wstring image_path)
 void hide_current_splash()
 {
 	debug("hiding splash");
-	PostMessage(splash_window_handle, WM_CLOSE, 0, 0);
+	EnumWindows(func2, 1);
+	//PostMessage(splash_window_handle, WM_CLOSE, 0, 0);
 	WaitForSingleObject(splash_screen_thread, INFINITE);
 	UnregisterClassW(SPLASH_WINDOW_CLASS_NAME, hInst);
 	debug("splash screen is hidden");
@@ -837,7 +896,7 @@ LRESULT CALLBACK splash_window_procedure(HWND hWnd, UINT msg, WPARAM wParam, LPA
 		EndPaint(hWnd, &splash_ps);
 		break;
 	case WM_CLOSE:
-		DestroyWindow(hWnd);
+		//DestroyWindow(hWnd);
 		break;
 	case WM_DESTROY:
 		DeleteDC(h_dc_mem);
@@ -846,23 +905,4 @@ LRESULT CALLBACK splash_window_procedure(HWND hWnd, UINT msg, WPARAM wParam, LPA
 		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-DWORD WINAPI activate_window_function(LPVOID lpParam)
-{
-	Sleep(50);
-	EnumWindows(enumwndfn, 1);
-	return false;
-}
-
-void activate_window()
-{
-	DWORD threadId;
-	CreateThread(
-		NULL,
-		0,
-		activate_window_function,
-		NULL,
-		0,
-		&threadId);
 }

@@ -38,6 +38,7 @@ public class WinGui {
         System.out.println("Hello world");
         //Declare frame object
         JFrame win = new JFrame();
+        win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Set the title
         win.setTitle("Java Swing Example-2");
         //Set the window size
@@ -76,15 +77,22 @@ public class WinGui {
                     deleteDirectory(updateDir);
                 }
                 updateDir.mkdirs();
-                Files.copy(new File("../../../examples/win-gui/dist/win-gui.jar").toPath(), new File(".sjl/update/win-gui.jar").toPath());
-                Files.write(new File(".sjl/update/version.txt").toPath(), Arrays.asList(""+(version+1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+                File updateWinGuiJar = new File(".sjl/update/win-gui.jar");
+                File updateVersionFile = new File(".sjl/update/version.txt");
+                File programWinGuiJar = new File("..\\..\\..\\examples\\win-gui\\dist\\win-gui.jar");
+                File splashFile = new File("sample.bmp");
+                Files.copy(new File("../../../examples/win-gui/dist/win-gui.jar").toPath(), updateWinGuiJar.toPath());
+                Files.write(updateVersionFile.toPath(), Arrays.asList(""+(version+1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 StringBuilder sb = new StringBuilder();
-                sb.append("fmove:\n");
-                sb.append(".sjl\\update\\win-gui.jar\n");
-                sb.append("..\\..\\..\\examples\\win-gui\\dist\\win-gui.jar\n");
-                sb.append("fmove:\n");
-                sb.append(".sjl\\update\\version.txt\n");
-                sb.append("version.txt");
+                sb.append("file-move:\n");
+                sb.append(updateWinGuiJar.getAbsolutePath()+"\n");
+                sb.append(programWinGuiJar.getAbsolutePath()+"\n");
+                sb.append("file-move:\n");
+                sb.append(updateVersionFile.getAbsolutePath()+"\n");
+                sb.append("version.txt\n");
+                sb.append("show-splash:\n");
+                sb.append(splashFile.getAbsolutePath()+"\n");
+                sb.append("sleep:\n2000\nhide-splash:");
                 Files.write(new File(".sjl/update/update.script").toPath(), sb.toString().getBytes(StandardCharsets.UTF_8));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
