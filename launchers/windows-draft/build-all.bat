@@ -1,2 +1,0 @@
-g++ -std=c++17 -mwindows -fdiagnostics-color=always -I "..\jdk-include" -o "..\build\wingui-debug.exe" -g "wingui.cpp" "wincommon.cpp"
-g++ -std=c++17  -static-libstdc++ -static-libgcc -mwindows -n -s -I "..\jdk-include" -o "..\build\wingui-release.exe" -g "wingui.cpp" "wincommon.cpp"
