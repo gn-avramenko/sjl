@@ -136,6 +136,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			Sleep(2000);
 			hide_current_splash();			
 		}
+		Sleep(1000);
+		if (true)
+		{
+			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\build\\sample.bmp");
+			Sleep(2000);
+			hide_current_splash();			
+		}
 		wstring update_dir = sjl_path + L"\\update";
 		wstring update_script_file_name = update_dir + L"\\update.script";
 		if (is_file_exist(update_script_file_name))
