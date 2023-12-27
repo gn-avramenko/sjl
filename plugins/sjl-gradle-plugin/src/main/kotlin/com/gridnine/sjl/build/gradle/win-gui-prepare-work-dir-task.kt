@@ -52,6 +52,7 @@ open class PrepareWinGuiWorkDirTask(): DefaultTask() {
             val workDir = File(workDirs, CreateWinGuiLauncherTask.getDirectoryName(it.first))
             ensureDirectoryExists(workDir)
             val os = OperatingSystem.current()
+            copyIfDiffers("sjl/wingui.o", File(workDir, "wingui.o"))
             if(os.isLinux){
                 copyIfDiffers("sjl/buildTools/unix64/ld", File(workDir, "ld"))
                 copyIfDiffers("sjl/buildTools/unix64/windres", File(workDir, "windres"))
