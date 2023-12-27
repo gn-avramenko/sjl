@@ -13,6 +13,15 @@ java{
     }
 }
 
+buildscript {
+    repositories{
+        mavenCentral()
+    }
+    dependencies{
+        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+    }
+}
+
 task("dist") {
     group= "dist"
     dependsOn("jar")
