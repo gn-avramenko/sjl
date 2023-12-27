@@ -4,14 +4,20 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="false" />
-        <option name="testRunner" value="PLATFORM" />
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/examples" />
-            <option value="$PROJECT_DIR$/examples/win-gui" />
+            <option value="$PROJECT_DIR$/examples/sample-gui-app" />
+            <option value="$PROJECT_DIR$/examples/win-gui-launcher-groovy" />
+            <option value="$PROJECT_DIR$/examples/win-gui-launcher-kotlin" />
+            <option value="$PROJECT_DIR$/plugins" />
+            <option value="$PROJECT_DIR$/plugins/sjl-build-tools" />
+            <option value="$PROJECT_DIR$/plugins/sjl-gradle-plugin" />
           </set>
         </option>
       </GradleProjectSettings>
