@@ -32,7 +32,7 @@ open class PrepareWinGuiWorkDirTask(): DefaultTask() {
 
     @Inject
     constructor(extension: SjlExtension) : this() {
-        this.extension = extension;
+        this.extension = extension
         group = "other"
     }
 
@@ -53,10 +53,15 @@ open class PrepareWinGuiWorkDirTask(): DefaultTask() {
             ensureDirectoryExists(workDir)
             val os = OperatingSystem.current()
             copyIfDiffers("sjl/wingui.o", File(workDir, "wingui.o"))
+            copyIfDiffers("sjl/resource.h", File(workDir, "resource.h"))
+            val icon = it.second.icon?:extension.winGuiConfig.commonConfig.icon
+            if(icon != null){
+                copyIfDiffers(icon, File(workDir, "icon.ico"))
+            }
             if(os.isLinux){
-                copyIfDiffers("sjl/buildTools/unix64/ld", File(workDir, "ld"))
-                copyIfDiffers("sjl/buildTools/unix64/windres", File(workDir, "windres"))
-                return
+                copyIfDiffers("sjl/buildTools/unix64/ld", File(workDir, "ld"), true)
+                copyIfDiffers("sjl/buildTools/unix64/windres", File(workDir, "windres"), true)
+                return@forEach
             }
             throw Exception("unsupported operation system ${os}")
         }

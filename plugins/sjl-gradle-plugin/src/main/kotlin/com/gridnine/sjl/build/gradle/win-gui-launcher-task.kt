@@ -22,42 +22,40 @@
 package com.gridnine.sjl.build.gradle
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.os.OperatingSystem
+import java.io.File
 import javax.inject.Inject
 
-open class CreateWinGuiLauncherTask(): DefaultTask(){
-    private lateinit var extension: SjlExtension
-    private lateinit var launcherId: String
-
+open class CreateWinGuiLauncherTask(): Exec(){
 
     @Inject
     constructor(launcherId:String, extension: SjlExtension) : this() {
-        this.launcherId = launcherId
-        this.extension = extension;
         val commonConfig = extension.winGuiConfig.commonConfig
         val taskConfig = extension.winGuiConfig.launchers.find { it.first == launcherId }!!.second
         group = taskConfig.tasksGroup?:commonConfig.tasksGroup?:"sjl"
         val depends = arrayListOf<String>()
         taskConfig.dependsOnTasks?:commonConfig.dependsOnTasks?.let { depends.addAll(it) }
         depends.add(PrepareWinGuiWorkDirTask.getTaskName())
+        depends.add(CreateWinGuiResFileTask.getTaskName(launcherId))
         dependsOn(depends)
-    }
+        val workDir = File(project.layout.buildDirectory.dir(".sjl/workdirs").get().asFile, getDirectoryName(launcherId))
+        ensureDirectoryExists(workDir)
+        inputs.files(project.fileTree(workDir).include("wingui.o","wingui.res")).withPropertyName("inputFiles")
+        val launcherFile = File(workDir, getFileName(launcherId))
+        outputs.file(launcherFile).withPropertyName("outputFile")
+        workingDir = workDir
+        errorOutput = System.err
+        standardOutput = System.out
+        val os = OperatingSystem.current()
+        if(os.isLinux){
+            executable = "./ld"
+            args =  arrayListOf("-s", "resource.h", "wingui.o","wingui.res", "-o", getFileName(launcherId))
+        } else {
+            throw Exception("unsupported operation system ${os}")
+        }
 
-    @TaskAction
-    fun execute(){
-        val commonConfig = extension.winGuiConfig.commonConfig
-        val taskConfig = extension.winGuiConfig.launchers.find { it.first == launcherId }!!.second
-        val config = SjlWinGuiLauncherConfig()
-        config.classPathProvider = taskConfig.classPathProvider?:commonConfig.classPathProvider?:throw Exception("no classpath provider is defined")
-        config.icon = taskConfig.icon?:commonConfig.icon
-        config.mainClass = taskConfig.mainClass?:commonConfig.mainClass?: throw Exception("no main class is defined")
-        config.embeddedJvmRelativePath = taskConfig.embeddedJvmRelativePath?:commonConfig.embeddedJvmRelativePath
-        config.allowMultipleInstances = taskConfig.allowMultipleInstances?:commonConfig.allowMultipleInstances?:true
-        config.mutexName = taskConfig.mutexName?:commonConfig.mutexName?:"SJL"
-        config.restartExitCode = taskConfig.restartExitCode?:commonConfig.restartExitCode?:79
-        config.sjlDirRelativePath = taskConfig.sjlDirRelativePath?:commonConfig.sjlDirRelativePath?:".sjl"
-        config.vmOptionsFileRelativePath = taskConfig.vmOptionsFileRelativePath?:commonConfig.vmOptionsFileRelativePath
-        println("executing task")
     }
 
     companion object{
@@ -68,7 +66,7 @@ open class CreateWinGuiLauncherTask(): DefaultTask(){
             return "${launcherId.replace(" ", "-")}.exe"
         }
         fun getDirectoryName(launcherId: String):String{
-            return "${launcherId.replace(" ", "-")}"
+            return launcherId.replace(" ", "-")
         }
     }
 }

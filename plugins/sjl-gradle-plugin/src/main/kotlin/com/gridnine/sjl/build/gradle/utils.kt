@@ -22,8 +22,7 @@
 package com.gridnine.sjl.build.gradle
 
 import java.io.File
-import java.net.URL
-import java.util.Arrays
+
 
 fun ensureDirectoryExists(dir: File) {
     if (!dir.exists() && !dir.mkdirs()) {
@@ -35,7 +34,7 @@ private class Fake {}
 
 fun delete(file: File) {
     if (!file.exists()) {
-        return;
+        return
     }
     if (file.isDirectory && !file.deleteRecursively()) {
         throw Exception("unable to delete directory ${file.absolutePath}")
@@ -45,7 +44,7 @@ fun delete(file: File) {
     }
 }
 
-fun copyIfDiffers(source: String, destination: File) {
+fun copyIfDiffers(source: String, destination: File, setExecutable: Boolean = false) {
     val res = Fake::class.java.classLoader.getResource(source) ?: throw Exception("unable to load resource ${source}")
     ensureDirectoryExists(destination.parentFile)
     val content = res.readBytes()
@@ -55,4 +54,31 @@ fun copyIfDiffers(source: String, destination: File) {
         }
     }
     destination.writeBytes(content)
+    if(setExecutable){
+        destination.setExecutable(true)
+    }
+}
+
+fun copyIfDiffers(source: File, destination: File) {
+    if(destination.exists() && destination.readBytes().contentEquals(source.readBytes())){
+        return
+    }
+    ensureDirectoryExists(destination.parentFile)
+    destination.writeBytes(source.readBytes())
+}
+
+fun updateIfDiffers(file: File, content: String) {
+    ensureDirectoryExists(file.parentFile)
+    if(file.exists() && content == file.readText(Charsets.UTF_8)){
+        return
+    }
+    file.writeText(content, Charsets.UTF_8)
+}
+
+fun getEscapedWindowsAbsolutePath(file:File):String{
+    return file.absolutePath.replace(File.pathSeparator, "\\\\")
+}
+
+fun getEscapedWindowsAbsolutePath(pathLike:String):String{
+    return pathLike.replace("\\","\\\\").replace("/", "\\\\")
 }

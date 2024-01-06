@@ -25,8 +25,8 @@ package com.gridnine.sjl.build.gradle
 import groovy.lang.Closure
 import org.codehaus.groovy.runtime.ConvertedClosure
 import org.gradle.api.Project
+import org.gradle.api.provider.SetProperty
 import java.io.File
-import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 import javax.inject.Inject
 
@@ -35,13 +35,14 @@ annotation class SjlConfigMaker
 
 @SjlConfigMaker
 open class SjlExtension {
-    private val project:Project;
+    private val project:Project
 
+    internal val winGuiConfig: SjlWinGuiConfig
     @Inject
     constructor(project:Project){
-        this.project = project;
+        this.project = project
+        this.winGuiConfig =  SjlWinGuiConfig(project)
     }
-    internal val winGuiConfig: SjlWinGuiConfig = SjlWinGuiConfig()
 
     fun winGui(configure: SjlWinGuiConfig.() -> Unit) {
         val cl = getClosure(configure)
@@ -56,6 +57,8 @@ open class SjlExtension {
             val taskName = CreateWinGuiLauncherTask.getTaskName(it.first)
             tasksNames.add(taskName)
             this.project.tasks.create(taskName, CreateWinGuiLauncherTask::class.java, it.first,this)
+            this.project.tasks.create(CreateRcFileTask.getTaskName(it.first), CreateRcFileTask::class.java, it.first,this)
+            this.project.tasks.create(CreateWinGuiResFileTask.getTaskName(it.first), CreateWinGuiResFileTask::class.java, it.first)
         }
         if(tasksNames.isNotEmpty()){
             this.project.tasks.create("create-all-launchers", CreateAllLaunchersTask::class.java, tasksNames, this)
@@ -67,11 +70,11 @@ open class SjlExtension {
 
 
 @SjlConfigMaker
-open class SjlWinGuiConfig() {
+open class SjlWinGuiConfig(private val project: Project) {
 
-    internal val commonConfig = SjlWinGuiLauncherConfig();
+    internal val commonConfig = SjlWinGuiLauncherConfig(project)
 
-    internal val launchers = mutableListOf<Pair<String, SjlWinGuiLauncherConfig>>();
+    internal val launchers = mutableListOf<Pair<String, SjlWinGuiLauncherConfig>>()
 
     fun common(configure: SjlWinGuiLauncherConfig.() -> Unit) {
         val cl = getClosure(configure)
@@ -84,7 +87,7 @@ open class SjlWinGuiConfig() {
     }
 
     fun launcher(launcherId:String, configure: SjlWinGuiLauncherConfig.() -> Unit) {
-        val launcherConfig = SjlWinGuiLauncherConfig()
+        val launcherConfig = SjlWinGuiLauncherConfig(project)
         launchers.add(launcherId to launcherConfig)
         val cl = getClosure(configure)
         if(cl != null){
@@ -97,12 +100,12 @@ open class SjlWinGuiConfig() {
 }
 
 @SjlConfigMaker
-open class SjlWinCommonConfig() {
+open class SjlWinCommonConfig(private val project: Project) {
 
 }
 
 @SjlConfigMaker
-open class SjlWinGuiLauncherConfig():SjlWinCommonConfig() {
+open class SjlWinGuiLauncherConfig(private val project: Project) :SjlWinCommonConfig(project) {
     var tasksGroup:String? = null
     var dependsOnTasks:List<String>? = null
     var icon: File?    = null
@@ -114,6 +117,7 @@ open class SjlWinGuiLauncherConfig():SjlWinCommonConfig() {
     var restartExitCode:Int? = null
     var mutexName:String? = null
     var sjlDirRelativePath:String? = null
+    val vmOptions: SetProperty<String> = project.objects.setProperty(String::class.java)
 }
 
 
@@ -125,5 +129,5 @@ private fun getClosure(obj:Any): Closure<*>? {
             return ih.delegate as Closure<*>
         }
     }
-    return null;
+    return null
 }

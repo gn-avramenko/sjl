@@ -29,11 +29,11 @@
         {
           "name": "sjl-gradle-plugin-0.0.1.jar",
           "url": "sjl-gradle-plugin-0.0.1.jar",
-          "size": 32597,
-          "sha512": "be6f4810bf366db20cdfa2cd5540a83ba340eb6f802565a6450b222d4bf7205cefe5efd4fd160691b41a75685b7f2df9f272d3f6d5209c5996d7831eb7cfba0d",
-          "sha256": "3367c08cee9bd4ee55667ab5b306c0ba94139920c2db6ce708b594986b7e068f",
-          "sha1": "d9fc6c89455daa936d8789244e8243935657c1dd",
-          "md5": "1e2bee8f3c4631e521d32694895cc704"
+          "size": 171707,
+          "sha512": "9efa5e5d0d67a08c9b0afca23420484fc111b5d4efe0b48dcac33f6f7399b762af99ca85c88e64d61c9d0d98d57bbdd437f21ae4ceb6ae0b84157f0c0d530148",
+          "sha256": "736a0d0989b7da6d341998bdef6b89bbfcca144da57cc894938673950b240a17",
+          "sha1": "8398148c45b9c21a9fd69dcb00d0c9abea9b30ba",
+          "md5": "af73fa86f112e6cb83f496ec666e9c9d"
         }
       ]
     },
@@ -68,11 +68,11 @@
         {
           "name": "sjl-gradle-plugin-0.0.1.jar",
           "url": "sjl-gradle-plugin-0.0.1.jar",
-          "size": 32597,
-          "sha512": "be6f4810bf366db20cdfa2cd5540a83ba340eb6f802565a6450b222d4bf7205cefe5efd4fd160691b41a75685b7f2df9f272d3f6d5209c5996d7831eb7cfba0d",
-          "sha256": "3367c08cee9bd4ee55667ab5b306c0ba94139920c2db6ce708b594986b7e068f",
-          "sha1": "d9fc6c89455daa936d8789244e8243935657c1dd",
-          "md5": "1e2bee8f3c4631e521d32694895cc704"
+          "size": 171707,
+          "sha512": "9efa5e5d0d67a08c9b0afca23420484fc111b5d4efe0b48dcac33f6f7399b762af99ca85c88e64d61c9d0d98d57bbdd437f21ae4ceb6ae0b84157f0c0d530148",
+          "sha256": "736a0d0989b7da6d341998bdef6b89bbfcca144da57cc894938673950b240a17",
+          "sha1": "8398148c45b9c21a9fd69dcb00d0c9abea9b30ba",
+          "md5": "af73fa86f112e6cb83f496ec666e9c9d"
         }
       ]
     },
@@ -108,11 +108,11 @@
         {
           "name": "sjl-gradle-plugin-0.0.1-sources.jar",
           "url": "sjl-gradle-plugin-0.0.1-sources.jar",
-          "size": 17385,
-          "sha512": "4c5785fb6f01820a5cc22a23aaa447f4c1f0b7ef292a4c0c45d1d943a2fd9855b836dc0354d0d3189b0bd8e91e30b1e41457b6fb84d5ec478e52bd51db050c7c",
-          "sha256": "f8a5ab6eb3c23d53d28d2832261964a800dffd649f4a9702808d68573c0c7242",
-          "sha1": "ea768c971b1cba0b2cdfe43858fee5b640e7b4de",
-          "md5": "ead30de699d2e3b2ddce60a59251dc59"
+          "size": 137712,
+          "sha512": "4f8f2f519443d7fb8dfc87ffd4e9697597c01baee8f6edaab2a1ad370c45b0b7e77cb225e1c8d018e0b7926af0785abc932688d772d06ed2a71b44c881e4ecfb",
+          "sha256": "c75fdc0000df133f65ca7987a9589d344fccca6e96a65be712ad4591d6dea955",
+          "sha1": "069c4dffa7ec78804e48c0bb211f3c9abaa045f1",
+          "md5": "748e17ffee8e47a774eb08c519917451"
         }
       ]
     }
