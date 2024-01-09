@@ -43,14 +43,14 @@ task("dist") {
             distDir.listFiles()!!.find { it.isDirectory && it.name.startsWith("jdk") }!!.renameTo(jdkDir)
             jdkArchiveFile.delete()
         }
-        val libFile = File(distDir, "win-gui.jar")
+        val libFile = File(distDir, "sample-gui-app.jar")
         if(libFile.exists()) {
             libFile.delete()
         }
-        project.file("build/libs/win-gui.jar").copyTo(libFile)
+        project.file("build/libs/sample-gui-app.jar").copyTo(libFile)
         val launchFile = File(distDir, "run.bat")
         if(!launchFile.exists()){
-            launchFile.writeText("jdk\\bin\\javaw.exe -cp win-gui.jar com.gridnine.sjl.example.winGui.WinGui")
+            launchFile.writeText("jdk\\bin\\javaw.exe -cp sample-gui-app.jar com.gridnine.sjl.example.winGui.WinGui")
         }
     }
 }
