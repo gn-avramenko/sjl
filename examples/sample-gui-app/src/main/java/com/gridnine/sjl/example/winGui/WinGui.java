@@ -110,6 +110,12 @@ public class WinGui {
         btn.addActionListener((e) -> System.exit(0));
 
         win.setVisible(true);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static boolean   deleteDirectory(File directoryToBeDeleted) {

@@ -132,14 +132,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		debug(L"working dir:\t" + base_path);
 		if (true)
 		{
-			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\sample.bmp");
-			Sleep(2000);
-			hide_current_splash();			
-		}
-		Sleep(1000);
-		if (true)
-		{
-			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\sample.bmp");
+			show_splash(L"c:\\IdeaProjects\\sjl\\launchers\\windows\\build\\sample.bmp");
 			Sleep(2000);
 			hide_current_splash();			
 		}
@@ -601,7 +594,7 @@ bool is_directory(wstring path)
 {
 	DWORD attrib = GetFileAttributesW(path.c_str());
 
-	return (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
+	return (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0 && (GetLastError() != ERROR_FILE_NOT_FOUND);
 }
 
 bool is_file_exist(wstring path)
@@ -609,7 +602,7 @@ bool is_file_exist(wstring path)
 	LPCWSTR szPath = path.c_str();
 	DWORD dwAttrib = GetFileAttributesW(szPath);
 
-	return dwAttrib != INVALID_FILE_ATTRIBUTES;
+	return dwAttrib != INVALID_FILE_ATTRIBUTES && (GetLastError() != ERROR_FILE_NOT_FOUND);
 }
 
 HANDLE init_utf8_file(wstring file_name)
@@ -799,7 +792,6 @@ void show_splash(wstring image_path)
 	h_splash_bitmap = (HBITMAP)LoadImageW(hInst, image_path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	if (!h_splash_bitmap)
 	{
-		int le = GetLastError();
 		debug(L"unable to load bitmap image from " + image_path);
 		throw_exception(L"unable to load bitmap image from " + image_path);
 	}
