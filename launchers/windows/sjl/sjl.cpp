@@ -18,6 +18,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+//ManualSynchronization on 19.01.24 00:40
+bool g_debug_enabled = true; // Set to false to disable debug mode
+
 //ManualSynchronization on 24.12.23 06:36
 //#include <string>
 //#include <windows.h>
@@ -103,6 +106,12 @@ void create_mutex();
 string get_string_param(int id);
 //ManualSynchronization on 23.12.23 14:46
 wstring to_wstring_(string s);
+//ManualSynchronization on 18.01.24 23:01
+int LoadStringFromResourceW(HINSTANCE hInstance, LPWSTR ResourceName, LPWSTR Buffer, int cchBufferMax);
+int LoadStringFromResource(HINSTANCE hInstance, char* ResourceName, char* Buffer, int cchBufferMax);
+wstring get_resourcestring_paramW(wchar_t* resourcename);
+string get_resourcestring_param(char* resourcename);
+
 void copy_directory(wstring source, wstring target);
 void remove_directory(wstring dir);
 void show_splash(wstring imagePath);
@@ -116,7 +125,9 @@ void(JNICALL jniExitHook)(jint code)
 {
 	debug("exited");
 	dwExitCode = code;
-	string restartCode = get_string_param(IDS_RESTART_EXIT_CODE);
+	//ManualSynchronization on 18.01.24 23:24
+	//string restartCode = get_string_param(IDS_RESTART_EXIT_CODE);
+	string restartCode = get_resourcestring_param("RESTART_EXIT_CODE");
 	if (mutex)
 	{
 		ReleaseMutex(mutex);
@@ -146,6 +157,7 @@ BOOL					InitInstance(HINSTANCE hinstance, int cmd);
 LRESULT CALLBACK		WndProc(HWND, UINT, WPARAM, LPARAM);
 //ManualSynchronization ends
 
+
 //Synchronization on 11.01.24 19:42
 struct EnumWindowsData {
 	const wchar_t* targetTitle;
@@ -157,18 +169,138 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
 
 	// Check if the window has the specified title
 	wchar_t title[256];
-	if (GetWindowTextW(hwnd, title, sizeof(title)) > 0 && wcscmp(title, data->targetTitle) == 0) {
+	if (GetWindowTextW(hwnd, title, sizeof(title)) > 0 && wcscmp(title, data->targetTitle) == 0)
+  {
 		data->hwnd = hwnd;
 		//EnumTimes++;
 		//if(EnumTimes>1)
 		if(hwnd != main_app_window_handle)
 			return FALSE;  // Stop enumerating
 	}
+	
+
+	return TRUE;  // Continue enumerating
+}
+BOOL CALLBACK EnumWindowsProc_JVM(HWND hwnd, LPARAM lParam) {
+	DWORD processId;
+	GetWindowThreadProcessId(hwnd, &processId);
+	debug_args("EnumWindowsProc_JVM GetWindowThreadProcessId %d ", processId);
+	DWORD currentProcessID;
+	currentProcessID = GetCurrentProcessId();
+	if (currentProcessID == processId)
+	{
+		debug_args("EnumWindowsProc_JVM current Window %02X ", hwnd);
+		wchar_t title[256];
+		//GetWindowTextW(hwnd, title, sizeof(title));
+		//MessageBoxW(0, L"Foreground Window Handle: ", title, 0);
+		ShowWindow(hwnd, SW_HIDE);
+		UpdateWindow(hwnd);
+	}
+	//if (IsWindowVisible(hwnd)) {
+	//	// Check if the window is the foreground window
+	//	//if (hwnd == GetForegroundWindow()) {
+	//		wchar_t title[256];
+	//		GetWindowTextW(hwnd, title, sizeof(title));
+	//		MessageBoxW(0, L"Foreground Window Handle: ", title, 0);
+	//		
+	//		//hide_current_splash();
+	//	//}
+	//	//else {
+	//	
+	//	//}
+	//}
 
 	return TRUE;  // Continue enumerating
 }
 //Synchronization ends
+//ManualSynchronization on 19.01.24 12:35
+DWORD WINAPI EnumerateWindowsThread(LPVOID lpParam) {
 
+	while (true)
+	{
+		Sleep(50);
+		HWND targetWindow = FindWindowEx(nullptr, nullptr, nullptr, L"Java Swing Example-2");
+		if (targetWindow)
+		{
+			//MessageBoxA(0, "found", 0, 0);
+			hide_current_splash();
+		}
+	}
+
+	//HWND hTaskbar = FindWindow(L"Shell_TrayWnd", NULL);
+	//EnumDesktopWindows(NULL, EnumWindowsProc_JVM, 0);
+	////EnumWindows(EnumWindowsProc_JVM, 0);
+	//if (hTaskbar != NULL) {
+	//	// Enumerate child windows of the taskbar
+	//	//EnumChildWindows(GetDesktopWindow(), EnumWindowsProc_JVM, 0);
+	//
+	//}
+	//else {
+	//	
+	//}
+
+	return 0;
+}
+
+
+//ManualSynchronization ends
+
+//ManualSynchronization on 19.01.24 12:48
+HHOOK g_hook;
+LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
+	//if (nCode == HCBT_CREATEWND)
+	//{
+		HWND hNewWindow = (HWND)wParam;
+		debug_args("New Window Created: %02X ", hNewWindow);
+		wchar_t title[256];
+		GetWindowTextW(hNewWindow, title, sizeof(title));
+		debug_args("New Window Title: %S ", title);
+		GetClassName(hNewWindow, title, sizeof(title));
+		debug_args("New Window Class: %S ", title);
+		PostMessage(hNewWindow, WM_CLOSE, 0, 0);
+		WaitForSingleObject(hNewWindow, INFINITE);
+		
+	//}
+
+	return CallNextHookEx(g_hook, nCode, wParam, lParam);
+}
+//ManualSynchronization ends
+
+//ManualSynchronization on 19.01.24 13:09
+
+void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime) {
+	//if (event == EVENT_OBJECT_CREATE) {
+		// Get the length of the window text
+	if (hwnd)
+	{
+		debug_args(L"WinEventProc: %02X ", event);
+		//MessageBox(0, L"WinEventProc", 0, 0);
+		int textLength = GetWindowTextLength(hwnd);
+		if (textLength > 0) {
+			// Allocate buffer for the window text
+			wchar_t* windowText = new wchar_t[textLength + 1];
+
+			// Get the window text
+			GetWindowText(hwnd, windowText, textLength + 1);
+
+			// Get the length of the window class name
+			int classNameLength = 256; // Adjust as needed
+			wchar_t* className = new wchar_t[classNameLength];
+
+			// Get the window class name
+			GetClassName(hwnd, className, classNameLength);
+
+			// Display the window text and class name
+			debug_args(L"New Window Text: %s ", windowText);
+			debug_args(L"New Window Class: %s ", className);
+			// Clean up allocated memory
+			delete[] windowText;
+			delete[] className;
+		}
+	}
+	//}
+}
+//ManualSynchronization ends
 // main function
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					 LPSTR pCmdLine, int nCmdShow)
@@ -202,8 +334,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	InitResourceData();
 	//ManualSynchronization ends;
 	//ManualSynchronization on 11.01.24 18:25
-	MyRegisterClass(hInstance);
-	InitInstance(hInstance, nCmdShow);
+	//MyRegisterClass(hInstance);
+	//InitInstance(hInstance, nCmdShow);
 	//ManualSynchronization ends;
 	try
 	{
@@ -461,7 +593,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 		vector<string> vmOptionLines;
-		string path = get_string_param(IDS_VM_OPTIONS_FILE);
+		//ManualSynchronization on 18.01.24 23:24
+		//string path = get_string_param(IDS_VM_OPTIONS_FILE);
+		string path = get_resourcestring_param("VM_OPTIONS_FILE");
 		if (!path.empty())
 		{
 			debug("reading options file " + path);
@@ -499,7 +633,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//ManualSynchronization ends
 		}
 
-		string predefinedOptions = get_string_param(IDS_VM_OPTIONS);
+		//ManualSynchronization on 18.01.24 23:25
+		//string predefinedOptions = get_string_param(IDS_VM_OPTIONS);
+		string predefinedOptions = get_resourcestring_param("VM_OPTIONS");
 		if (!predefinedOptions.empty())
 		{
 			debug("predefined options exist");
@@ -560,7 +696,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		JavaVMOption *vmOptions = (JavaVMOption *)calloc(vmOptionsCount, sizeof(JavaVMOption));
 		vmOptions[0].optionString = (char *)"exit";
 		vmOptions[0].extraInfo = (void *)jniExitHook;
-		string cp = get_string_param(IDS_CLASS_PATH);
+		//ManualSynchronization on 18.01.24 23:26
+		//string cp = get_string_param(IDS_CLASS_PATH);
+		string cp = get_resourcestring_param("CLASS_PATH");
 		if (cp.empty())
 		{
 			debug("classpath is not defined");
@@ -576,13 +714,30 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			vmOptions[i + 2].optionString = _strdup(opt.c_str());
 			vmOptions[i + 2].extraInfo = NULL;
 		}
-
+		
 		JavaVMInitArgs vmArgs;
 		vmArgs.version = JNI_VERSION_1_2;
 		vmArgs.nOptions = vmOptionsCount;
 		vmArgs.options = vmOptions;
 		vmArgs.ignoreUnrecognized = JNI_TRUE;
 
+		//ManualSynchronization on 19.01.24 00:47
+		//EnumDesktopWindows(NULL, EnumWindowsProc_JVM, 0);
+		//HWND hTaskbar = FindWindow(L"Shell_TrayWnd", NULL);
+		////EnumChildWindows(GetDesktopWindow(), EnumWindowsProc_JVM, 0);
+		HANDLE hThread = CreateThread(NULL, 0, EnumerateWindowsThread, NULL, 0, NULL);
+
+		//if (hThread != NULL) {
+		//	// Optionally, you can wait for the thread to complete
+		//	WaitForSingleObject(hThread, INFINITE);
+
+		//	// Close the thread handle when you're done with it
+		//	CloseHandle(hThread);
+		//}
+		//g_hook = SetWindowsHookEx(WH_MAX, CBTProc, NULL, GetCurrentThreadId());
+		
+
+		//MessageBox(0, L"Starting to createJAVAVM", 0, 0);
 		JNIEnv *jenv = NULL;
 		JavaVM *jvm = NULL;
 		int result = pCreateJavaVM(&jvm, &jenv, &vmArgs);
@@ -590,6 +745,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{
 			free(vmOptions[i].optionString);
 		}
+		
 		free(vmOptions);
 		vmOptions = NULL;
 		if (result != JNI_OK)
@@ -599,7 +755,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		debug("jvm was created");
 		jthrowable jtExcptn;
-		const std::string mainClassName = get_string_param(IDS_MAIN_CLASS);
+		//ManualSynchronization on 18.01.24 23:26
+		//const std::string mainClassName = get_string_param(IDS_MAIN_CLASS);
+		const std::string mainClassName = get_resourcestring_param("MAIN_CLASS");
 		debug("main class is " + mainClassName);
 		jclass mainClass = jenv->FindClass(mainClassName.c_str());
 		if (!mainClass)
@@ -616,7 +774,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		jclass stringClass = jenv->FindClass("java/lang/String");
 		jobjectArray args = jenv->NewObjectArray(0, stringClass, NULL);
+		//ManualSynchronization on 19.01.24 00:04
+		
 
+		
+		//hide_current_splash();
+		//ShowWindow(main_app_window_handle, SW_HIDE);
+
+		//ManualSynchronization ends
+		
 		jenv->CallStaticVoidMethod(mainClass, mainMethod, args);
 		jthrowable exc = jenv->ExceptionOccurred();
 		if (exc)
@@ -624,9 +790,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			debug("error occurred invoking main method");
 			throw_exception(L"Error invoking main method");
 		}
+		
 		//ManualSynchronization 12.01.24 00:05
-		hide_current_splash();
-		ShowWindow(main_app_window_handle, SW_HIDE);
+		//hide_current_splash();
+		//ShowWindow(main_app_window_handle, SW_HIDE);
 		//ManualSynchronization ends
 		//activate_window();
 	    jvm->DestroyJavaVM();
@@ -654,8 +821,8 @@ void show_last_error()
 	//ManualSynchronization on 11.01.24 20:27
 /*	MessageBoxW(NULL, exception_message.empty() ? L"Unknown error" : exception_message.c_str(),
 				L"Error occurred", MB_OK);
-	*/MessageBoxW(main_app_window_handle, exception_message.empty() ? L"Unknown error" : exception_message.c_str(),
-		L"Error occurred", MB_OK);
+	*/MessageBoxW(NULL, exception_message.empty() ? L"Unknown error" : exception_message.c_str(),
+		L"Error occurred", MB_OK |MB_DEFAULT_DESKTOP_ONLY);
 
 	
 	//ManualSynchronization ends
@@ -695,11 +862,13 @@ void debug_args(wchar_t* format, ...)
 /*		FILE* pFile = fopen(temp_file_name, "a");
 	*/	FILE* pFile = fopen(output_file_name.c_str(), "a");
 	//ManualSynchronization ends
+	if (pFile)
+	{
 		fputws(new_line_str, pFile);
 		fputws(temp_time_data, pFile);
 		fputws(buf, pFile);
 		fflush(pFile);
-
+	}
 		va_end(args);
 	}
 }
@@ -975,7 +1144,9 @@ void init_paths()
 	size_t position = pathStr.find_last_of(L"\\");
 	base_path = pathStr.substr(0, position);
 	debug(L"base path is " + base_path);
-	jvm_path = get_wstring_param(IDS_JVM_PATH);
+	//ManualSynchronization on 18.01.24 23:19
+	//jvm_path = get_wstring_param(IDS_JVM_PATH);
+	jvm_path = get_resourcestring_paramW(L"JVM_PATH");
 	debug(L"jvm path is " + jvm_path);
 }
 
@@ -1046,7 +1217,9 @@ HANDLE init_utf8_file(wstring file_name)
 
 void init_sjl_dir()
 {
-	sjl_path = base_path + L"\\" + get_wstring_param(IDS_SJL_DIR);
+	//ManualSynchronization on 18.01.24 23:20
+	//sjl_path = base_path + L"\\" + get_wstring_param(IDS_SJL_DIR);
+	sjl_path =	base_path + L"\\" + get_resourcestring_paramW(L"SJL_DIR");
 	if (!is_file_exist(sjl_path) && !CreateDirectoryW(sjl_path.c_str(), NULL))
 	{
 		throw_exception(L"unable to create directory " + sjl_path);
@@ -1061,8 +1234,9 @@ void throw_exception(wstring message)
 
 void create_mutex()
 {
-	wstring mutexName = get_wstring_param(IDS_MUTEX_NAME);
-
+	//ManualSynchronization on 18.01.24 23:21
+	//wstring mutexName = get_wstring_param(IDS_MUTEX_NAME);
+	wstring mutexName = get_resourcestring_paramW(L"MUTEX_NAME");
 	if (!mutexName.empty())
 	{
 		SECURITY_ATTRIBUTES security;
@@ -1089,7 +1263,121 @@ string get_string_param(int id)
 	return "";
 	//ManualSynchronization
 }
+//ManualSynchronization on 18.01.24 22:54
+wstring get_resourcestring_paramW(wchar_t* resourcename)
+{
+	if (g_debug_enabled) {
+		
 
+		// Switch on resourcename for known cases
+		if (wcscmp(resourcename, L"MAIN_CLASS") == 0) {
+			return std::wstring(L"com/gridnine/sjl/example/winGui/WinGui");
+		}
+		else if (wcscmp(resourcename, L"CLASS_PATH") == 0) {
+			return std::wstring(L"..\\..\\win-gui\\dist\\sample-gui-app.jar");
+		}
+		else if (wcscmp(resourcename, L"JVM_PATH") == 0) {
+			return std::wstring(L"..\\..\\win-gui\\dist\\jdk");
+		}
+		else if (wcscmp(resourcename, L"VM_OPTIONS") == 0) {
+			return std::wstring(L"-Xms128m|-Xmx??256m");
+		}
+		else if (wcscmp(resourcename, L"VM_OPTIONS_FILE") == 0) {
+			return std::wstring(L"win-gui.options");
+		}
+		else if (wcscmp(resourcename, L"RESTART_EXIT_CODE") == 0) {
+			return std::wstring(L"79");
+		}
+		else if (wcscmp(resourcename, L"MUTEX_NAME") == 0) {
+			return std::wstring(L"SJL");
+		}
+		else if (wcscmp(resourcename, L"SJL_DIR") == 0) {
+			return std::wstring(L".sjl");
+		}
+		else if (wcscmp(resourcename, L"APP_TITLE") == 0) {
+			return std::wstring(L"SimpleJavaLauncher");
+		}
+		else if (wcscmp(resourcename, L"SJL") == 0) {
+			return std::wstring(L"SJLauncher");
+		}
+		else if (wcscmp(resourcename, L"LAUNCH_SINGLETON") == 0) {
+			return std::wstring(L"1");
+		}
+		else if (wcscmp(resourcename, L"SHOW_SPLASH") == 0) {
+			return std::wstring(L"1");
+		}
+		else {
+			// Handle unknown resource names
+			
+			return std::wstring(L"");
+		}
+	}
+	else {
+		// Debug mode disabled, implement the original logic here
+		// ...
+
+		
+	
+	wchar_t szTMPBuffer[MAX_LOADSTRING];
+	bool bFailLoad = LoadStringFromResourceW(hInst, resourcename, szTMPBuffer, MAX_LOADSTRING);
+	return bFailLoad ? std::wstring(szTMPBuffer) : L"";
+	}
+}
+//ManualSynchronization on 18.01.24 23:15
+string get_resourcestring_param(char* resourcename)
+{
+	if (g_debug_enabled) {
+	// Switch on resourcename for known cases
+	if (strcmp(resourcename, "MAIN_CLASS") == 0) {
+		return std::string("com/gridnine/sjl/example/winGui/WinGui");
+	}
+	else if (strcmp(resourcename, "CLASS_PATH") == 0) {
+		return std::string("..\\..\\win-gui\\dist\\sample-gui-app.jar");
+	}
+	else if (strcmp(resourcename, "JVM_PATH") == 0) {
+		return std::string("..\\..\\win-gui\\dist\\jdk");
+	}
+	else if (strcmp(resourcename, "VM_OPTIONS") == 0) {
+		return std::string("-Xms128m|-Xmx??256m");
+	}
+	else if (strcmp(resourcename, "VM_OPTIONS_FILE") == 0) {
+		return std::string("win-gui.options");
+	}
+	else if (strcmp(resourcename, "RESTART_EXIT_CODE") == 0) {
+		return std::string("79");
+	}
+	else if (strcmp(resourcename, "MUTEX_NAME") == 0) {
+		return std::string("SJL");
+	}
+	else if (strcmp(resourcename, "SJL_DIR") == 0) {
+		return std::string(".sjl");
+	}
+	else if (strcmp(resourcename, "APP_TITLE") == 0) {
+		return std::string("SimpleJavaLauncher");
+	}
+	else if (strcmp(resourcename, "SJL") == 0) {
+		return std::string("SJLauncher");
+	}
+	else if (strcmp(resourcename, "LAUNCH_SINGLETON") == 0) {
+		return std::string("1");
+	}
+	else if (strcmp(resourcename, "SHOW_SPLASH") == 0) {
+		return std::string("1");
+	}
+	else {
+		// Handle unknown resource names
+		
+		return std::string("");
+	}
+}
+ else {
+ 
+	
+	char sTMPBuffer[MAX_LOADSTRING];
+	bool bFailLoad = LoadStringFromResource(hInst, resourcename, sTMPBuffer, MAX_LOADSTRING);
+	return bFailLoad ? std::string(sTMPBuffer) : "";
+	}
+}
 void close_log_file_handle()
 {
 	if (log_file)
@@ -1299,7 +1587,9 @@ void activate_window()
 HANDLE CheckOneInstanceLaunched()
 {
 	wstring mutexName = L"Global\\";
-	mutexName+=get_wstring_param(IDS_MUTEX_NAME);
+	//ManualSynchronization on 18.01.24 23:22
+	//mutexName+=get_wstring_param(IDS_MUTEX_NAME);
+	mutexName+= get_resourcestring_paramW(L"MUTEX_NAME");
 	HANDLE handle = NULL;
 
 	//ManualSynchronization on 10.01.24 17:45
@@ -1328,24 +1618,207 @@ HANDLE CheckOneInstanceLaunched()
 	//ManualSynchronization ends
 	return handle;
 }
+//ManuaSynchronization starts on 18.01.24 21:03
+int LoadStringFromResourceW(HINSTANCE hInstance, LPWSTR ResourceName, LPWSTR Buffer, int cchBufferMax)
+{
+	HRSRC hResource = FindResource(hInstance, ResourceName, RT_RCDATA);
+	if (hResource == nullptr) {
+		// Resource not found
+		return false;
+	}
 
+	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
+	if (hGlobal == nullptr) {
+		// Failed to load resource
+		return false;
+	}
+
+	LPVOID lpResourceData = LockResource(hGlobal);
+	if (lpResourceData == nullptr) {
+		// Failed to lock resource
+		FreeResource(hGlobal);
+		return false;
+	}
+
+	int resourceSize = SizeofResource(hInstance, hResource);
+
+	// Ensure the buffer is large enough
+	if (resourceSize + 1 > cchBufferMax) {
+		// Buffer too small
+		FreeResource(hGlobal);
+		return false;
+	}
+	//ManualSynchronization starts on 18.01.24 21:59
+	/*int len = MultiByteToWideChar(CP_UTF8, 0, static_cast<char*>(lpResourceData), -1, 0, 0);
+	wchar_t* wstr = (wchar_t*)calloc(sizeof(wchar_t), len + 2);
+	MultiByteToWideChar(CP_UTF8, 0, static_cast<char*>(lpResourceData), -1, wstr, len + 2);*/
+
+	// ManualSynchronization ends
+	// Copy the resource data into the buffer
+	//ManualSynchronization on 18.01.24 22:01
+	//wcsncpy_s(Buffer, cchBufferMax, wstr, len);
+	//wcsncpy_s(Buffer, cchBufferMax, static_cast<LPCWSTR>(lpResourceData), len);
+	
+	 // Convert the multi-byte string to wide characters (UTF-8 assumed)
+	int wideCharSize = MultiByteToWideChar(CP_UTF8, 0, static_cast<LPCCH>(lpResourceData), resourceSize, Buffer, cchBufferMax);
+	if (wideCharSize == 0) {
+		// Conversion failed
+		FreeResource(hGlobal);
+		return false;
+	}
+	// Null-terminate the string
+	Buffer[resourceSize] = L'\0';
+
+	// Release the resource
+	FreeResource(hGlobal);
+
+	return true;
+}
+//ManuaSynchronization ends
+
+//ManualSynchronization on 18.01.24 23:03
+int LoadStringFromResource(HINSTANCE hInstance, char* ResourceName, char* Buffer, int cchBufferMax)
+{
+	HRSRC hResource = FindResourceA(hInstance, ResourceName, MAKEINTRESOURCEA(10));
+	if (hResource == nullptr) {
+		// Resource not found
+		return false;
+	}
+
+	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
+	if (hGlobal == nullptr) {
+		// Failed to load resource
+		return false;
+	}
+
+	LPVOID lpResourceData = LockResource(hGlobal);
+	if (lpResourceData == nullptr) {
+		// Failed to lock resource
+		FreeResource(hGlobal);
+		return false;
+	}
+
+	int resourceSize = SizeofResource(hInstance, hResource);
+
+	// Ensure the buffer is large enough
+	if (resourceSize + 1 > cchBufferMax) {
+		// Buffer too small
+		FreeResource(hGlobal);
+		return false;
+	}
+	//ManualSynchronization starts on 18.01.24 21:59
+	/*int len = MultiByteToWideChar(CP_UTF8, 0, static_cast<char*>(lpResourceData), -1, 0, 0);
+	wchar_t* wstr = (wchar_t*)calloc(sizeof(wchar_t), len + 2);
+	MultiByteToWideChar(CP_UTF8, 0, static_cast<char*>(lpResourceData), -1, wstr, len + 2);*/
+
+	// ManualSynchronization ends
+	// Copy the resource data into the buffer
+	//ManualSynchronization on 18.01.24 22:01
+	//wcsncpy_s(Buffer, cchBufferMax, wstr, len);
+	//strcpy_s(Buffer, resourceSize, static_cast<char*>(lpResourceData) );
+	strcpy(Buffer, static_cast<char*>(lpResourceData));
+	
+	
+	// Null-terminate the string
+	Buffer[resourceSize] = '\0';
+
+	// Release the resource
+	FreeResource(hGlobal);
+
+	return true;
+}
+//ManuaSynchronization ends
+//ManualSynchronization ends
 void InitResourceData()
 {
+	//ManualSynchronization on 17.01.24 17:26
+	// 
+
+
+	//LPCTSTR lpResourceName = L"CUSTOMDATA";
+
+	//LPCTSTR lpResourceType = RT_RCDATA;
+	//// Find the specified resource
+	//HRSRC hResource = FindResource(hInst, lpResourceName, lpResourceType);
+	//if (hResource == NULL) {
+	//	// Resource not found
+	//	MessageBox(0, L"Resource Not Found", 0, 0);
+	//	return;
+	//}
+	//// Load the resource
+	//HGLOBAL hGlobal = LoadResource(hInst, hResource);
+	//if (hGlobal != NULL) {
+	//	// Lock the resource to obtain a pointer to the raw data
+	//	LPVOID pData = LockResource(hGlobal);
+	//	if (pData != NULL) {
+	//		// Assuming the manifest is a null-terminated string (which it typically is)
+	//		LPCSTR manifestString = reinterpret_cast<LPCSTR>(pData);
+
+	//		// Print or use the manifest string
+	//		MessageBoxA(0, manifestString, "Manifest Content:\n" ,0);
+	//	}
+	//	else {
+	//		
+	//	}
+	//}
+	//else {
+	//	MessageBox(0, L"Failed to load Resource", 0, 0);
+	//}
+
+	
 	//ManualSynchronization on 11.01.24 17:46
 	//LoadStringW(hInst, titleid, lpbuffer, lpbuffermax);
 	//LoadStringW(hInst, classid, lpbuffer, lpbuffermax);
-	LoadStringW(hInst, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadStringW(hInst, IDC_SJL, szWindowClass, MAX_LOADSTRING);
+	//LoadStringW(hInst, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	//LoadStringW(hInst, IDC_SJL, szWindowClass, MAX_LOADSTRING);
 	//ManualSynchronization ends
 
 	//ManualSynchronization on 11.01.24 21:01
 	wchar_t szTMPBuffer[MAX_LOADSTRING];
-	LoadStringW(hInst, IDS_LAUNCH_SINGLETON, szTMPBuffer, MAX_LOADSTRING);
-	launch_singleton_flag = _wtoi(szTMPBuffer);
+	//LoadStringW(hInst, IDS_LAUNCH_SINGLETON, szTMPBuffer, MAX_LOADSTRING);
+	//launch_singleton_flag = _wtoi(szTMPBuffer);
 
 	//ManualSynchronization on 11.01.24 23:32
-	LoadStringW(hInst, IDS_SHOW_SPLASH, szTMPBuffer, MAX_LOADSTRING);
-	g_bShow_splash_flag =		_wtoi(szTMPBuffer);
+	//LoadStringW(hInst, IDS_SHOW_SPLASH, szTMPBuffer, MAX_LOADSTRING);
+	//g_bShow_splash_flag =		_wtoi(szTMPBuffer);
+
+	//ManualSynchronization on 17.01.24 20:38
+	//LoadStringW(hInst, 1017, szTMPBuffer, MAX_LOADSTRING);
+	//MessageBoxW(0, szTMPBuffer, 0, 0);
+	//ManualSynchronization on 18.01.24 21:19
+	//LoadStringFromResourceW(hInst, L"CUSTOMDATA", szTMPBuffer, MAX_LOADSTRING);
+	//MessageBoxW(0, szTMPBuffer, 0, 0);
+
+	//ManualSynchronization on 18.01.24 21:47
+	//LoadStringFromResourceW(hInst, L"APP_TITLE", szTitle, MAX_LOADSTRING);
+	std::wstring TMPwstring = get_resourcestring_paramW(L"APP_TITLE");
+	wcscpy_s(szTitle, TMPwstring.c_str());
+
+	//LoadStringFromResourceW(hInst, L"SJL", szWindowClass, MAX_LOADSTRING);
+	TMPwstring = get_resourcestring_paramW(L"SJL");
+	wcscpy_s(szWindowClass, TMPwstring.c_str());
+	//MessageBoxW(0, szTitle, 0, 0);
+	//MessageBoxW(0, szWindowClass, 0, 0);
+
+	//ManualSynchronization on 18.01.24 22:51
+	//LoadStringFromResourceW(hInst, L"LAUNCH_SINGLETON", szTMPBuffer, MAX_LOADSTRING);
+	TMPwstring = get_resourcestring_paramW(L"LAUNCH_SINGLETON");
+	//launch_singleton_flag = _wtoi(szTMPBuffer);
+	launch_singleton_flag = _wtoi(TMPwstring.c_str());
+	//LoadStringFromResourceW(hInst, L"SHOW_SPLASH", szTMPBuffer, MAX_LOADSTRING);
+	TMPwstring = get_resourcestring_paramW(L"SHOW_SPLASH");
+	g_bShow_splash_flag = _wtoi(TMPwstring.c_str());
+	//g_bShow_splash_flag = _wtoi(szTMPBuffer);
+
+	//ManualSynchronization on 18.01.24 22:58
+	//wstring m_swApptitle = get_resourcestring_paramW(L"APP_TITLE");
+	//MessageBoxW(0, m_swApptitle.c_str(), 0, 0);
+	//ManualSynchronization on 18.01.24 23:10
+	//char sTMPBuffer[MAX_LOADSTRING];
+	//string m_sApptitle = get_resourcestring_param("APP_TITLE");
+	//LoadStringFromResource(hInst, "APP_TITLE", sTMPBuffer, MAX_LOADSTRING);
+	//MessageBoxA(0, sTMPBuffer, 0, 0);
+	//MessageBoxA(0, m_sApptitle.c_str(), 0, 0);
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -1371,6 +1844,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	
 	return RegisterClassExW(&wcex);
 }
+#pragma optimize("", off)
 
 BOOL InitInstance(HINSTANCE hInstance, int cmd)
 {
@@ -1382,8 +1856,10 @@ BOOL InitInstance(HINSTANCE hInstance, int cmd)
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
 	main_app_window_handle = hwnd;
+
 	return 0;
 }
+#pragma optimize("", on)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

@@ -30,6 +30,8 @@
 //ManualSynchronization on 11.01.24 23:29
 #define IDS_SHOW_SPLASH			1002
 
+#define IDR_CUSTOM_DATA			2002
+
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
