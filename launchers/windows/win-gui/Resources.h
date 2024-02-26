@@ -7,8 +7,12 @@
 class Resources
 {
 private:
-	std::wstring sjl_path;
-	std::wstring jvm_path;
+	std::wstring sjlPath;
+	std::wstring jvmPath;
+	std::wstring mutexName;
+	int instanceAlreadyRunningExitCode;
+	std::wstring appTitle;
+
 
 public:
 	Resources(HINSTANCE hInst);
@@ -16,5 +20,11 @@ public:
 	std::wstring GetSjlPath();
 	
 	std::wstring GetJvmPath();
+
+	std::wstring GetMutexName();
+
+	int GetInstanceAlreadyRunningExitCode() const;
+
+	std::wstring GetAppTitle();
 };
 

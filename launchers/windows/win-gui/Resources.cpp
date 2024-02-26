@@ -45,14 +45,30 @@ static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* 
 
 
 Resources::Resources(HINSTANCE inst) {
-	sjl_path = LoadStringFromResourceW(inst, L"SJL_PATH", L".sjl");
-	jvm_path = LoadStringFromResourceW(inst, L"JVML_PATH", L"..\\..\\win-gui\\dist\\jdk");
+	sjlPath = LoadStringFromResourceW(inst, L"SJL_PATH", L".sjl");
+	jvmPath = LoadStringFromResourceW(inst, L"JVM_PATH", L"..\\..\\win-gui\\dist\\jdk");
+	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"SJL-MUTEX");
+	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
+	instanceAlreadyRunningExitCode = std::stoi(arec);
+	appTitle = LoadStringFromResourceW(inst, L"APP_TITLE", L"SJL-APP");
 }
 
 std::wstring Resources::GetSjlPath() {
-	return sjl_path;
+	return sjlPath;
 }
 
 std::wstring Resources::GetJvmPath() {
-	return jvm_path;
+	return jvmPath;
+}
+
+std::wstring Resources::GetMutexName() {
+	return mutexName;
+}
+
+int Resources::GetInstanceAlreadyRunningExitCode() const {
+	return instanceAlreadyRunningExitCode;
+}
+
+std::wstring Resources::GetAppTitle() {
+	return appTitle;
 }

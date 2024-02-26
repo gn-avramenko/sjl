@@ -14,10 +14,6 @@ Locations::Locations(Resources resources, ExceptionWrapper ew) {
 	log_file = sjl_path + L"\\sjl.log";
 }
 
-void Locations::DumpLocations(Debug debug) {
-
-}
-
 std::wstring Locations::GetLogFile() {
 	return log_file;
 }
@@ -43,6 +39,9 @@ boolean Locations::IsFileExists(std::wstring path) {
 }
 
 boolean Locations::IsDirectoryExists(std::wstring path) {
+	if (!IsFileExists(path)) {
+		return false;
+	}
 	DWORD attrib = GetFileAttributesW(path.c_str());
 	return (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }

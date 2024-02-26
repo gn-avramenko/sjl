@@ -5,13 +5,15 @@
 class Debug
 {
 private:
-    bool debug_flag;
+    bool debugFlag;
     FILE* handle;
 public:
     Debug(LPSTR pCmdLine, Locations locations);
     ~Debug();
-    void Log(wchar_t* format, ...);
-    void Log(char* format, ...);
+    void Log(std::wstring format, ...);
+    void Log(std::string format, ...);
+    void DumpLocations(Locations locations);
+    void DumpResources(Resources resources);
 
 };
 
