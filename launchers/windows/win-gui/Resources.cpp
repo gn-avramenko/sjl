@@ -51,6 +51,19 @@ Resources::Resources(HINSTANCE inst) {
 	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
 	instanceAlreadyRunningExitCode = std::stoi(arec);
 	appTitle = LoadStringFromResourceW(inst, L"APP_TITLE", L"SJL-APP");
+	unableToOpenFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_OPEN_FILE_MESSAGE", L"Unable to open file %s");
+	unableToCopyDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_COPY_DIRECTORY_MESSAGE", L"Unable to copy directory from %s to %s");
+	unableToCreateDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_DIRECTORY_MESSAGE", L"Unable to create directory %s");
+	sourceFileDoesNotExistMessage = LoadStringFromResourceW(inst, L"SOURCE_FILE_DOES_NOT_EXIST_MESSAGE", L"Source file %s does not exist");
+	unableToCopyFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_COPY_FILE_MESSAGE", L"Unable to copy file from %s to %s");
+	unableToDeleteDirectoryMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_DELETE_DIRECTORY_MESSAGE", L"Unable to delete %s");
+	unableToDeleteFileMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_DELETE_FILE_MESSAGE", L"Unable to delete %s");
+	unableToRenameFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_RENAME_FILE_MESSAGE", L"Unable to rename file %s to %s");
+	unableToPerformSelfUpdateMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_PERFORM_SELF_UPDATE_MESSAGE", L"Unable to perform self update");
+	unableToLoadBitmapMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOAD_BITMAP_MESSAGE", L"Unable to load bitmap from %s");
+	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", std::wstring());
+	optionsFile = LoadStringFromResourceW(inst, L"OPTIONS_FILE", std::wstring());
+	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
 }
 
 std::wstring Resources::GetSjlPath() {
@@ -72,3 +85,69 @@ int Resources::GetInstanceAlreadyRunningExitCode() const {
 std::wstring Resources::GetAppTitle() {
 	return appTitle;
 }
+
+std::wstring Resources::GetUnableToOpenFileMessage()
+{
+	return unableToOpenFileMessage;
+}
+
+std::wstring Resources::GetUnableToCreateDirectoryMessage()
+{
+	return unableToCreateDirectoryMessage;
+}
+
+std::wstring Resources::GetUnableToCopyFileMessage()
+{
+	return unableToCopyFileMessage;
+}
+
+std::wstring Resources::GetUnableToDeleteDirectoryMessage()
+{
+	return unableToDeleteDirectoryMessage;
+}
+
+std::wstring Resources::GetUnableToDeleteFileMessage()
+{
+	return unableToDeleteFileMessage;
+}
+
+std::wstring Resources::GetUnableToRenameFileMessage()
+{
+	return unableToRenameFileMessage;
+}
+
+std::wstring Resources::GetUnableToPerformSelfUpdateMessage()
+{
+	return unableToPerformSelfUpdateMessage;
+}
+
+std::wstring Resources::GetErrorMessage()
+{
+	return errorMessage;
+}
+
+std::wstring Resources::GetUnableToLoadBitmapMessage()
+{
+	return unableToLoadBitmapMessage;
+}
+
+std::wstring Resources::GetSplashScreenFile()
+{
+	return splashScreenFileName;
+}
+
+std::wstring Resources::GetOptionsFile()
+{
+	return optionsFile;
+}
+
+std::wstring Resources::GetSourceFileDoesNotExistMessage()
+{
+	return sourceFileDoesNotExistMessage;
+}
+
+std::wstring Resources::GetUnableToCopyDirectoryMessage()
+{
+	return unableToCopyDirectoryMessage;
+}
+

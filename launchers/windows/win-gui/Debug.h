@@ -1,19 +1,23 @@
 #pragma once
 #include <Windows.h>
 #include "Locations.h"
+#include "Resources.h"
+#include "ExceptionWrapper.h"
 
 class Debug
 {
 private:
     bool debugFlag;
     FILE* handle;
+    Resources *resources;
+    Locations *locations;
 public:
-    Debug(LPSTR pCmdLine, Locations locations);
+    Debug(LPSTR pCmdLine, Locations* locations, Resources* res, ExceptionWrapper* ew);
     ~Debug();
     void Log(std::wstring format, ...);
     void Log(std::string format, ...);
-    void DumpLocations(Locations locations);
-    void DumpResources(Resources resources);
+    void DumpLocations();
+    void DumpResources();
 
 };
 

@@ -1,14 +1,17 @@
 #include "Debug.h"
+#include "Utils.h"
 #include <string>
 #include <time.h>
 
-Debug::Debug(LPSTR pCmdLine, Locations locations) {
+Debug::Debug(LPSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *ew) {
+	resources = res;
+	locations = locs;
 	std::string cmdLineStr = pCmdLine;
 	debugFlag = (cmdLineStr.find("-sjl-debug") != std::string::npos);
 	handle = new FILE();
 	if (debugFlag) {
-		locations.EnsureDirectoryExists(locations.GetSjlPath());
-		std::wstring logFile = locations.GetLogFile();
+		locs->EnsureDirectoryExists(locations->GetSjlPath());
+		std::wstring logFile = locations->GetLogFile();
 		_wfopen_s(&handle, logFile.c_str(), L"a");	
 		return;
 	}	
@@ -74,13 +77,13 @@ void Debug::Log(std::string format, ...) {
 
 }
 
-void Debug::DumpLocations(Locations locations) {
-	Log(L"SJL directory is %s", locations.GetSjlPath().c_str());
-	Log(L"SJL log file is %s", locations.GetLogFile().c_str());
+void Debug::DumpLocations() {
+	Log(L"SJL directory is %s", locations->GetSjlPath().c_str());
+	Log(L"SJL log file is %s", locations->GetLogFile().c_str());
 }
 
-void Debug::DumpResources(Resources resources)
+void Debug::DumpResources()
 {
-	Log(L"APP_TITLE is %s", resources.GetAppTitle().c_str());
+	Log(L"APP_TITLE is %s", resources->GetAppTitle().c_str());
 
 }

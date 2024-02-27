@@ -130,15 +130,29 @@
   <ItemGroup>
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ExceptionWrapper.cpp" />
+    <ClCompile Include="JVM.cpp" />
     <ClCompile Include="Locations.cpp" />
     <ClCompile Include="Resources.cpp" />
+    <ClCompile Include="SelfUpdater.cpp" />
+    <ClCompile Include="SingleInstanceChecker.cpp" />
+    <ClCompile Include="AppUpdater.cpp" />
+    <ClCompile Include="SplashScreen.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="WinGui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h" />
     <ClInclude Include="ExceptionWrapper.h" />
+    <ClInclude Include="jni.h" />
+    <ClInclude Include="jni_md.h" />
+    <ClInclude Include="JVM.h" />
     <ClInclude Include="Locations.h" />
     <ClInclude Include="Resources.h" />
+    <ClInclude Include="SelfUpdater.h" />
+    <ClInclude Include="SingleInstanceChecker.h" />
+    <ClInclude Include="AppUpdater.h" />
+    <ClInclude Include="SplashScreen.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

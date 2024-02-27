@@ -13,10 +13,10 @@ class SingleInstanceChecker
 private:
 	std::wstring mutexName;
 	std::wstring appTitle;
-	Debug debug;
+	Debug *debug;
 
 public:
-	SingleInstanceChecker(std::wstring aMutexName, std::wstring anAppTitle, Debug aDebug);
+	SingleInstanceChecker(std::wstring aMutexName, std::wstring anAppTitle, Debug *aDebug);
 	BOOL Check();
 };
 

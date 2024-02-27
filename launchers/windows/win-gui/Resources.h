@@ -12,7 +12,19 @@ private:
 	std::wstring mutexName;
 	int instanceAlreadyRunningExitCode;
 	std::wstring appTitle;
-
+	std::wstring unableToOpenFileMessage;
+	std::wstring unableToCreateDirectoryMessage;
+	std::wstring sourceFileDoesNotExistMessage;
+	std::wstring unableToCopyDirectoryMessage;
+	std::wstring unableToCopyFileMessage;
+	std::wstring unableToDeleteDirectoryMessage;
+	std::wstring unableToDeleteFileMessage;
+	std::wstring unableToRenameFileMessage;
+	std::wstring unableToPerformSelfUpdateMessage;
+	std::wstring errorMessage;
+	std::wstring unableToLoadBitmapMessage;
+	std::wstring splashScreenFileName;
+	std::wstring optionsFile;
 
 public:
 	Resources(HINSTANCE hInst);
@@ -26,5 +38,22 @@ public:
 	int GetInstanceAlreadyRunningExitCode() const;
 
 	std::wstring GetAppTitle();
+
+	std::wstring GetUnableToOpenFileMessage();
+
+	std::wstring GetUnableToCreateDirectoryMessage();
+
+	std::wstring GetSourceFileDoesNotExistMessage();
+	std::wstring GetUnableToCopyDirectoryMessage();
+	std::wstring GetUnableToCopyFileMessage();
+	std::wstring GetUnableToDeleteDirectoryMessage();
+	std::wstring GetUnableToDeleteFileMessage();
+	std::wstring GetUnableToRenameFileMessage();
+	std::wstring GetUnableToPerformSelfUpdateMessage();
+	std::wstring GetErrorMessage();
+	std::wstring GetUnableToLoadBitmapMessage();
+	std::wstring GetSplashScreenFile();
+	std::wstring GetOptionsFile();
 };
+
 

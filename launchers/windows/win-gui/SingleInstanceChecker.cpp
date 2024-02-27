@@ -1,7 +1,7 @@
 #include "SingleInstanceChecker.h"
 #include "Windows.h"
 
-SingleInstanceChecker::SingleInstanceChecker(std::wstring aMutexName, std::wstring aAppTitle, Debug aDebug) {
+SingleInstanceChecker::SingleInstanceChecker(std::wstring aMutexName, std::wstring aAppTitle, Debug *aDebug) {
 	mutexName = aMutexName;
 	appTitle = aAppTitle;
 	debug = aDebug;
@@ -22,20 +22,20 @@ static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
 
 BOOL SingleInstanceChecker::Check() {
 	if(mutexName.empty()) {
-		debug.Log("mutex is empty, can continue");
+		debug->Log("mutex is empty, can continue");
 		return true;
 	}
-	std::wstring mutexName = L"Global\\"+mutexName;
-	HANDLE handle = OpenMutexW(MUTEX_MODIFY_STATE, FALSE, mutexName.c_str());
+	std::wstring fullMutexName = L"Global\\"+mutexName;
+	HANDLE handle = OpenMutexW(MUTEX_MODIFY_STATE, FALSE, fullMutexName.c_str());
 	if (!handle)
 	{
-		debug.Log("current handle is null");
-		handle = CreateMutexW(NULL, FALSE, mutexName.c_str());
+		debug->Log("current handle is null");
+		handle = CreateMutexW(NULL, FALSE, fullMutexName.c_str());
 		if (handle == NULL) {
-			debug.Log("handle can not be created");
+			debug->Log("handle can not be created");
 			return FALSE;
 		}
-		debug.Log("handle was created");
+		debug->Log("handle was created");
 		return TRUE;
 	}
 	EnumWindowsData data;
@@ -47,10 +47,10 @@ BOOL SingleInstanceChecker::Check() {
 	if (data.hwnd != nullptr) {
 		// Bring the window to the foreground
 		SetForegroundWindow(data.hwnd);
-		debug.Log("running process was made foreground");
+		debug->Log("running process was made foreground");
 		return FALSE;
 	}
-	debug.Log(L"unable to find window with name %s", data.targetTitle);
+	debug->Log(L"unable to find window with name %s", data.targetTitle);
 	return TRUE;
 
 }
