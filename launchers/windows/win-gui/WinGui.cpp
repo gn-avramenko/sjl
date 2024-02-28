@@ -17,7 +17,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	try {
 		Resources resources(hInstance);
 		r = &resources;
-		Locations locations(&resources, &exception);
+		Locations locations(&resources, &exception);		
 		Debug debug(pCmdLine, &locations, &resources, &exception);
 		d = &debug;
 		debug.DumpLocations();
@@ -26,7 +26,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (!sic.Check()) {
 			return resources.GetInstanceAlreadyRunningExitCode();
 		}
-		SplashScreen splashScreen(hInstance, &exception, &resources, &debug);
+		SplashScreen splashScreen(hInstance, &exception, &resources, &locations, &debug);		
 		AppUpdater appUpdater(&locations, &exception, &resources, nullptr, &debug);
 		bool deleteUpdateDirectory = false;
 		if (appUpdater.IsUpdateRequired()) {
@@ -41,15 +41,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			locations.DirectoryRemove(locations.GetUpdateDirectory());
 		}
 		if (!locations.GetSplashScreenFile().empty()) {
-			splashScreen.ShowSplash(locations.GetSplashScreenFile());
+			splashScreen.ShowSplash(locations.GetSplashScreenFile());			
 		}
-		JVM jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
-		jvm.LaunchJVM();
+		//JVM jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
+		//jvm.LaunchJVM();
+		Sleep(5000);
+		splashScreen.HideSplash();
+		debug.CloseHandle();
 		return 0;
 	}
 	catch (...) {
 		if (d != nullptr) {
 			d->Log(exception.GetDeveloperMessage());
+			d->CloseHandle();
 		}
 		MessageBoxW(0, exception.GetUserMessage().c_str(), r == nullptr? L"Error": r->GetErrorMessage().c_str(), 0);
 		return 1;

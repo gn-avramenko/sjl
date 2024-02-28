@@ -13,7 +13,7 @@ private:
     Locations *locations;
 public:
     Debug(LPSTR pCmdLine, Locations* locations, Resources* res, ExceptionWrapper* ew);
-    ~Debug();
+    void CloseHandle();
     void Log(std::wstring format, ...);
     void Log(std::string format, ...);
     void DumpLocations();

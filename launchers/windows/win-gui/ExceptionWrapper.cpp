@@ -1,8 +1,8 @@
 #include "ExceptionWrapper.h"
 
-void ExceptionWrapper::ThrowException(std::wstring developerMessage, std::wstring msg) {
-	message = msg;
-	developerMessage = msg;
+void ExceptionWrapper::ThrowException(std::wstring devMsg, std::wstring userMsg) {
+	message = userMsg;
+	developerMessage = devMsg;
 	throw std::exception();
 }
 

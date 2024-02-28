@@ -103,11 +103,11 @@ Resources::Resources(HINSTANCE inst) {
 	unableToLoadJvmDllMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOAD_JVM_DLL_MESSAGE", L"Unable to load JVM from %s");
 	unableToFindAdressOfJNI_CreateJavaVMMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_ADDRESS_OF_CREATE_JVM_MESSAGE", L"Unable to find address of JNI_CreateJavaVM");
 	classPathIsNotDefinedMessage = LoadStringFromResourceW(inst, L"CLASS_PATH_IS_NOT_DEFINED_MESSAGE", L"Classpath is not defined");
-	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\win-gui\\splash.bmp");
-	vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"win-gui.options");
+	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
+	vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
 	vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
-	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\win-gui\\dist\\jdk");
-	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\win-gui\\dist\\sample-gui-app.jar");
+	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
+	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
 	restartExitCode = std::stoi(LoadStringFromResource(inst, L"RESTART_EXIT_CODE", "79"));
 	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
 	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");

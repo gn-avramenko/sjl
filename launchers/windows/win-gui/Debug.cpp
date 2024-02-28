@@ -17,10 +17,11 @@ Debug::Debug(LPSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *
 	}	
 }
 
-Debug::~Debug() {
+void Debug::CloseHandle()
+{
 	if (debugFlag) {
 		fclose(handle);
-	}	
+	}
 }
 
 void Debug::Log(std::wstring format, ...) {

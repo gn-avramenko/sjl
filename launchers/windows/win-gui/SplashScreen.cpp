@@ -14,6 +14,7 @@ HBITMAP oldHBitmap;
 Debug* debug;
 bool splashVisible;
 HWND splashWindowHandle;
+Locations* locations;
 
 LRESULT CALLBACK splashWindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -91,8 +92,9 @@ DWORD WINAPI showSplashFunction(LPVOID lpParam)
 
 
 
-SplashScreen::SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res, Debug* deb)
+SplashScreen::SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res, Locations* locs, Debug* deb)
 {
+	locations = locs;
 	exceptionWrapper = ew;
     debug = deb;
 	resources = res;
@@ -100,14 +102,18 @@ SplashScreen::SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res
 }
 
 void SplashScreen::ShowSplash(std::wstring image)
-{
-	HBITMAP splashBitmap = (HBITMAP)LoadImageW(instance, image.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-	if (!splashBitmap)
-	{
-		exceptionWrapper->ThrowException(format_message(L"Unable to load bitmap from %s", image.c_str()), format_message(resources->GetUnableToLoadBitmapMessage(), image.c_str()));
+{	
+	if (!locations->FileExists(image)) {
+		exceptionWrapper->ThrowException(format_message(L"Splash file %s does not exist", image.c_str()), format_message(resources->GetUnableToLoadBitmapMessage(), image.c_str()));
 		return;
 	}
-	GetObject(splashBitmap, sizeof(BITMAP), &splashBm);
+	hBitmap = (HBITMAP)LoadImageW(instance, image.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	if (!hBitmap)
+	{
+		exceptionWrapper->ThrowException(format_message(L"Unable to load bitmap from %s, probably bad format", image.c_str()), format_message(resources->GetUnableToLoadBitmapMessage(), image.c_str()));
+		return;
+	}
+	GetObject(hBitmap, sizeof(BITMAP), &splashBm);
 	DWORD threadId;
 	splash_screen_thread = CreateThread(
 		NULL,
