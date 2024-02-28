@@ -34,9 +34,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WinGui {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Hello world");
         //Declare frame object
+        Thread.sleep(2000);
         JFrame win = new JFrame();
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Set the title
@@ -77,19 +78,22 @@ public class WinGui {
                     deleteDirectory(updateDir);
                 }
                 updateDir.mkdirs();
+                File splashFile = new File("..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
                 File updateWinGuiJar = new File(".sjl/update/win-gui.jar");
                 File updateVersionFile = new File(".sjl/update/version.txt");
                 File programWinGuiJar = new File("..\\..\\..\\examples\\win-gui\\dist\\win-gui.jar");
-                File splashFile = new File("sample.bmp");
-                Files.copy(new File("../../../examples/win-gui/dist/win-gui.jar").toPath(), updateWinGuiJar.toPath());
-                Files.write(updateVersionFile.toPath(), Arrays.asList(""+(version+1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+                //Files.copy(new File("../../../examples/win-gui/dist/win-gui.jar").toPath(), updateWinGuiJar.toPath());
+               // Files.write(updateVersionFile.toPath(), Arrays.asList(""+(version+1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 StringBuilder sb = new StringBuilder();
-                sb.append("file-move:\n");
-                sb.append(updateWinGuiJar.getAbsolutePath()+"\n");
-                sb.append(programWinGuiJar.getAbsolutePath()+"\n");
-                sb.append("file-move:\n");
-                sb.append(updateVersionFile.getAbsolutePath()+"\n");
-                sb.append("version.txt\n");
+//                sb.append("file-move:\n");
+//                sb.append(updateWinGuiJar.getAbsolutePath()+"\n");
+//                sb.append(programWinGuiJar.getAbsolutePath()+"\n");
+//                sb.append("file-move:\n");
+//                sb.append(updateVersionFile.getAbsolutePath()+"\n");
+//                sb.append("version.txt\n");
+                sb.append("show-splash:\n");
+                sb.append(splashFile.getAbsolutePath()+"\n");
+                sb.append("sleep:\n2000\nhide-splash:\n");
                 sb.append("show-splash:\n");
                 sb.append(splashFile.getAbsolutePath()+"\n");
                 sb.append("sleep:\n2000\nhide-splash:");

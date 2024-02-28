@@ -48,7 +48,7 @@ void JVM::add_option(std::string token, std::vector<std::string>& vmOptionLines)
 
 std::wstring JVM::findJavaHome()
 {
-	return resources->GetEmbeddedJavaHomePath();	
+	return locations->GetBasePath()+L"\\"+resources->GetEmbeddedJavaHomePath();
 }
 
 void(JNICALL jniExitHook)(jint code)

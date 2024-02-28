@@ -12,7 +12,16 @@ Debug::Debug(LPSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *
 	if (debugFlag) {
 		locs->EnsureDirectoryExists(locations->GetSjlPath());
 		std::wstring logFile = locations->GetLogFile();
-		_wfopen_s(&handle, logFile.c_str(), L"a");	
+		debugFlag = false;
+		//after restart old handle is not closed immideatly
+		for (size_t i = 0; i < 5; i++)
+		{
+			if (!_wfopen_s(&handle, logFile.c_str(), L"a")) {
+				debugFlag = true;
+				break;
+			}
+			Sleep(100);
+		}
 		return;
 	}	
 }
