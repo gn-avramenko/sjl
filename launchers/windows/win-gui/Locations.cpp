@@ -12,14 +12,14 @@ Locations::Locations(Resources *res, ExceptionWrapper* ew) {
 	executablePath = path;
 	size_t position = pathStr.find_last_of(L"\\");
 	basePath = pathStr.substr(0, position);
-	jvmPath = basePath + L"\\" + resources->GetJvmPath();
+	jvmPath = basePath + L"\\" + resources->GetEmbeddedJavaHomePath();
 	sjlPath = basePath + L"\\" + resources->GetSjlPath();
 	logFile = sjlPath + L"\\sjl.log";
 	updateDirectory = sjlPath + L"\\update";
 	updateFile = updateDirectory + L"\\update.script";
 	selfUpdateFile = updateDirectory + L"\\self-update.script";
 	splashScreenFile = resources->GetSplashScreenFile().empty()?std::wstring(): basePath + L"\\" + resources->GetSplashScreenFile();
-	optionsFile = resources->GetOptionsFile().empty() ? std::wstring() : basePath + L"\\" + resources->GetOptionsFile();
+	optionsFile = resources->GetVMOptionsFile().empty() ? std::wstring() : basePath + L"\\" + resources->GetVMOptionsFile();
 }
 
 std::wstring Locations::GetLogFile() {
@@ -53,6 +53,16 @@ std::wstring Locations::GetSplashScreenFile()
 std::wstring Locations::GetOptionsFile()
 {
 	return optionsFile;
+}
+
+std::wstring Locations::GetBasePath()
+{
+	return basePath;
+}
+
+std::wstring Locations::GetExecutablePath()
+{
+	return executablePath;
 }
 
 void Locations::EnsureDirectoryExists(std::wstring path) {

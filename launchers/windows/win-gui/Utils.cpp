@@ -39,3 +39,11 @@ std::wstring format_message(std::wstring format, ...)
 	return buf;
 }
 
+std::wstring to_wstring_(std::string s)
+{
+	std::wstring ws(s.size(), L' '); // Overestimate number of code points.
+	size_t size;
+	mbstowcs_s(&size, &ws[0], s.size(), s.c_str(), s.size());
+	ws.resize(size);
+	return ws;
+}

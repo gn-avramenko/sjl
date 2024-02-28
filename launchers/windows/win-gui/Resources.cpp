@@ -44,9 +44,47 @@ static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* 
 }
 
 
+static std::string LoadStringFromResource(HINSTANCE hInstance, const wchar_t* ResourceName, std::string DefValue)
+{
+	HRSRC hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+	if (hResource == nullptr) {
+		return DefValue;
+	}
+
+	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
+	if (hGlobal == nullptr) {
+		return DefValue;
+	}
+
+	LPVOID lpResourceData = LockResource(hGlobal);
+	if (lpResourceData == nullptr) {
+		FreeResource(hGlobal);
+		return DefValue;
+	}
+
+	int resourceSize = SizeofResource(hInstance, hResource);
+
+	// Ensure the buffer is large enough
+	if (resourceSize + 1 > MAX_RESOURCE_VALUE_LENGTH) {
+		// Buffer too small
+		FreeResource(hGlobal);
+		return DefValue;
+	}
+	char Buffer[MAX_RESOURCE_VALUE_LENGTH];
+	strcpy_s(Buffer, static_cast<char*>(lpResourceData));
+
+
+	// Null-terminate the string
+	Buffer[resourceSize] = '\0';
+
+	// Release the resource
+	FreeResource(hGlobal);
+	return std::string(Buffer);
+}
+
+
 Resources::Resources(HINSTANCE inst) {
 	sjlPath = LoadStringFromResourceW(inst, L"SJL_PATH", L".sjl");
-	jvmPath = LoadStringFromResourceW(inst, L"JVM_PATH", L"..\\..\\win-gui\\dist\\jdk");
 	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"SJL-MUTEX");
 	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
 	instanceAlreadyRunningExitCode = std::stoi(arec);
@@ -61,18 +99,28 @@ Resources::Resources(HINSTANCE inst) {
 	unableToRenameFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_RENAME_FILE_MESSAGE", L"Unable to rename file %s to %s");
 	unableToPerformSelfUpdateMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_PERFORM_SELF_UPDATE_MESSAGE", L"Unable to perform self update");
 	unableToLoadBitmapMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOAD_BITMAP_MESSAGE", L"Unable to load bitmap from %s");
-	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", std::wstring());
-	optionsFile = LoadStringFromResourceW(inst, L"OPTIONS_FILE", std::wstring());
+	unableToLocateJvmDllMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOCATE_JVM_DLL_MESSAGE", L"Unable to locate jvm.dll in %s");
+	unableToLoadJvmDllMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOAD_JVM_DLL_MESSAGE", L"Unable to load JVM from %s");
+	unableToFindAdressOfJNI_CreateJavaVMMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_ADDRESS_OF_CREATE_JVM_MESSAGE", L"Unable to find address of JNI_CreateJavaVM");
+	classPathIsNotDefinedMessage = LoadStringFromResourceW(inst, L"CLASS_PATH_IS_NOT_DEFINED_MESSAGE", L"Classpath is not defined");
+	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\win-gui\\splash.bmp");
+	vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"win-gui.options");
+	vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
+	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\win-gui\\dist\\jdk");
+	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\win-gui\\dist\\sample-gui-app.jar");
+	restartExitCode = std::stoi(LoadStringFromResource(inst, L"RESTART_EXIT_CODE", "79"));
 	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
+	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");
+	unableToFindMainClassMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_CLASS_MESSAGE", L"Unable to find main class %s");
+	unableToFindMainMethodMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_METHOD_MESSAGE", L"Unable to find main method");
+	errorInvokingMainMethodMessage = LoadStringFromResourceW(inst, L"ERROR_INVOKING_MAIN_METHOD_MESSAGE", L"Exception occured while invoking main method");
+	mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
 }
 
 std::wstring Resources::GetSjlPath() {
 	return sjlPath;
 }
 
-std::wstring Resources::GetJvmPath() {
-	return jvmPath;
-}
 
 std::wstring Resources::GetMutexName() {
 	return mutexName;
@@ -136,9 +184,74 @@ std::wstring Resources::GetSplashScreenFile()
 	return splashScreenFileName;
 }
 
-std::wstring Resources::GetOptionsFile()
+std::wstring Resources::GetVMOptionsFile()
 {
-	return optionsFile;
+	return vmOptionsFile;
+}
+
+std::string Resources::GetVMOptions()
+{
+	return vmOptions;
+}
+
+std::wstring Resources::GetEmbeddedJavaHomePath()
+{
+	return embeddedJavaHomePath;
+}
+
+std::wstring Resources::GetUnableToLocateJvmDllMessage()
+{
+	return unableToLocateJvmDllMessage;
+}
+
+std::string Resources::GetClassPath()
+{
+	return classPath;
+}
+
+std::wstring Resources::GetClassPathIsNotDefinedMessage()
+{
+	return classPathIsNotDefinedMessage;
+}
+
+std::wstring Resources::GetUnableToLoadJvmDllMessage()
+{
+	return unableToLoadJvmDllMessage;
+}
+
+std::wstring Resources::GetUnableToFindAdressOfJNI_CreateJavaVMMessage()
+{
+	return unableToFindAdressOfJNI_CreateJavaVMMessage;
+}
+
+int Resources::GetRestartExitCode()
+{
+	return restartExitCode;
+}
+
+std::wstring Resources::GetUnableToCreateJVMMessage()
+{
+	return unableToCreateJVMMessage;
+}
+
+std::wstring Resources::GetUnableToFindMainClassMessage()
+{
+	return unableToFindMainClassMessage;
+}
+
+std::wstring Resources::GetUnableToFindMainMethodMessage()
+{
+	return unableToFindMainMethodMessage;
+}
+
+std::wstring Resources::GetErrorInvokingMainMethodMessage()
+{
+	return errorInvokingMainMethodMessage;
+}
+
+std::string Resources::GetMainClass()
+{
+	return mainClass;
 }
 
 std::wstring Resources::GetSourceFileDoesNotExistMessage()

@@ -6,7 +6,8 @@
 #include "AppUpdater.h"
 #include "SelfUpdater.h"
 #include "SingleInstanceChecker.h"
-//#include "SplashScreen.h"
+#include "JVM.h"
+#include "SplashScreen.h"
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR pCmdLine, int nCmdShow) {	
@@ -25,7 +26,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (!sic.Check()) {
 			return resources.GetInstanceAlreadyRunningExitCode();
 		}
-		//SplashScreen splashScreen(hInstance, &resources, &debug);
+		SplashScreen splashScreen(hInstance, &exception, &resources, &debug);
 		AppUpdater appUpdater(&locations, &exception, &resources, nullptr, &debug);
 		bool deleteUpdateDirectory = false;
 		if (appUpdater.IsUpdateRequired()) {
@@ -40,9 +41,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			locations.DirectoryRemove(locations.GetUpdateDirectory());
 		}
 		if (!locations.GetSplashScreenFile().empty()) {
-			//splashScreen.ShowSplash(locations.GetSplashScreenFile());
+			splashScreen.ShowSplash(locations.GetSplashScreenFile());
 		}
-
+		JVM jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
+		jvm.LaunchJVM();
 		return 0;
 	}
 	catch (...) {

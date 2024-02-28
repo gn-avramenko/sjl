@@ -14,9 +14,10 @@ private:
 	std::wstring mutexName;
 	std::wstring appTitle;
 	Debug *debug;
-
+	HANDLE mutex;
 public:
 	SingleInstanceChecker(std::wstring aMutexName, std::wstring anAppTitle, Debug *aDebug);
 	BOOL Check();
+	void MutexRelease();
 };
 

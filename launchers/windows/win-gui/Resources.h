@@ -8,7 +8,6 @@ class Resources
 {
 private:
 	std::wstring sjlPath;
-	std::wstring jvmPath;
 	std::wstring mutexName;
 	int instanceAlreadyRunningExitCode;
 	std::wstring appTitle;
@@ -21,17 +20,29 @@ private:
 	std::wstring unableToDeleteFileMessage;
 	std::wstring unableToRenameFileMessage;
 	std::wstring unableToPerformSelfUpdateMessage;
+	std::wstring unableToLocateJvmDllMessage;
+	std::wstring unableToLoadJvmDllMessage;
+	std::wstring unableToFindAdressOfJNI_CreateJavaVMMessage;
 	std::wstring errorMessage;
 	std::wstring unableToLoadBitmapMessage;
 	std::wstring splashScreenFileName;
-	std::wstring optionsFile;
+	std::wstring vmOptionsFile;
+	std::wstring embeddedJavaHomePath;
+	std::string vmOptions;
+	std::string classPath;
+	std::wstring classPathIsNotDefinedMessage;
+	int restartExitCode;
+	std::wstring unableToCreateJVMMessage;
+	std::wstring unableToFindMainClassMessage;
+	std::wstring unableToFindMainMethodMessage;
+	std::wstring errorInvokingMainMethodMessage;
+	std::string mainClass;
+
 
 public:
 	Resources(HINSTANCE hInst);
 
 	std::wstring GetSjlPath();
-	
-	std::wstring GetJvmPath();
 
 	std::wstring GetMutexName();
 
@@ -53,7 +64,20 @@ public:
 	std::wstring GetErrorMessage();
 	std::wstring GetUnableToLoadBitmapMessage();
 	std::wstring GetSplashScreenFile();
-	std::wstring GetOptionsFile();
+	std::wstring GetVMOptionsFile();
+	std::string GetVMOptions();
+	std::wstring GetEmbeddedJavaHomePath();
+	std::wstring GetUnableToLocateJvmDllMessage();
+	std::string GetClassPath();
+	std::wstring GetClassPathIsNotDefinedMessage();
+	std::wstring GetUnableToLoadJvmDllMessage();
+	std::wstring GetUnableToFindAdressOfJNI_CreateJavaVMMessage();
+	int GetRestartExitCode();
+	std::wstring GetUnableToCreateJVMMessage();
+	std::wstring GetUnableToFindMainClassMessage();
+	std::wstring GetUnableToFindMainMethodMessage();
+	std::wstring GetErrorInvokingMainMethodMessage();
+	std::string GetMainClass();
 };
 
 

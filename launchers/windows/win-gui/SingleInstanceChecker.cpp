@@ -5,6 +5,7 @@ SingleInstanceChecker::SingleInstanceChecker(std::wstring aMutexName, std::wstri
 	mutexName = aMutexName;
 	appTitle = aAppTitle;
 	debug = aDebug;
+	mutex = NULL;
 }
 
 static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
@@ -26,12 +27,12 @@ BOOL SingleInstanceChecker::Check() {
 		return true;
 	}
 	std::wstring fullMutexName = L"Global\\"+mutexName;
-	HANDLE handle = OpenMutexW(MUTEX_MODIFY_STATE, FALSE, fullMutexName.c_str());
-	if (!handle)
+	mutex = OpenMutexW(MUTEX_MODIFY_STATE, FALSE, fullMutexName.c_str());
+	if (!mutex)
 	{
 		debug->Log("current handle is null");
-		handle = CreateMutexW(NULL, FALSE, fullMutexName.c_str());
-		if (handle == NULL) {
+		mutex = CreateMutexW(NULL, FALSE, fullMutexName.c_str());
+		if (mutex == NULL) {
 			debug->Log("handle can not be created");
 			return FALSE;
 		}
@@ -53,5 +54,12 @@ BOOL SingleInstanceChecker::Check() {
 	debug->Log(L"unable to find window with name %s", data.targetTitle);
 	return TRUE;
 
+}
+
+void SingleInstanceChecker::MutexRelease()
+{
+	if (mutex) {
+		ReleaseMutex(mutex);
+	}
 }
 

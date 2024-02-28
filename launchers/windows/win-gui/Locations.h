@@ -28,6 +28,8 @@ public:
 	std::wstring GetUpdateDirectory();
 	std::wstring GetSplashScreenFile();
 	std::wstring GetOptionsFile();
+	std::wstring GetBasePath();
+	std::wstring GetExecutablePath();
 	bool FileExists(std::wstring path);
 	bool DirectoryExists(std::wstring path);
 	void EnsureDirectoryExists(std::wstring path);
