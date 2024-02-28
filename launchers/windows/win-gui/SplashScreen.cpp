@@ -16,6 +16,66 @@ bool splashVisible;
 HWND splashWindowHandle;
 Locations* locations;
 
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_COMMAND:
+	{
+		int wmID = LOWORD(wParam);
+		switch (wmID)
+		{
+
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+	}
+	break;
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+
+		EndPaint(hWnd, &ps);
+	}
+	break;
+	case WM_DESTROY:
+	{
+		PostQuitMessage(0);
+	}
+	break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+}
+
+void registerMainWindowClass(HINSTANCE hInstance, ExceptionWrapper* exceptionWrapper, Resources* resources)
+{
+	COLORREF transparentColor = RGB(0, 0, 0);
+	HBRUSH hbrTransparent = CreateSolidBrush(transparentColor);
+
+	WNDCLASSEXW wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEXW);
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wcex.hbrBackground = hbrTransparent;
+	wcex.lpszMenuName = L"SJLLauncher";
+	wcex.lpszClassName = L"SjlParentWindow";
+	RegisterClassExW(&wcex);
+	HWND hwnd = CreateWindowExW(WS_EX_LAYERED, L"SjlParentWindow", L"Sjl", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+		CW_USEDEFAULT, 300, 100, nullptr, nullptr, hInstance, nullptr);
+	SetWindowLong(hwnd, GWL_STYLE, 0);
+	ShowWindow(hwnd, SW_SHOW);
+	UpdateWindow(hwnd);
+}
+
+
+
 LRESULT CALLBACK splashWindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -98,7 +158,8 @@ SplashScreen::SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res
 	exceptionWrapper = ew;
     debug = deb;
 	resources = res;
-	instance = hInst;	
+	instance = hInst;
+	registerMainWindowClass(hInst, ew, res);
 }
 
 void SplashScreen::ShowSplash(std::wstring image)
