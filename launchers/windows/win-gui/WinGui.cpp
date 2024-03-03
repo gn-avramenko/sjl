@@ -63,7 +63,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			d->Log(exception.GetDeveloperMessage());
 			d->CloseHandle();
 		}
-		MessageBoxW(0, exception.GetUserMessage().c_str(), r == nullptr? L"Error": r->GetErrorMessage().c_str(), 0);
+		MessageBoxW(0, exception.GetUserMessage().c_str(), r == nullptr? L"Error": r->GetErrorTitle().c_str(), 0);
 		return 1;
 	}
 }

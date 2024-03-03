@@ -109,7 +109,7 @@ Resources::Resources(HINSTANCE inst) {
 	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
 	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
 	restartExitCode = std::stoi(LoadStringFromResource(inst, L"RESTART_EXIT_CODE", "79"));
-	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
+	errorTitle = LoadStringFromResourceW(inst, L"ERROR_TITLE", L"Error");
 	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");
 	unableToFindMainClassMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_CLASS_MESSAGE", L"Unable to find main class %s");
 	instanceAlreadyRunningMessage = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_MESSAGE", L"Instance of the application is already running");
@@ -177,9 +177,9 @@ std::wstring Resources::GetUnableToPerformSelfUpdateMessage()
 	return unableToPerformSelfUpdateMessage;
 }
 
-std::wstring Resources::GetErrorMessage()
+std::wstring Resources::GetErrorTitle()
 {
-	return errorMessage;
+	return errorTitle;
 }
 
 std::wstring Resources::GetUnableToLoadBitmapMessage()
