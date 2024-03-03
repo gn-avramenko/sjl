@@ -14,6 +14,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ExceptionWrapper exception;
 	Debug* d = nullptr;
 	Resources* r = nullptr;
+	std::string commandLine = std::string(pCmdLine);
+	/*if (commandLine.find("-sjl-restart") != std::string::npos) {
+		Sleep(500);
+	}*/
+	SingleInstanceChecker* c = nullptr;
 	try {
 		Resources resources(hInstance);
 		r = &resources;
@@ -22,8 +27,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		d = &debug;
 		debug.DumpLocations();
 		debug.DumpResources();
-		SingleInstanceChecker sic(resources.GetMutexName(), resources.GetAppTitle(), &debug);
+		SingleInstanceChecker sic(&resources, &exception, &debug);
 		if (!sic.Check()) {
+			sic.MutexRelease();
 			return resources.GetInstanceAlreadyRunningExitCode();
 		}
 		SplashScreen splashScreen(hInstance, &exception, &resources, &locations, &debug);		
@@ -45,10 +51,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		JVM jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
 		jvm.LaunchJVM();
+		sic.MutexRelease();
 		debug.CloseHandle();
 		return 0;
 	}
 	catch (...) {
+		if (c != nullptr) {
+			c->MutexRelease();
+		}
 		if (d != nullptr) {
 			d->Log(exception.GetDeveloperMessage());
 			d->CloseHandle();

@@ -3,8 +3,7 @@
 #include "Utils.h"
 
 struct SelfUpdateInfo {
-	std::wstring currentPath;
-	std::wstring updatedPath;
+	std::wstring newLauncherPath;	
 };
 
 SelfUpdater::SelfUpdater(Locations* locs, Resources* res, ExceptionWrapper* ew, Debug* deb)
@@ -36,14 +35,9 @@ void SelfUpdater::PerformUpdate()
 		if (fgetws(buffer, sizeof(buffer), f))
 		{
 			trim_line(buffer);
-			selfupdateInfo.currentPath = buffer;
+			selfupdateInfo.newLauncherPath = buffer;
 		}
 
-		if (fgetws(buffer, sizeof(buffer), f))
-		{
-			trim_line(buffer);
-			selfupdateInfo.updatedPath = buffer;
-		}
 		fclose(f);
 	}
 	else
@@ -52,9 +46,9 @@ void SelfUpdater::PerformUpdate()
 			format_message(resources->GetUnableToOpenFileMessage(), locations->GetSelfUpdateFile().c_str()));
 	}
 	WCHAR currentFilePath[MAX_PATH];
-	swprintf_s(currentFilePath, L"%s", selfupdateInfo.currentPath.c_str());
+	swprintf_s(currentFilePath, L"%s", locations->GetExecutablePath().c_str());
 	WCHAR updateFilePath[MAX_PATH];
-	swprintf_s(updateFilePath, L"%s%s", selfupdateInfo.currentPath.c_str(), L".del");
+	swprintf_s(updateFilePath, L"%s%s", locations->GetExecutablePath().c_str(), L".del");
 	// Rename the file
 	SHFILEOPSTRUCTW fileOp;
 	ZeroMemory(&fileOp, sizeof(fileOp));
@@ -65,8 +59,8 @@ void SelfUpdater::PerformUpdate()
 
 	int renameResult = SHFileOperationW(&fileOp);
 	if (renameResult != 0) {
-		exceptionWrapper->ThrowException(format_message(L"Unable to rename file %s to %s, code %d", std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pFrom).c_str(), renameResult),
-			format_message(resources->GetUnableToRenameFileMessage(), std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pFrom).c_str()));
+		exceptionWrapper->ThrowException(format_message(L"Unable to rename file %s to %s, code %d", std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pTo).c_str(), renameResult),
+			format_message(resources->GetUnableToRenameFileMessage(), std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pTo).c_str()));
 	}
 
 
@@ -83,13 +77,13 @@ void SelfUpdater::PerformUpdate()
 			format_message(resources->GetUnableToRenameFileMessage(), std::wstring(updateFilePath).c_str(), std::wstring(tempFilePath).c_str()));
 	}
 
-	if (CopyFileW(selfupdateInfo.updatedPath.c_str(), selfupdateInfo.currentPath.c_str(), FALSE)) {
+	if (CopyFileW(selfupdateInfo.newLauncherPath.c_str(), locations->GetExecutablePath().c_str(), FALSE)) {
 		debug->Log(L"Self-update successful. Restarting...");
 
 		locations->DirectoryRemove(locations->GetUpdateDirectory());
 		
 		// Restart the application by launching the updated executable
-		ShellExecute(nullptr, L"open", selfupdateInfo.currentPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+		ShellExecute(nullptr, L"open", locations->GetExecutablePath().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 
 		// Exit the current instance of the application
 		exit(0);

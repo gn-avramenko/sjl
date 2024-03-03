@@ -11,12 +11,12 @@ struct EnumWindowsData {
 class SingleInstanceChecker
 {
 private:
-	std::wstring mutexName;
-	std::wstring appTitle;
+	Resources* resources;
+	ExceptionWrapper* exceptionWrapper;
 	Debug *debug;
 	HANDLE mutex;
 public:
-	SingleInstanceChecker(std::wstring aMutexName, std::wstring anAppTitle, Debug *aDebug);
+	SingleInstanceChecker(Resources* res, ExceptionWrapper* ew, Debug *aDebug);
 	BOOL Check();
 	void MutexRelease();
 };

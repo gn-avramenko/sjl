@@ -46,10 +46,197 @@ void JVM::add_option(std::string token, std::vector<std::string>& vmOptionLines)
 	}
 }
 
+
+
+BOOL CreateProc(wchar_t* cmdline, HANDLE outputWr)
+{
+	PROCESS_INFORMATION piProcInfo;
+	STARTUPINFO siStartInfo;
+	BOOL bSuccess = FALSE;
+
+	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
+	siStartInfo.cb = sizeof(STARTUPINFO);
+	siStartInfo.hStdError = outputWr;
+	siStartInfo.hStdOutput = outputWr;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+	bSuccess = CreateProcessW(NULL, cmdline, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);
+	if (bSuccess)
+	{
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+	}
+	CloseHandle(outputWr);
+	return bSuccess;
+}
+
+int findNextVersionPart(const char* startAt)
+{
+	if (startAt == NULL || strlen(startAt) == 0)
+	{
+		return 0;
+	}
+
+	char* firstSeparatorA = (char*) std::strchr(startAt, '.');
+	char* firstSeparatorB = (char*)std::strchr(startAt, '_');
+	char* firstSeparator;
+	if (firstSeparatorA == NULL)
+	{
+		firstSeparator = firstSeparatorB;
+	}
+	else if (firstSeparatorB == NULL)
+	{
+		firstSeparator = firstSeparatorA;
+	}
+	else
+	{
+		firstSeparator = min(firstSeparatorA, firstSeparatorB);
+	}
+
+	if (firstSeparator == NULL)
+	{
+		return strlen(startAt);
+	}
+
+	return firstSeparator - startAt;
+}
+
+int getJavaVersion(std::string originalVersion)
+{
+
+	if (originalVersion._Starts_with("1.8")) {
+		return 8;
+	}
+	for (size_t i = 9; i < 100; i++)
+	{
+		if (originalVersion._Starts_with(std::to_string(i))) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void getVersionFromOutput(HANDLE outputRd, char* version, int versionLen, BOOL* is64Bit)
+{
+	CHAR chBuf[1024] = { 0 }, * bptr = chBuf;
+	DWORD dwRead, remain = sizeof(chBuf);
+	BOOL bSuccess = FALSE;
+
+	while (remain > 0) {
+		bSuccess = ReadFile(outputRd, bptr, remain, &dwRead, NULL);
+		if (!bSuccess || dwRead == 0) break;
+		bptr += dwRead;
+		remain -= dwRead;
+	}
+	hDebug->Log("Java version output: %s", chBuf);
+	*version = '\0';
+	const char* verStartPtr = strchr(chBuf, ' ');
+	if (verStartPtr == NULL)
+	{
+		hDebug->Log("Cannot get version string: cannot find quote");
+		return;
+	}
+	const char* verEndPtr = strchr(++verStartPtr, ' ');
+	if (verEndPtr == NULL)
+	{
+		hDebug->Log("Cannot get version string: missing end quote");
+		return;
+	}
+	size_t len = verEndPtr - verStartPtr;
+	if (len >= versionLen) {
+		hDebug->Log("Cannot get version string: data too large");
+		return;
+	}
+	memcpy(version, verStartPtr, len);
+	version[len] = '\0';
+	*is64Bit = strstr(chBuf, "64-Bit") != NULL || strstr(chBuf, "64-bit") != NULL;
+}
+
+
+BOOL isJavaVersionGood(int version, BOOL is64Bit)
+{
+	BOOL result = (hResources->GetMinJavaVersion() == 0 || version >= hResources->GetMinJavaVersion())
+		&& (hResources->GetMaxJavaVersion() == 0 || version <= hResources->GetMaxJavaVersion())
+		&& (!hResources->IsRequired64JRE() || is64Bit);
+	hDebug->Log("Version string: %d / %s-Bit (%s)", version, is64Bit ? "64" : "32", result ? "OK" : "Ignore");
+	return result;
+}
+
+
 std::wstring JVM::findJavaHome()
 {
-	return locations->GetBasePath()+L"\\"+resources->GetEmbeddedJavaHomePath();
+	if (!resources->IsUseInstalledJava()) {
+		return locations->GetBasePath()+L"\\"+resources->GetEmbeddedJavaHomePath();
+	}
+	wchar_t buffer[4096];
+	int res = GetEnvironmentVariableW(L"JAVA_HOME", buffer, 4096);
+	if (!res) {
+		exceptionWrapper->ThrowException(L"JAVA_HOME is not defined", resources->GetJavaHomeIsNotDefinedMessage());
+	}
+	std::wstring javaHome = std::wstring(buffer);
+	std::wstring binDir = javaHome + L"\\bin";
+	if (!locations->FileExists(javaHome + L"\\bin\\server\\jvm.dll") && !locations->FileExists(javaHome + L"\\bin\\client\\jvm.dll")) {
+		exceptionWrapper->ThrowException(format_message(L"unable to locate jvm.dll in %s\\bin", binDir.c_str()), format_message(resources->GetUnableToLocateJvmDllMessage(), binDir.c_str()));
+	}
+	std::wstring accessbridgeVersion = javaHome + L"\\bin\\windowsaccessbridge-32.dll";
+	std::wstring cfgJava9Path = javaHome + L"\\lib\\jvm.cfg";
+	if (resources->IsRequired64JRE() && (!locations->FileExists(cfgJava9Path) || locations->FileExists(accessbridgeVersion))) {
+		exceptionWrapper->ThrowException(L"64 bit jre is required but 32 bit found", format_message(resources->GetWrongJavaTypeMessage(), L"64 bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), L"32 bit", 0));		
+	}
+	std::wstring javaExecutable = javaHome + L"\\bin\\java.exe";
+	SECURITY_ATTRIBUTES saAttr;
+	HANDLE outputRd = NULL;
+	HANDLE outputWr = NULL;
+
+	debug->Log("Check Java Version: %s min=%d max=%d", javaExecutable.c_str(), resources->GetMinJavaVersion(), resources->GetMaxJavaVersion());
+
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+	saAttr.bInheritHandle = TRUE;
+	saAttr.lpSecurityDescriptor = NULL;
+
+	// Create a pipe for the child process's STDOUT.
+	if (!CreatePipe(&outputRd, &outputWr, &saAttr, 0))
+	{
+		exceptionWrapper->ThrowException(L"can not create pipe", resources->GetUnableToCheckInstalledJavaMessage());		
+	}
+	// Ensure the read handle to the pipe for STDOUT is not inherited.
+	if (!SetHandleInformation(outputRd, HANDLE_FLAG_INHERIT, 0))
+	{
+		CloseHandle(outputRd);
+		CloseHandle(outputWr);
+		exceptionWrapper->ThrowException(L"Cannot set handle information", resources->GetUnableToCheckInstalledJavaMessage());
+		
+	}
+	// create child process
+	std::wstring cmdLineStr = binDir + L"\\java.exe --version";
+	wchar_t* cmdLine = cmdLineStr.data();
+	if (!CreateProc(cmdLine, outputWr))
+	{
+		CloseHandle(outputRd);
+		exceptionWrapper->ThrowException(L"Cannot run java -version", resources->GetUnableToCheckInstalledJavaMessage());
+	}
+	char version[128] = { 0 }, formattedVersion[128] = { 0 };
+
+	BOOL is64bit;
+	getVersionFromOutput(outputRd, version, sizeof(version), &is64bit);
+	CloseHandle(outputRd);
+	if (*version == '\0') {
+		exceptionWrapper->ThrowException(L"Cannot get java version", resources->GetUnableToCheckInstalledJavaMessage());
+	}
+
+	if (*version != '\0')
+	{
+		std::string versionStr = std::string(version);
+		int javaVersion = getJavaVersion(versionStr);
+		if (isJavaVersionGood(javaVersion, is64bit)) {
+			return javaHome;
+		}
+	}
+	exceptionWrapper->ThrowException(L"wrong java type", format_message(resources->GetWrongJavaTypeMessage(), resources->IsRequired64JRE()? "64 bit": "Any bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), is64bit? "64 bit": "32 bit", *version));
+	return std::wstring();
 }
+
 
 void(JNICALL jniExitHook)(jint code)
 {
@@ -58,13 +245,9 @@ void(JNICALL jniExitHook)(jint code)
 	hSic->MutexRelease();
 	if (code == restartCode)
 	{
-		std::wstring newParams = to_wstring_(programParams);
-		if (newParams.find(L"-sjl-restart") == std::string::npos)
-		{
-			newParams = newParams + L" -sjl-restart";
-		}
-
-		ShellExecuteW(NULL, L"open", executablePath.c_str(), newParams.c_str(), NULL, SW_RESTORE);
+		std::string params = programParams;
+		std::string newParams = params.find("-sjl-restart") == std::string::npos ? params + " -sjl-restart" : params;
+		ShellExecuteW(NULL, L"open", executablePath.c_str(), to_wstring_(newParams).c_str(), NULL, SW_RESTORE);
 	}
 }
 
@@ -152,7 +335,6 @@ void JVM::LaunchJVM()
 	}
 	std::string cpOption = "-Djava.class.path=" + cp;
 	debug->Log("class path is set to %s", cp.c_str());
-	SetEnvironmentVariableW(L"JAVA_HOME", binDir.c_str());
 	SetDllDirectoryW(nullptr);
 	SetCurrentDirectoryW(locations->GetBasePath().c_str());
 	debug->Log(L"current directory is set to %s", locations->GetBasePath().c_str());

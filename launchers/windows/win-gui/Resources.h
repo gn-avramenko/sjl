@@ -23,6 +23,7 @@ private:
 	std::wstring unableToLocateJvmDllMessage;
 	std::wstring unableToLoadJvmDllMessage;
 	std::wstring unableToFindAdressOfJNI_CreateJavaVMMessage;
+	std::wstring instanceAlreadyRunningMessage;
 	std::wstring errorMessage;
 	std::wstring unableToLoadBitmapMessage;
 	std::wstring splashScreenFileName;
@@ -31,11 +32,18 @@ private:
 	std::string vmOptions;
 	std::string classPath;
 	std::wstring classPathIsNotDefinedMessage;
+	int minJavaVersion;
+	int maxJavaVersion;
 	int restartExitCode;
+	bool useInstalledJava;
+	bool required64JRE;
 	std::wstring unableToCreateJVMMessage;
 	std::wstring unableToFindMainClassMessage;
 	std::wstring unableToFindMainMethodMessage;
 	std::wstring errorInvokingMainMethodMessage;
+	std::wstring javaHomeIsNotDefinedMessage;
+	std::wstring wrongJavaTypeMessage;
+	std::wstring unableToCheckInstalledJavaMessage;
 	std::string mainClass;
 
 
@@ -77,7 +85,16 @@ public:
 	std::wstring GetUnableToFindMainClassMessage();
 	std::wstring GetUnableToFindMainMethodMessage();
 	std::wstring GetErrorInvokingMainMethodMessage();
+	std::wstring GetInstanceAlreadyRunningMessage();
+	std::wstring GetJavaHomeIsNotDefinedMessage();
+	std::wstring GetWrongJavaTypeMessage();
+	std::wstring GetUnableToCheckInstalledJavaMessage();
 	std::string GetMainClass();
+	bool IsUseInstalledJava();
+	bool IsRequired64JRE();
+	int GetMinJavaVersion();
+	int GetMaxJavaVersion();
+	
 };
 
 

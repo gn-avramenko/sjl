@@ -112,8 +112,16 @@ Resources::Resources(HINSTANCE inst) {
 	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
 	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");
 	unableToFindMainClassMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_CLASS_MESSAGE", L"Unable to find main class %s");
+	instanceAlreadyRunningMessage = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_MESSAGE", L"Instance of the application is already running");
 	unableToFindMainMethodMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_METHOD_MESSAGE", L"Unable to find main method");
 	errorInvokingMainMethodMessage = LoadStringFromResourceW(inst, L"ERROR_INVOKING_MAIN_METHOD_MESSAGE", L"Exception occured while invoking main method");
+	javaHomeIsNotDefinedMessage = LoadStringFromResourceW(inst, L"JAVA_HOME_IS_NOT_DEFINED_MESSAGE", L"JAVA_HOME environment variable is not defined");
+	unableToCheckInstalledJavaMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CHECK_INSTALLED_JAVA_MESSAGE", L"Unable to check installed java");
+	wrongJavaTypeMessage = LoadStringFromResourceW(inst, L"WRONG_JAVA_TYPE_MESSAGE", L"Wrong Java Version: required %s min version=%d max version %d, found %s version = %d");
+	useInstalledJava = L"true" == LoadStringFromResourceW(inst, L"USE_INSTALLED_JAVA", L"true");
+	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQURIRES_64_BIT", L"true");
+	minJavaVersion = std::stoi(LoadStringFromResource(inst, L"MIN_JAVA_VERSION", "0"));
+	maxJavaVersion = std::stoi(LoadStringFromResource(inst, L"MAX_JAVA_VERSION", "0"));
 	mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
 }
 
@@ -249,9 +257,49 @@ std::wstring Resources::GetErrorInvokingMainMethodMessage()
 	return errorInvokingMainMethodMessage;
 }
 
+std::wstring Resources::GetInstanceAlreadyRunningMessage()
+{
+	return instanceAlreadyRunningMessage;
+}
+
+std::wstring Resources::GetJavaHomeIsNotDefinedMessage()
+{
+	return javaHomeIsNotDefinedMessage;
+}
+
+std::wstring Resources::GetWrongJavaTypeMessage()
+{
+	return wrongJavaTypeMessage;
+}
+
+std::wstring Resources::GetUnableToCheckInstalledJavaMessage()
+{
+	return unableToCheckInstalledJavaMessage;
+}
+
 std::string Resources::GetMainClass()
 {
 	return mainClass;
+}
+
+bool Resources::IsUseInstalledJava()
+{
+	return useInstalledJava;
+}
+
+bool Resources::IsRequired64JRE()
+{
+	return required64JRE;
+}
+
+int Resources::GetMinJavaVersion()
+{
+	return minJavaVersion;
+}
+
+int Resources::GetMaxJavaVersion()
+{
+	return maxJavaVersion;
 }
 
 std::wstring Resources::GetSourceFileDoesNotExistMessage()
