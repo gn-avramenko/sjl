@@ -105,12 +105,12 @@ int findNextVersionPart(const char* startAt)
 int getJavaVersion(std::string originalVersion)
 {
 
-	if (originalVersion._Starts_with("1.8")) {
+	if (originalVersion.find("1.8") == 0) {
 		return 8;
 	}
 	for (size_t i = 9; i < 100; i++)
 	{
-		if (originalVersion._Starts_with(std::to_string(i))) {
+		if (originalVersion.find(std::to_string(i)) == 0) {
 			return i;
 		}
 	}
@@ -210,7 +210,7 @@ std::wstring JVM::findJavaHome()
 	}
 	// create child process
 	std::wstring cmdLineStr = binDir + L"\\java.exe --version";
-	wchar_t* cmdLine = cmdLineStr.data();
+	wchar_t* cmdLine = _wcsdup(cmdLineStr.c_str());
 	if (!CreateProc(cmdLine, outputWr))
 	{
 		CloseHandle(outputRd);
