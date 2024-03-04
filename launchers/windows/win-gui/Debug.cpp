@@ -94,6 +94,6 @@ void Debug::DumpLocations() {
 
 void Debug::DumpResources()
 {
-	Log(L"APP_TITLE is %s", resources->GetAppTitle().c_str());
+
 
 }

@@ -10,7 +10,6 @@ private:
 	std::wstring sjlPath;
 	std::wstring mutexName;
 	int instanceAlreadyRunningExitCode;
-	std::wstring appTitle;
 	std::wstring unableToOpenFileMessage;
 	std::wstring unableToCreateDirectoryMessage;
 	std::wstring sourceFileDoesNotExistMessage;
@@ -24,7 +23,7 @@ private:
 	std::wstring unableToLoadJvmDllMessage;
 	std::wstring unableToFindAdressOfJNI_CreateJavaVMMessage;
 	std::wstring instanceAlreadyRunningMessage;
-	std::wstring errorMessage;
+	std::wstring errorTitle;
 	std::wstring unableToLoadBitmapMessage;
 	std::wstring splashScreenFileName;
 	std::wstring vmOptionsFile;
@@ -56,8 +55,6 @@ public:
 
 	int GetInstanceAlreadyRunningExitCode() const;
 
-	std::wstring GetAppTitle();
-
 	std::wstring GetUnableToOpenFileMessage();
 
 	std::wstring GetUnableToCreateDirectoryMessage();
@@ -69,7 +66,7 @@ public:
 	std::wstring GetUnableToDeleteFileMessage();
 	std::wstring GetUnableToRenameFileMessage();
 	std::wstring GetUnableToPerformSelfUpdateMessage();
-	std::wstring GetErrorMessage();
+	std::wstring GetErrorTitle();
 	std::wstring GetUnableToLoadBitmapMessage();
 	std::wstring GetSplashScreenFile();
 	std::wstring GetVMOptionsFile();

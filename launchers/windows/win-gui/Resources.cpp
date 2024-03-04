@@ -88,7 +88,6 @@ Resources::Resources(HINSTANCE inst) {
 	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"SJL-MUTEX");
 	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
 	instanceAlreadyRunningExitCode = std::stoi(arec);
-	appTitle = LoadStringFromResourceW(inst, L"APP_TITLE", L"SJL-APP");
 	unableToOpenFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_OPEN_FILE_MESSAGE", L"Unable to open file %s");
 	unableToCopyDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_COPY_DIRECTORY_MESSAGE", L"Unable to copy directory from %s to %s");
 	unableToCreateDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_DIRECTORY_MESSAGE", L"Unable to create directory %s");
@@ -138,9 +137,6 @@ int Resources::GetInstanceAlreadyRunningExitCode() const {
 	return instanceAlreadyRunningExitCode;
 }
 
-std::wstring Resources::GetAppTitle() {
-	return appTitle;
-}
 
 std::wstring Resources::GetUnableToOpenFileMessage()
 {
