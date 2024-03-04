@@ -118,7 +118,7 @@ Resources::Resources(HINSTANCE inst) {
 	unableToCheckInstalledJavaMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CHECK_INSTALLED_JAVA_MESSAGE", L"Unable to check installed java");
 	wrongJavaTypeMessage = LoadStringFromResourceW(inst, L"WRONG_JAVA_TYPE_MESSAGE", L"Wrong Java Version: required %s min version=%d max version %d, found %s version = %d");
 	useInstalledJava = L"true" == LoadStringFromResourceW(inst, L"USE_INSTALLED_JAVA", L"false");
-	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQURIRES_64_BIT", L"true");
+	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQUIRES_64_BIT", L"true");
 	minJavaVersion = std::stoi(LoadStringFromResource(inst, L"MIN_JAVA_VERSION", "0"));
 	maxJavaVersion = std::stoi(LoadStringFromResource(inst, L"MAX_JAVA_VERSION", "0"));
 	mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
