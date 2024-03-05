@@ -5,7 +5,13 @@ static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* 
 {
 	HRSRC hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (hResource == nullptr) {
-		return DefValue;
+		hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA));
+		if (hResource == nullptr) {
+			hResource = FindResourceW(hInstance, ResourceName, RT_RCDATA);
+			if (hResource == nullptr) {
+				return DefValue;
+			}
+		}
 	}
 
 	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
@@ -48,8 +54,15 @@ static std::string LoadStringFromResource(HINSTANCE hInstance, const wchar_t* Re
 {
 	HRSRC hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (hResource == nullptr) {
-		return DefValue;
+		hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA));
+		if (hResource == nullptr) {
+			hResource = FindResourceW(hInstance, ResourceName, RT_RCDATA);
+			if (hResource == nullptr) {
+				return DefValue;
+			}
+		}
 	}
+
 
 	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
 	if (hGlobal == nullptr) {
