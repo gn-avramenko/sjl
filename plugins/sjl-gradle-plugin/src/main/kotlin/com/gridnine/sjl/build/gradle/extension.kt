@@ -257,7 +257,13 @@ open class SjlWinGuiGeneraConfig {
     fun showSplashScreen(configure: SplashScreenConfig.()->Unit){
         showSplashScreen = true
         splashScreenConfig = SplashScreenConfig()
-        splashScreenConfig!!.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = splashScreenConfig
+            cl.call()
+        } else {
+            splashScreenConfig!!.configure()
+        }
     }
 }
 @SjlConfigMaker
@@ -273,12 +279,24 @@ open class SjlWinGuiJavaConfig {
     fun useInstalledJava(configure: InstalledJavaConfig.()->Unit){
         useInstalledJava = true
         installedJavaConfig = InstalledJavaConfig();
-        installedJavaConfig!!.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = installedJavaConfig
+            cl.call()
+        } else {
+            installedJavaConfig!!.configure()
+        }
     }
     fun useEmbeddedJava(configure: EmbeddedJavaConfig.()->Unit){
         useInstalledJava = false
         embeddedJavaConfig = EmbeddedJavaConfig();
-        embeddedJavaConfig!!.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = embeddedJavaConfig
+            cl.call()
+        } else {
+            embeddedJavaConfig!!.configure()
+        }
     }
 }
 
@@ -290,21 +308,51 @@ open class SjlWinGuiLauncherConfig(private val project: Project) :SjlWinCommonCo
     internal var manifestConfig: SjlWinManifestConfig? = null
     internal val generalConfig = SjlWinGuiGeneraConfig()
     fun general(configure:SjlWinGuiGeneraConfig.() -> Unit){
-        generalConfig.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = generalConfig
+            cl.call()
+        } else {
+            generalConfig.configure()
+        }
     }
     fun java(configure:SjlWinGuiJavaConfig.() -> Unit){
-        javaConfig.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = javaConfig
+            cl.call()
+        } else {
+            javaConfig.configure()
+        }
     }
     fun messages(configure:SjlWinGuiMessagesConfig.() -> Unit){
-        messagesConfig.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = messagesConfig
+            cl.call()
+        } else {
+            messagesConfig.configure()
+        }
     }
     fun version(configure:SjlWinVersionInfoConfig.() -> Unit){
         versionConfig = SjlWinVersionInfoConfig()
-        versionConfig!!.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = versionConfig
+            cl.call()
+        } else {
+            versionConfig!!.configure()
+        }
     }
     fun manifest(configure:SjlWinManifestConfig.() -> Unit){
         manifestConfig = SjlWinManifestConfig()
-        manifestConfig!!.configure()
+        val cl = getClosure(configure)
+        if(cl != null){
+            cl.delegate = manifestConfig
+            cl.call()
+        } else {
+            manifestConfig!!.configure()
+        }
     }
 
 }

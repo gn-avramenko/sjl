@@ -97,10 +97,10 @@ open class CreateWinGuiLauncherTask(): Exec(){
 
 open class CreateAllLaunchersTask(): DefaultTask(){
     @Inject
-    constructor(launchersIds:List<String>, extension: SjlExtension) : this() {
+    constructor(taskNames:List<String>, extension: SjlExtension) : this() {
         val commonConfig = extension.winGuiConfig.commonConfig
         val taskConfig = extension.winGuiConfig.launchers.first().second
         group = taskConfig.generalConfig.tasksGroup?:commonConfig.generalConfig.tasksGroup?:"sjl"
-        dependsOn(launchersIds.map { CreateWinGuiLauncherTask.getTaskName(it) })
+        dependsOn(taskNames)
     }
 }
