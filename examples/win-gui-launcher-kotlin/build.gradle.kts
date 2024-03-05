@@ -9,22 +9,22 @@ sjl {
                 architecture = com.gridnine.sjl.build.gradle.ARCH.X64
                 icon = project.file("../sample-gui-app/src/main/resources/wingui.ico")
                 showSplashScreen {
-//                    relativePath = "..\\..\\..\\..\\sample-gui-app\\src\\main\\resources\\splash.bmp"
-                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp"
+                    relativePath = "..\\..\\..\\..\\sample-gui-app\\src\\main\\resources\\splash.bmp"
+//                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp"
                 }
             }
             java {
                 classPathProvider = {
-//                    "..\\..\\..\\..\\sample-gui-app\\dist\\sample-gui-app.jar"
-                    "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar"
+                    "..\\..\\..\\..\\sample-gui-app\\dist\\sample-gui-app.jar"
+//                    "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar"
                 }
                 vmOptions = arrayListOf("-Xms128m", "-Xmx??256m")
                 mainClass = "com.gridnine.sjl.example.winGui.WinGui"
                 vmOptionsFileRelativePath = "win-gui.options"
                 restartExitCode = 79
                 useEmbeddedJava {
-//                    relativePath = "..\\..\\..\\..\\sample-gui-app\\dist\\jdk"
-                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk"
+                    relativePath = "..\\..\\..\\..\\sample-gui-app\\dist\\jdk"
+//                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk"
                 }
             }
             version {
