@@ -25,37 +25,61 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
+import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 
 open class CreateWinGuiLauncherTask(): Exec(){
 
+    private lateinit var launcherId: String
+
+    private var stdout = ByteArrayOutputStream()
+
     @Inject
     constructor(launcherId:String, extension: SjlExtension) : this() {
+        this.launcherId = launcherId
         val commonConfig = extension.winGuiConfig.commonConfig
         val taskConfig = extension.winGuiConfig.launchers.find { it.first == launcherId }!!.second
-        group = taskConfig.tasksGroup?:commonConfig.tasksGroup?:"sjl"
+        group = taskConfig.generalConfig.tasksGroup?:commonConfig.generalConfig.tasksGroup?:"sjl"
         val depends = arrayListOf<String>()
-        taskConfig.dependsOnTasks?:commonConfig.dependsOnTasks?.let { depends.addAll(it) }
-        depends.add(PrepareWinGuiWorkDirTask.getTaskName())
-        depends.add(CreateWinGuiResFileTask.getTaskName(launcherId))
+        taskConfig.generalConfig.dependsOnTasks?:commonConfig.generalConfig.dependsOnTasks?.let { depends.addAll(it) }
+        depends.add(PrepareWorkDirTask.getTaskName())
+        depends.add(CreateWinGuiJsonFileTask.getTaskName(launcherId))
         dependsOn(depends)
         val workDir = File(project.layout.buildDirectory.dir(".sjl/workdirs").get().asFile, getDirectoryName(launcherId))
+
         ensureDirectoryExists(workDir)
-        inputs.files(project.fileTree(workDir).include("wingui.o","wingui.res")).withPropertyName("inputFiles")
+        //inputs.files(project.fileTree(workDir).include("win-gui-prototype.exe","win-gui.json","go-winres","go-winres.exe","param-*")).withPropertyName("inputFiles")
         val launcherFile = File(workDir, getFileName(launcherId))
-        outputs.file(launcherFile).withPropertyName("outputFile")
+        //outputs.file(launcherFile).withPropertyName("outputFile")
         workingDir = workDir
-        errorOutput = System.err
-        standardOutput = System.out
+        errorOutput = stdout
+        standardOutput = stdout
         val os = OperatingSystem.current()
+        val arguments = arrayListOf("patch", "--in", "win-gui.json", "--delete","--no-backup", launcherFile.name)
         if(os.isLinux){
-            executable = "./ld"
-            args =  arrayListOf("-s", "resource.h", "wingui.o","wingui.res", "-o", getFileName(launcherId))
+            executable = "./go-winres"
+            args =  arguments
+        } else if(os.isWindows){
+            executable = "go-winres.exe"
+            args =  arguments
         } else {
             throw Exception("unsupported operation system ${os}")
         }
+    }
 
+    @TaskAction
+    override fun exec() {
+        val workDir = File(project.layout.buildDirectory.dir(".sjl/workdirs").get().asFile, getDirectoryName(launcherId))
+        val launcherFile = File(workDir, getFileName(launcherId))
+        File(workDir, "win-gui-prototype.exe").copyTo(launcherFile, true)
+        try {
+            super.exec()
+        } catch (t:Throwable){
+            println("exception occurred, exec output:\n$stdout")
+            throw t
+        }
+        launcherFile.copyTo(File(project.layout.buildDirectory.dir(".sjl/launchers").get().asFile, getFileName(launcherId)), true)
     }
 
     companion object{
@@ -76,7 +100,7 @@ open class CreateAllLaunchersTask(): DefaultTask(){
     constructor(launchersIds:List<String>, extension: SjlExtension) : this() {
         val commonConfig = extension.winGuiConfig.commonConfig
         val taskConfig = extension.winGuiConfig.launchers.first().second
-        group = taskConfig.tasksGroup?:commonConfig.tasksGroup?:"sjl"
+        group = taskConfig.generalConfig.tasksGroup?:commonConfig.generalConfig.tasksGroup?:"sjl"
         dependsOn(launchersIds.map { CreateWinGuiLauncherTask.getTaskName(it) })
     }
 }

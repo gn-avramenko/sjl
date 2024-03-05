@@ -3,19 +3,19 @@ plugins{
 }
 
 sjl {
-    winGui{
-        common {
-            allowMultipleInstances = false
-            classPathProvider = {
-                "win-gui.jar"
-            }
-            dependsOnTasks = []
-            embeddedJvmRelativePath = "jdk"
-            icon = project.file("../sample-gui-app/src/main/resources/wingui.ico")
-            mainClass = "com.gridnine.sjl.example.winGui.WinGui"
-        }
-        launcher("win-gui-launcher-en-groovy") {
-
-        }
-    }
+//    winGui{
+//        common {
+//            allowMultipleInstances = false
+//            classPathProvider = {
+//                "win-gui.jar"
+//            }
+//            dependsOnTasks = []
+//            embeddedJvmRelativePath = "jdk"
+//            icon = project.file("../sample-gui-app/src/main/resources/wingui.ico")
+//            mainClass = "com.gridnine.sjl.example.winGui.WinGui"
+//        }
+//        launcher("win-gui-launcher-en-groovy") {
+//
+//        }
+//    }
 }
