@@ -3,6 +3,7 @@
 #include <string>
 #include "Utils.h"
 
+
 struct UInfoFileMove {
 	std::wstring source;
 	std::wstring target;

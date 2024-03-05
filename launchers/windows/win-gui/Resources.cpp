@@ -5,7 +5,13 @@ static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* 
 {
 	HRSRC hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (hResource == nullptr) {
-		return DefValue;
+		hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA));
+		if (hResource == nullptr) {
+			hResource = FindResourceW(hInstance, ResourceName, RT_RCDATA);
+			if (hResource == nullptr) {
+				return DefValue;
+			}
+		}
 	}
 
 	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
@@ -48,8 +54,15 @@ static std::string LoadStringFromResource(HINSTANCE hInstance, const wchar_t* Re
 {
 	HRSRC hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (hResource == nullptr) {
-		return DefValue;
+		hResource = FindResourceExW(hInstance, ResourceName, RT_RCDATA, MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA));
+		if (hResource == nullptr) {
+			hResource = FindResourceW(hInstance, ResourceName, RT_RCDATA);
+			if (hResource == nullptr) {
+				return DefValue;
+			}
+		}
 	}
+
 
 	HGLOBAL hGlobal = LoadResource(hInstance, hResource);
 	if (hGlobal == nullptr) {
@@ -88,7 +101,6 @@ Resources::Resources(HINSTANCE inst) {
 	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"SJL-MUTEX");
 	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
 	instanceAlreadyRunningExitCode = std::stoi(arec);
-	appTitle = LoadStringFromResourceW(inst, L"APP_TITLE", L"SJL-APP");
 	unableToOpenFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_OPEN_FILE_MESSAGE", L"Unable to open file %s");
 	unableToCopyDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_COPY_DIRECTORY_MESSAGE", L"Unable to copy directory from %s to %s");
 	unableToCreateDirectoryMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_DIRECTORY_MESSAGE", L"Unable to create directory %s");
@@ -109,7 +121,7 @@ Resources::Resources(HINSTANCE inst) {
 	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
 	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
 	restartExitCode = std::stoi(LoadStringFromResource(inst, L"RESTART_EXIT_CODE", "79"));
-	errorMessage = LoadStringFromResourceW(inst, L"ERROR_MESSAGE", L"Error");
+	errorTitle = LoadStringFromResourceW(inst, L"ERROR_TITLE", L"Error");
 	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");
 	unableToFindMainClassMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_MAIN_CLASS_MESSAGE", L"Unable to find main class %s");
 	instanceAlreadyRunningMessage = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_MESSAGE", L"Instance of the application is already running");
@@ -119,7 +131,7 @@ Resources::Resources(HINSTANCE inst) {
 	unableToCheckInstalledJavaMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CHECK_INSTALLED_JAVA_MESSAGE", L"Unable to check installed java");
 	wrongJavaTypeMessage = LoadStringFromResourceW(inst, L"WRONG_JAVA_TYPE_MESSAGE", L"Wrong Java Version: required %s min version=%d max version %d, found %s version = %d");
 	useInstalledJava = L"true" == LoadStringFromResourceW(inst, L"USE_INSTALLED_JAVA", L"false");
-	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQURIRES_64_BIT", L"true");
+	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQUIRES_64_BIT", L"true");
 	minJavaVersion = std::stoi(LoadStringFromResource(inst, L"MIN_JAVA_VERSION", "0"));
 	maxJavaVersion = std::stoi(LoadStringFromResource(inst, L"MAX_JAVA_VERSION", "0"));
 	mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
@@ -138,9 +150,6 @@ int Resources::GetInstanceAlreadyRunningExitCode() const {
 	return instanceAlreadyRunningExitCode;
 }
 
-std::wstring Resources::GetAppTitle() {
-	return appTitle;
-}
 
 std::wstring Resources::GetUnableToOpenFileMessage()
 {
@@ -177,9 +186,9 @@ std::wstring Resources::GetUnableToPerformSelfUpdateMessage()
 	return unableToPerformSelfUpdateMessage;
 }
 
-std::wstring Resources::GetErrorMessage()
+std::wstring Resources::GetErrorTitle()
 {
-	return errorMessage;
+	return errorTitle;
 }
 
 std::wstring Resources::GetUnableToLoadBitmapMessage()

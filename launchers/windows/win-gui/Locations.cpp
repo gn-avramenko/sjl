@@ -69,7 +69,7 @@ void Locations::EnsureDirectoryExists(std::wstring path) {
 	if (DirectoryExists(path)) {
 		return;
 	}
-	if (CreateDirectoryW(path.c_str(), NULL)) {
+	if (!CreateDirectoryW(path.c_str(), NULL)) {
 		exceptionWrapper->ThrowException(format_message(L"Unable to create direcotory %s.", path.c_str()), format_message(resources->GetUnableToCreateDirectoryMessage(), path.c_str()));
 	}
 }

@@ -395,8 +395,12 @@ void JVM::LaunchJVM()
 	jclass mainClass = jenv->FindClass(mainClassName.c_str());
 	if (!mainClass)
 	{
-		exceptionWrapper->ThrowException(format_message(L"unable to find main class %s", to_wstring_(mainClassName).c_str()),
-			format_message(resources->GetUnableToFindMainClassMessage(), to_wstring_(mainClassName).c_str()));
+		std::wstring dm = format_message(L"unable to find main class %s", to_wstring_(mainClassName).c_str());
+		std::wstring um = format_message(resources->GetUnableToFindMainClassMessage(), to_wstring_(mainClassName).c_str());
+		debug->Log(dm);
+
+		MessageBoxW(0, um.c_str(), resources->GetErrorTitle().c_str(), 0);
+		exceptionWrapper->ThrowException(dm, um);
 	}
 
 	jmethodID mainMethod = jenv->GetStaticMethodID(mainClass, "main", "([Ljava/lang/String;)V");
