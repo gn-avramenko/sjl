@@ -255,7 +255,7 @@ c:\program\update\new-executable.exe //Абсолютный путь к обно
 Для целей тестирования необходимо:
 1. Выполнить задачу dist/dist. 
 2. Выполнить задачу sjl/create-all-launchers
-3. Попробовать запустить полученные исполняемые файлы из директорий
+3. Запустить полученные исполняемые файлы из директорий
    examples/win-gui-launcher-kotlin/build/.sjl/launchers и examples/win-gui-launcher-groovy/build/.sjl/launchers 
 ## Версия
 См [VERSION.md](VERSION.md) со списком версий.
