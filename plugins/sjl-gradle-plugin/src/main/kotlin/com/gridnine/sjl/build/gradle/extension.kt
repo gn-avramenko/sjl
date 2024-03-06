@@ -133,7 +133,7 @@ open class SjlWinGuiMessagesConfig {
     var unableToLoadBitmapMessage:String? = null
     var unableToLocateJvmDllMessage:String? = null
     var unableToLoadJvmDllMessage:String? = null
-    var unableToFindAdressOfJNI_CreateJavaVMMessage:String? = null
+    var unableToFindAddressOfJNI_CreateJavaVMMessage:String? = null
     var classPathIsNotDefinedMessage:String? = null
     var errorTitle:String? = null
     var unableToCreateJVMMessage:String? = null
@@ -228,7 +228,7 @@ open class SjlWinManifestConfig {
     var description:String? = null
     var minimumOs:OS?= null
     var executionLevel:EXECUTION_LEVEL?=null
-    var uiAccess:Boolean? = null
+    var uiAccess:Boolean = true
     var autoElevate:Boolean? = null
     var dpiAwareness: DPI_AWARENESS? = null
     var disableTheming:Boolean? = null

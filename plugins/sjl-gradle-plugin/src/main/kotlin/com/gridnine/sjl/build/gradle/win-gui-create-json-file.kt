@@ -137,7 +137,7 @@ open class CreateWinGuiJsonFileTask() : DefaultTask() {
             config.executionLevel?.let { languageEntry.addProperty("execution-level", it.getCode()) }
             config.dpiAwareness?.let { languageEntry.addProperty("dpi-awareness", it.getCode()) }
             config.autoElevate?.let { languageEntry.addProperty("auto-elevate", it) }
-            config.uiAccess?.let { languageEntry.addProperty("ui-access", it) }
+            languageEntry.addProperty("ui-access", config.uiAccess)
             config.disableTheming?.let { languageEntry.addProperty("disable-theming", it) }
             config.disableWindowFiltering?.let { languageEntry.addProperty("disable-window-filtering", it) }
             config.highResolutionScrollingAware?.let {
@@ -376,7 +376,7 @@ open class CreateWinGuiJsonFileTask() : DefaultTask() {
             "UNABLE_TO_FIND_ADDRESS_OF_CREATE_JVM_MESSAGE",
             launcherConfig,
             commonConfig,
-            { it.unableToFindAdressOfJNI_CreateJavaVMMessage },
+            { it.unableToFindAddressOfJNI_CreateJavaVMMessage },
             "Unable to find address of JNI_CreateJavaVM",
             counter
         )

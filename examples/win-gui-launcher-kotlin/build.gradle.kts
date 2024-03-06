@@ -31,6 +31,9 @@ sjl {
                 fileVersion = "0.0.1"
                 productVersion = "0.0.2"
             }
+            manifest {
+                description = "Sample application"
+            }
             messages {
                 standardErrorMessage = "Error occurred, consult with developers"
                 errorTitle = "Error"
