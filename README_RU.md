@@ -59,7 +59,7 @@ SJL можно рассматривать как аналог [launch4j](http://
     - Поддержка сборки в Maven
 
 ## Использование
-Пример [build.gradle.kts](http://)
+Пример [build.gradle.kts](/examples/win-gui-launcher-kotlin/build.gradle.kts)
 ```
 plugins {
     id("sjl-gradle-plugin") version "0.0.1" //(1)
@@ -248,12 +248,12 @@ c:\program\update\new-executable.exe //Абсолютный путь к обно
 ## Примеры использования
 В директории examples/sample-gui-app можно посмотреть пример java-приложения, задействующего функции обновления.
 
-В директории examples/win-gui-launcher-kotlin можно посмотреть скрипт build.gradle.kts, создающего пару исполняемых exe-файлов.
+В директории examples/win-gui-launcher-kotlin можно посмотреть скрипт [build.gradle.kts](/examples/win-gui-launcher-kotlin/build.gradle.kts), создающего пару исполняемых exe-файлов.
 
-В директории examples/win-gui-launcher-groovy можно посмотреть скрипт build.gradle, создающего пару исполняемых exe-файлов.
+В директории examples/win-gui-launcher-groovy можно посмотреть скрипт [build.gradle](/examples/win-gui-launcher-groovy/build.gradle), создающего пару исполняемых exe-файлов.
 
 Для целей тестирования необходимо:
-1. Выполнить задачу dist/dist. 
+1. Выполнить задачу dist/dist 
 2. Выполнить задачу sjl/create-all-launchers
 3. Запустить полученные исполняемые файлы из директорий
    examples/win-gui-launcher-kotlin/build/.sjl/launchers и examples/win-gui-launcher-groovy/build/.sjl/launchers 
