@@ -1,4 +1,4 @@
-# Simple Java 
+# Simple Java Launcher
 ВНИМАНИЕ!!! ПРОЕКТ ЕЩЕ НЕ ЗАВЕРШЕН.
 
 **Table of contents**
