@@ -48,9 +48,5 @@ task("dist") {
             libFile.delete()
         }
         project.file("build/libs/sample-gui-app.jar").copyTo(libFile)
-        val launchFile = File(distDir, "run.bat")
-        if(!launchFile.exists()){
-            launchFile.writeText("jdk\\bin\\javaw.exe -cp sample-gui-app.jar com.gridnine.sjl.example.winGui.WinGui")
-        }
     }
 }

@@ -80,10 +80,10 @@ public class WinGui {
                 File updateVersionFile = new File(".sjl/update/version.txt");
                 Files.write(updateVersionFile.toPath(), Arrays.asList(""+(version+1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 File updateWinGuiJar = new File(".sjl/update/sample-gui-app.jar");
-                File currentWinGuiJar = new File("..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
+                File currentWinGuiJar = new File("..\\..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
 //                File currentWinGuiJar = new File("..\\..\\win-gui\\dist\\sample-gui-app.jar");
                 Files.write(updateWinGuiJar.toPath(), Files.readAllBytes(currentWinGuiJar.toPath()), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-                File splashFile = new File("..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
+                File splashFile = new File("..\\..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
 //                File splashFile = new File("sample.bmp");
                 StringBuilder sb = new StringBuilder();
                 sb.append("show-splash:\n");
