@@ -26,6 +26,8 @@ dependencies{
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation("com.gridnine.sjl:sjl-build-tools:0.0.1")
+    implementation("com.google.code.gson:gson:2.10.1")
+
 }
 
 group = "com.gridnine.sjl"

@@ -27,11 +27,11 @@
         {
           "name": "sjl-build-tools-0.0.1.jar",
           "url": "sjl-build-tools-0.0.1.jar",
-          "size": 3913397,
-          "sha512": "2f38411aad323303ccc1e77f556aa91e2d13c8214438fd1ab0060c0260687dda6b2f7790f0c8493d97e0cd01641e1d3243b7442d254fdc3e663dcfcc8ea91718",
-          "sha256": "49b065a1214424f91fd5981f551f5a5896014384e0532ef6ffe29ce6f6028a61",
-          "sha1": "d0e3fecb97e9406ea457de5e1d857a439f54ccea",
-          "md5": "2e73a8bcc0f7516cae7bd5d1e6c64b2a"
+          "size": 5417729,
+          "sha512": "28aef76e8fe63bd382260ef410300e7ebc49df0ead4ba7c0219d0f431dace2247ac1144d4176a252c42a755a24fcf4700e1adc030e5aeaf316f7660ad262949d",
+          "sha256": "a5076690ff5cdfe8f39335f2a29d1ed835ecc8eee26125248daf1d9a5a5d7b47",
+          "sha1": "a8df8cb3978320ef948067aeb979803b355e7372",
+          "md5": "fac864ec1405be3fcb1b15bf3558621d"
         }
       ]
     },
@@ -48,11 +48,11 @@
         {
           "name": "sjl-build-tools-0.0.1.jar",
           "url": "sjl-build-tools-0.0.1.jar",
-          "size": 3913397,
-          "sha512": "2f38411aad323303ccc1e77f556aa91e2d13c8214438fd1ab0060c0260687dda6b2f7790f0c8493d97e0cd01641e1d3243b7442d254fdc3e663dcfcc8ea91718",
-          "sha256": "49b065a1214424f91fd5981f551f5a5896014384e0532ef6ffe29ce6f6028a61",
-          "sha1": "d0e3fecb97e9406ea457de5e1d857a439f54ccea",
-          "md5": "2e73a8bcc0f7516cae7bd5d1e6c64b2a"
+          "size": 5417729,
+          "sha512": "28aef76e8fe63bd382260ef410300e7ebc49df0ead4ba7c0219d0f431dace2247ac1144d4176a252c42a755a24fcf4700e1adc030e5aeaf316f7660ad262949d",
+          "sha256": "a5076690ff5cdfe8f39335f2a29d1ed835ecc8eee26125248daf1d9a5a5d7b47",
+          "sha1": "a8df8cb3978320ef948067aeb979803b355e7372",
+          "md5": "fac864ec1405be3fcb1b15bf3558621d"
         }
       ]
     }

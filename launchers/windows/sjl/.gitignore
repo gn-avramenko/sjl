@@ -1,0 +1,5 @@
+/build/
+/Debug/
+/x64/
+debug_output.log
+wingui.aps

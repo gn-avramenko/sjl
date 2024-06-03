@@ -29,11 +29,11 @@
         {
           "name": "sjl-gradle-plugin-0.0.1.jar",
           "url": "sjl-gradle-plugin-0.0.1.jar",
-          "size": 171707,
-          "sha512": "9efa5e5d0d67a08c9b0afca23420484fc111b5d4efe0b48dcac33f6f7399b762af99ca85c88e64d61c9d0d98d57bbdd437f21ae4ceb6ae0b84157f0c0d530148",
-          "sha256": "736a0d0989b7da6d341998bdef6b89bbfcca144da57cc894938673950b240a17",
-          "sha1": "8398148c45b9c21a9fd69dcb00d0c9abea9b30ba",
-          "md5": "af73fa86f112e6cb83f496ec666e9c9d"
+          "size": 177602,
+          "sha512": "98294cc70ba1cbe61bde1d423ca94b5a14615c2cab0002c9fe9ac87e7dccac9ef001550fba7607c4ff7f49d73678e3840a4c70156c440253fef56f524535ce50",
+          "sha256": "09d823f94bd721118a1214127cc072333b7f3e55d2ef0c8c06d0d96adfbe4275",
+          "sha1": "43144dbc746fc1818ff468020d6a4cb453c7ce06",
+          "md5": "ae2e28db35e9ede990f44aac4f4b74cb"
         }
       ]
     },
@@ -62,17 +62,24 @@
           "version": {
             "requires": "0.0.1"
           }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.10.1"
+          }
         }
       ],
       "files": [
         {
           "name": "sjl-gradle-plugin-0.0.1.jar",
           "url": "sjl-gradle-plugin-0.0.1.jar",
-          "size": 171707,
-          "sha512": "9efa5e5d0d67a08c9b0afca23420484fc111b5d4efe0b48dcac33f6f7399b762af99ca85c88e64d61c9d0d98d57bbdd437f21ae4ceb6ae0b84157f0c0d530148",
-          "sha256": "736a0d0989b7da6d341998bdef6b89bbfcca144da57cc894938673950b240a17",
-          "sha1": "8398148c45b9c21a9fd69dcb00d0c9abea9b30ba",
-          "md5": "af73fa86f112e6cb83f496ec666e9c9d"
+          "size": 177602,
+          "sha512": "98294cc70ba1cbe61bde1d423ca94b5a14615c2cab0002c9fe9ac87e7dccac9ef001550fba7607c4ff7f49d73678e3840a4c70156c440253fef56f524535ce50",
+          "sha256": "09d823f94bd721118a1214127cc072333b7f3e55d2ef0c8c06d0d96adfbe4275",
+          "sha1": "43144dbc746fc1818ff468020d6a4cb453c7ce06",
+          "md5": "ae2e28db35e9ede990f44aac4f4b74cb"
         }
       ]
     },
@@ -108,11 +115,11 @@
         {
           "name": "sjl-gradle-plugin-0.0.1-sources.jar",
           "url": "sjl-gradle-plugin-0.0.1-sources.jar",
-          "size": 137712,
-          "sha512": "4f8f2f519443d7fb8dfc87ffd4e9697597c01baee8f6edaab2a1ad370c45b0b7e77cb225e1c8d018e0b7926af0785abc932688d772d06ed2a71b44c881e4ecfb",
-          "sha256": "c75fdc0000df133f65ca7987a9589d344fccca6e96a65be712ad4591d6dea955",
-          "sha1": "069c4dffa7ec78804e48c0bb211f3c9abaa045f1",
-          "md5": "748e17ffee8e47a774eb08c519917451"
+          "size": 98962,
+          "sha512": "265f40d2c8c0be619b7cec64a7a3053122c844aae95cd82290f75873757fb68cb8f7265d366eb89dc278cdb584a9937936e098f9c8c7abbb7b6787c1ad711a91",
+          "sha256": "d00a9037ce9ce614e9bd4a1f44c59eeb1c54023d32628bcde75609fbcf2067df",
+          "sha1": "71d6ad560b4c106d9552778573f97bde1ed98b6f",
+          "md5": "ac8fff557f3169c8c7a49e14cbcc2ebf"
         }
       ]
     }

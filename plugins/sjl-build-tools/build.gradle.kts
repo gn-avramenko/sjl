@@ -22,6 +22,7 @@ publishing {
             artifactId = "sjl-build-tools"
             version = "0.0.1"
 
+
             from(components["java"])
         }
     }
