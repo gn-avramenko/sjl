@@ -1,33 +1,31 @@
-
 plugins {
-    kotlin("jvm")  version "1.9.10"
+    kotlin("jvm") version "1.9.10"
     id("com.gradle.plugin-publish") version "1.1.0"
 }
 
-kotlin{
+kotlin {
     jvmToolchain(8)
 }
 
-repositories{
+repositories {
     mavenCentral()
     maven(project.file("../../local-maven-repository"))
 }
 
-buildscript{
-    repositories{
+buildscript {
+    repositories {
         mavenCentral()
     }
-    dependencies{
+    dependencies {
         classpath("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
     }
 }
 
-dependencies{
+dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation("com.gridnine.sjl:sjl-build-tools:0.0.1")
     implementation("com.google.code.gson:gson:2.10.1")
-
 }
 
 group = "com.gridnine.sjl"
@@ -53,6 +51,14 @@ publishing {
         maven {
             name = "projectLocal"
             url = uri("../../local-maven-repository")
+        }
+        maven {
+            name = "gridnineNexus"
+            val gridnineNexusUrlRelease: String? by project
+            val gridnineNexusUrlSnapshot: String? by project
+            url = uri(gridnineNexusUrlRelease ?: "")
+            isAllowInsecureProtocol = true
+            credentials(PasswordCredentials::class)
         }
     }
 }

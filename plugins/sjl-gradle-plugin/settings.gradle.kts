@@ -1,1 +1,1 @@
-rootProject.name ="sjl-gradle-plugin"
+rootProject.name = "sjl-gradle-plugin"
