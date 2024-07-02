@@ -28,7 +28,7 @@ publishing {
         create<MavenPublication>("local") {
             groupId = "com.gridnine.sjl"
             artifactId = "sjl-build-tools"
-            version = "0.0.2"
+            version = "0.0.3"
             from(components["java"])
         }
     }
