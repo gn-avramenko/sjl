@@ -18,7 +18,7 @@ buildscript {
         mavenCentral()
     }
     dependencies{
-        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     }
 }
 

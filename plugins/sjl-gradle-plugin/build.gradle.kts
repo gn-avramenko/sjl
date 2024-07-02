@@ -1,10 +1,12 @@
 plugins {
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.7.10"
     id("com.gradle.plugin-publish") version "1.1.0"
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 repositories {
@@ -17,19 +19,19 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     }
 }
 
 dependencies {
     implementation(gradleApi())
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("com.gridnine.sjl:sjl-build-tools:0.0.1")
     implementation("com.google.code.gson:gson:2.10.1")
 }
 
 group = "com.gridnine.sjl"
-version = "0.0.1"
+version = "0.0.2"
 
 gradlePlugin {
     website.set("http://gridnine.com")
@@ -38,7 +40,7 @@ gradlePlugin {
         create("sjl") {
             id = "sjl-gradle-plugin"
             displayName = "SJL plugin"
-            version = "0.0.1"
+            version = "0.0.2"
             description = "Create native wrappers for launching java applications"
             tags.set(listOf("java", "native", "wrappers"))
             implementationClass = "com.gridnine.sjl.build.gradle.SjlPlugin"

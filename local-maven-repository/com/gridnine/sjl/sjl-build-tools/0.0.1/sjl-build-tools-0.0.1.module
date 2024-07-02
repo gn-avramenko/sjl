@@ -10,7 +10,7 @@
   },
   "createdBy": {
     "gradle": {
-      "version": "8.4"
+      "version": "7.6"
     }
   },
   "variants": [
@@ -28,10 +28,10 @@
           "name": "sjl-build-tools-0.0.1.jar",
           "url": "sjl-build-tools-0.0.1.jar",
           "size": 5417729,
-          "sha512": "28aef76e8fe63bd382260ef410300e7ebc49df0ead4ba7c0219d0f431dace2247ac1144d4176a252c42a755a24fcf4700e1adc030e5aeaf316f7660ad262949d",
-          "sha256": "a5076690ff5cdfe8f39335f2a29d1ed835ecc8eee26125248daf1d9a5a5d7b47",
-          "sha1": "a8df8cb3978320ef948067aeb979803b355e7372",
-          "md5": "fac864ec1405be3fcb1b15bf3558621d"
+          "sha512": "efdd00a5425d861b2e76541d3dc22c7975ca9ac1acd8af556bb26862c5e7a5d6314eaca34c12ab243e1217650c0ce96f25874c085cbad59360297a4f76da6608",
+          "sha256": "20a1af61a0fff1207914c7d6fa3763d830a634e0859f101d7505d1c43d59d48d",
+          "sha1": "259283de6993a1b2e331a038697dcbde5e851805",
+          "md5": "fd51b35ff1a75598c37f48b9eda456f3"
         }
       ]
     },
@@ -49,10 +49,10 @@
           "name": "sjl-build-tools-0.0.1.jar",
           "url": "sjl-build-tools-0.0.1.jar",
           "size": 5417729,
-          "sha512": "28aef76e8fe63bd382260ef410300e7ebc49df0ead4ba7c0219d0f431dace2247ac1144d4176a252c42a755a24fcf4700e1adc030e5aeaf316f7660ad262949d",
-          "sha256": "a5076690ff5cdfe8f39335f2a29d1ed835ecc8eee26125248daf1d9a5a5d7b47",
-          "sha1": "a8df8cb3978320ef948067aeb979803b355e7372",
-          "md5": "fac864ec1405be3fcb1b15bf3558621d"
+          "sha512": "efdd00a5425d861b2e76541d3dc22c7975ca9ac1acd8af556bb26862c5e7a5d6314eaca34c12ab243e1217650c0ce96f25874c085cbad59360297a4f76da6608",
+          "sha256": "20a1af61a0fff1207914c7d6fa3763d830a634e0859f101d7505d1c43d59d48d",
+          "sha1": "259283de6993a1b2e331a038697dcbde5e851805",
+          "md5": "fd51b35ff1a75598c37f48b9eda456f3"
         }
       ]
     }
