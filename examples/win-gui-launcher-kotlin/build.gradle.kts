@@ -1,5 +1,5 @@
 plugins {
-    id("sjl-gradle-plugin") version "0.0.3"
+    id("sjl-gradle-plugin") version "0.0.4"
 }
 sjl {
     winGui {

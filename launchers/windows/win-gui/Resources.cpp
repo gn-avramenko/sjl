@@ -1,5 +1,6 @@
 #include "Resources.h"
 
+boolean developmentMode = false;
 
 static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* ResourceName, std::wstring DefValue)
 {
@@ -115,11 +116,22 @@ Resources::Resources(HINSTANCE inst) {
 	unableToLoadJvmDllMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_LOAD_JVM_DLL_MESSAGE", L"Unable to load JVM from %s");
 	unableToFindAdressOfJNI_CreateJavaVMMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_ADDRESS_OF_CREATE_JVM_MESSAGE", L"Unable to find address of JNI_CreateJavaVM");
 	classPathIsNotDefinedMessage = LoadStringFromResourceW(inst, L"CLASS_PATH_IS_NOT_DEFINED_MESSAGE", L"Classpath is not defined");
-	splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
-	vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
-	vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
-	embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
-	classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
+	if (developmentMode) {
+		splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
+		vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
+		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
+		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
+		vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
+		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
+	}
+	else {
+		splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", std::wstring());
+		vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", std::wstring());
+		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", std::wstring());
+		classPath = LoadStringFromResource(inst, L"CLASS_PATH", std::string());
+		vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", std::string());
+		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", std::string());
+	}
 	restartExitCode = std::stoi(LoadStringFromResource(inst, L"RESTART_EXIT_CODE", "79"));
 	errorTitle = LoadStringFromResourceW(inst, L"ERROR_TITLE", L"Error");
 	unableToCreateJVMMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_CREATE_JVM_MESSAGE", L"Unable to create JVM");
@@ -134,7 +146,7 @@ Resources::Resources(HINSTANCE inst) {
 	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQUIRES_64_BIT", L"true");
 	minJavaVersion = std::stoi(LoadStringFromResource(inst, L"MIN_JAVA_VERSION", "0"));
 	maxJavaVersion = std::stoi(LoadStringFromResource(inst, L"MAX_JAVA_VERSION", "0"));
-	mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
+	
 }
 
 std::wstring Resources::GetSjlPath() {
