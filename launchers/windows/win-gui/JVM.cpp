@@ -1,8 +1,11 @@
+#include <vector>
+#include <sstream>
+#include <string>
+#include <filesystem>
+#include <fstream>
 #include "JVM.h"
 #include "jni.h"
 #include "jni_md.h"
-#include <vector>
-#include <string>
 #include "Utils.h"
 #include "Windows.h"
 
@@ -332,6 +335,26 @@ void JVM::LaunchJVM()
 	if (cp.empty())
 	{
 		exceptionWrapper->ThrowException(L"classpath is not defined", resources->GetClassPathIsNotDefinedMessage());
+	} else if (cp.back() == '*') {
+		std::wstringstream expandedCp = "";
+		char fileSep = '/';
+		if (cp.find_first_of('\\') != std::string::npos) {
+			fileSep = '\\';
+		}
+		std::size_t lastSepIdx = cp.find_last_of(fileSep);
+		if (lastSepIdx == std::string::npos) {
+			lastSepIdx = 0;
+		}
+		std::wstring cpDir = cp.substr(0, lastSepIdx);
+		for (auto &p : std::filesystem::directory_iterator(cpDir)) {
+			if (p.path().extension() == ".jar") {
+				expandedCp << p.path().stem().wstring() << ':';
+			}
+		}
+		cp = expandedCp.str();
+		if (!cp.empty()) {
+			cp.pop_back();  // remove trailing path separator
+		}
 	}
 	std::string cpOption = "-Djava.class.path=" + cp;
 	debug->Log("class path is set to %s", cp.c_str());
