@@ -331,36 +331,43 @@ void JVM::LaunchJVM()
 			exceptionWrapper->ThrowException(format_message(L"unable to locate jvm.dll in %s", binDir.c_str()), format_message(resources->GetUnableToLocateJvmDllMessage(), binDir.c_str()));
 		}
 	}
+	SetCurrentDirectoryW(locations->GetBasePath().c_str());
+	debug->Log(L"current directory is set to %s", locations->GetBasePath().c_str());
 	std::string cp = resources->GetClassPath();
 	if (cp.empty())
 	{
 		exceptionWrapper->ThrowException(L"classpath is not defined", resources->GetClassPathIsNotDefinedMessage());
-	} else if (cp.back() == '*') {
-		std::wstringstream expandedCp = "";
+	}
+	else if (cp.back() == '*')
+	{
+		std::stringstream expandedCp;
 		char fileSep = '/';
-		if (cp.find_first_of('\\') != std::string::npos) {
+		if (cp.find_first_of('\\') != std::string::npos)
+		{
 			fileSep = '\\';
 		}
 		std::size_t lastSepIdx = cp.find_last_of(fileSep);
-		if (lastSepIdx == std::string::npos) {
+		if (lastSepIdx == std::string::npos)
+		{
 			lastSepIdx = 0;
 		}
-		std::wstring cpDir = cp.substr(0, lastSepIdx);
-		for (auto &p : std::filesystem::directory_iterator(cpDir)) {
-			if (p.path().extension() == ".jar") {
-				expandedCp << p.path().stem().wstring() << ':';
+		std::filesystem::path cpDir = cp.substr(0, lastSepIdx);
+		for (auto &p : std::filesystem::directory_iterator(cpDir))
+		{
+			if (p.path().extension() == ".jar")
+			{
+				expandedCp << p.path().string() << ';';
 			}
 		}
 		cp = expandedCp.str();
-		if (!cp.empty()) {
-			cp.pop_back();  // remove trailing path separator
+		if (!cp.empty())
+		{
+			cp.pop_back();  // need to remove trailing path separator
 		}
 	}
 	std::string cpOption = "-Djava.class.path=" + cp;
 	debug->Log("class path is set to %s", cp.c_str());
 	SetDllDirectoryW(nullptr);
-	SetCurrentDirectoryW(locations->GetBasePath().c_str());
-	debug->Log(L"current directory is set to %s", locations->GetBasePath().c_str());
 	HMODULE hJVM = LoadLibraryW(dllName.c_str());
 	if (!hJVM)
 	{
