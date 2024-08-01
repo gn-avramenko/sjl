@@ -1,8 +1,7 @@
 #include <vector>
+#include <set>
 #include <sstream>
 #include <string>
-#include <filesystem>
-#include <fstream>
 #include "JVM.h"
 #include "jni.h"
 #include "jni_md.h"
@@ -81,7 +80,7 @@ int findNextVersionPart(const char* startAt)
 		return 0;
 	}
 
-	char* firstSeparatorA = (char*) std::strchr(startAt, '.');
+	char* firstSeparatorA = (char*)std::strchr(startAt, '.');
 	char* firstSeparatorB = (char*)std::strchr(startAt, '_');
 	char* firstSeparator;
 	if (firstSeparatorA == NULL)
@@ -170,7 +169,7 @@ BOOL isJavaVersionGood(int version, BOOL is64Bit)
 std::wstring JVM::findJavaHome()
 {
 	if (!resources->IsUseInstalledJava()) {
-		return locations->GetBasePath()+L"\\"+resources->GetEmbeddedJavaHomePath();
+		return locations->GetBasePath() + L"\\" + resources->GetEmbeddedJavaHomePath();
 	}
 	wchar_t buffer[4096];
 	int res = GetEnvironmentVariableW(L"JAVA_HOME", buffer, 4096);
@@ -185,7 +184,7 @@ std::wstring JVM::findJavaHome()
 	std::wstring accessbridgeVersion = javaHome + L"\\bin\\windowsaccessbridge-32.dll";
 	std::wstring cfgJava9Path = javaHome + L"\\lib\\jvm.cfg";
 	if (resources->IsRequired64JRE() && (!locations->FileExists(cfgJava9Path) || locations->FileExists(accessbridgeVersion))) {
-		exceptionWrapper->ThrowException(L"64 bit jre is required but 32 bit found", format_message(resources->GetWrongJavaTypeMessage(), L"64 bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), L"32 bit", 0));		
+		exceptionWrapper->ThrowException(L"64 bit jre is required but 32 bit found", format_message(resources->GetWrongJavaTypeMessage(), L"64 bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), L"32 bit", 0));
 	}
 	std::wstring javaExecutable = javaHome + L"\\bin\\java.exe";
 	SECURITY_ATTRIBUTES saAttr;
@@ -201,7 +200,7 @@ std::wstring JVM::findJavaHome()
 	// Create a pipe for the child process's STDOUT.
 	if (!CreatePipe(&outputRd, &outputWr, &saAttr, 0))
 	{
-		exceptionWrapper->ThrowException(L"can not create pipe", resources->GetUnableToCheckInstalledJavaMessage());		
+		exceptionWrapper->ThrowException(L"can not create pipe", resources->GetUnableToCheckInstalledJavaMessage());
 	}
 	// Ensure the read handle to the pipe for STDOUT is not inherited.
 	if (!SetHandleInformation(outputRd, HANDLE_FLAG_INHERIT, 0))
@@ -209,7 +208,7 @@ std::wstring JVM::findJavaHome()
 		CloseHandle(outputRd);
 		CloseHandle(outputWr);
 		exceptionWrapper->ThrowException(L"Cannot set handle information", resources->GetUnableToCheckInstalledJavaMessage());
-		
+
 	}
 	// create child process
 	std::wstring cmdLineStr = binDir + L"\\java.exe --version";
@@ -236,7 +235,7 @@ std::wstring JVM::findJavaHome()
 			return javaHome;
 		}
 	}
-	exceptionWrapper->ThrowException(L"wrong java type", format_message(resources->GetWrongJavaTypeMessage(), resources->IsRequired64JRE()? "64 bit": "Any bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), is64bit? "64 bit": "32 bit", *version));
+	exceptionWrapper->ThrowException(L"wrong java type", format_message(resources->GetWrongJavaTypeMessage(), resources->IsRequired64JRE() ? "64 bit" : "Any bit", resources->GetMinJavaVersion(), resources->GetMaxJavaVersion(), is64bit ? "64 bit" : "32 bit", *version));
 	return std::wstring();
 }
 
@@ -262,10 +261,44 @@ JVM::JVM(ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, Singl
 	hDebug = deb;
 	resources = res;
 	hResources = res;
-	hSic = sic;		 
+	hSic = sic;
 	splashScreen = splash;
 	programParams = progParams;
 	executablePath = locations->GetExecutablePath();
+}
+
+static void find_files(const std::wstring& pattern, std::vector<std::wstring>& v)
+{
+	WIN32_FIND_DATA data;
+	HANDLE hFind;
+	std::wstring dirPrefix = L"";
+	if (pattern.find('\\') != std::string::npos) {
+		dirPrefix = pattern.substr(0, pattern.find_last_of(L"/\\") + 1);
+	}
+	if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+			{
+				v.push_back(dirPrefix + data.cFileName);
+			}
+		} while (FindNextFile(hFind, &data) != 0);
+		FindClose(hFind);
+	}
+}
+
+static std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
+	size_t last = 0;
+	size_t next = 0;
+	std::vector<std::string> parts;
+	while ((next = s.find(delimiter, last)) != std::string::npos)
+	{ 
+		parts.push_back(s.substr(last, next - last));
+		last = next + 1;
+	}
+	parts.push_back(s.substr(last));
+	return parts;
 }
 
 void JVM::LaunchJVM()
@@ -327,7 +360,7 @@ void JVM::LaunchJVM()
 		dllName = binDir + L"\\client\\jvm.dll";
 		if (!locations->FileExists(dllName))
 		{
-			debug->Log(L"file %s does not exist",  dllName.c_str());
+			debug->Log(L"file %s does not exist", dllName.c_str());
 			exceptionWrapper->ThrowException(format_message(L"unable to locate jvm.dll in %s", binDir.c_str()), format_message(resources->GetUnableToLocateJvmDllMessage(), binDir.c_str()));
 		}
 	}
@@ -338,26 +371,34 @@ void JVM::LaunchJVM()
 	{
 		exceptionWrapper->ThrowException(L"classpath is not defined", resources->GetClassPathIsNotDefinedMessage());
 	}
-	else if (cp.back() == '*')
+	else if (cp.find('*') != std::string::npos)
 	{
-		std::stringstream expandedCp;
-		char fileSep = '/';
-		if (cp.find_first_of('\\') != std::string::npos)
+		std::vector<std::string> parts = split(cp, ";");
+		std::vector<std::wstring> files;
+		for (auto& part : parts)
 		{
-			fileSep = '\\';
+			find_files(std::wstring(part.begin(), part.end()), files);
 		}
-		std::size_t lastSepIdx = cp.find_last_of(fileSep);
-		if (lastSepIdx == std::string::npos)
+		std::set<std::wstring> uniqueFiles(files.begin(), files.end());
+		std::wstring extension = L".jar";
+		for (auto it = uniqueFiles.begin(); it != uniqueFiles.end(); )
 		{
-			lastSepIdx = 0;
-		}
-		std::filesystem::path cpDir = cp.substr(0, lastSepIdx);
-		for (auto &p : std::filesystem::directory_iterator(cpDir))
-		{
-			if (p.path().extension() == ".jar")
+			std::wstring s = *it;
+			if (s.length() < extension.length()
+				|| s.compare(s.length() - extension.length(), extension.length(), extension) != 0)
 			{
-				expandedCp << p.path().string() << ';';
+				uniqueFiles.erase(it++);
 			}
+			else
+			{
+				++it;
+			}
+		}
+		std::stringstream expandedCp;
+		for (auto& file : uniqueFiles)
+		{
+			std::wstring ws = file.c_str();
+			expandedCp << std::string(ws.begin(), ws.end()) << ';';
 		}
 		cp = expandedCp.str();
 		if (!cp.empty())
@@ -414,7 +455,7 @@ void JVM::LaunchJVM()
 	vmOptions = NULL;
 	if (result != JNI_OK)
 	{
-		exceptionWrapper->ThrowException(format_message(L"unable to create jvm, code = %d", result), resources->GetUnableToCreateJVMMessage());		
+		exceptionWrapper->ThrowException(format_message(L"unable to create jvm, code = %d", result), resources->GetUnableToCreateJVMMessage());
 	}
 	debug->Log("jvm was created");
 	jthrowable jtExcptn;
@@ -436,7 +477,7 @@ void JVM::LaunchJVM()
 	jmethodID mainMethod = jenv->GetStaticMethodID(mainClass, "main", "([Ljava/lang/String;)V");
 	if (!mainMethod)
 	{
-		exceptionWrapper->ThrowException(L"unable to find main method",resources->GetUnableToFindMainMethodMessage());
+		exceptionWrapper->ThrowException(L"unable to find main method", resources->GetUnableToFindMainMethodMessage());
 	}
 	jclass stringClass = jenv->FindClass("java/lang/String");
 	jobjectArray args = jenv->NewObjectArray(0, stringClass, NULL);
@@ -460,6 +501,6 @@ void JVM::LaunchJVM()
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-	}	
+	}
 	debug->Log("exit from LaunchJVM");
 }
