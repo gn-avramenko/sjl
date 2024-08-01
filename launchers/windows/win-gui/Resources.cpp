@@ -1,6 +1,6 @@
 #include "Resources.h"
 
-boolean developmentMode = false;
+boolean developmentMode = true; //TODO: disable this!!
 
 static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* ResourceName, std::wstring DefValue)
 {
@@ -120,7 +120,7 @@ Resources::Resources(HINSTANCE inst) {
 		splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
 		vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
 		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
-		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar");
+		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\*");
 		vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
 		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com/gridnine/sjl/example/winGui/WinGui");
 	}
