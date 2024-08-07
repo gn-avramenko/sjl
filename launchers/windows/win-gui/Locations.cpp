@@ -98,7 +98,7 @@ void Locations::FileCopy(std::wstring source, std::wstring target) {
 
 void Locations::FileDelete(std::wstring source)
 {
-	if (DeleteFileW(source.c_str()) != 0) {
+	if (DeleteFileW(source.c_str()) == 0) {
 		DWORD error = GetLastError();
 		exceptionWrapper->ThrowException(format_message(L"Error: %d. Failed tot delete file %s.", error, source.c_str()),
 			format_message(resources->GetUnableToDeleteFileMessage(), source.c_str()));
