@@ -1,6 +1,6 @@
 #include "Resources.h"
 
-boolean developmentMode = true; //TODO: disable this!!
+boolean developmentMode = false; 
 
 static std::wstring LoadStringFromResourceW(HINSTANCE hInstance, const wchar_t* ResourceName, std::wstring DefValue)
 {
