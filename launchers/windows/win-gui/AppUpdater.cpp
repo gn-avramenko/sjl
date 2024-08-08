@@ -175,7 +175,7 @@ void AppUpdater::PerformUpdate()
 		}
 		case FILE_DELETE: {
 			const UInfoFileDelete& fileDelete = updateInfo.fileDelete;
-			debug->Log(L"File Delete: %s", fileDelete.file);
+			debug->Log(L"File Delete: %s", fileDelete.file.c_str());
 			if (!locations->FileExists(fileDelete.file))
 			{
 				debug->Log(L"File %s does not exist", fileDelete.file.c_str());
@@ -203,7 +203,7 @@ void AppUpdater::PerformUpdate()
 		case SHOW_SPLASH: {
 			const UInfoShowSplash& showSplash = updateInfo.showSplash;
 			// Process showSplash.splashFile
-			debug->Log(L"Show Splash: %s", showSplash.splashFile);
+			debug->Log(L"Show Splash: %s", showSplash.splashFile.c_str());
 			splashScreen->ShowSplash(showSplash.splashFile.c_str());
 			break;
 		}
