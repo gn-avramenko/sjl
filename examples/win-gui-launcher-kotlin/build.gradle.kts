@@ -1,7 +1,10 @@
 plugins {
-    id("sjl-gradle-plugin") version "0.0.8"
+    id("sjl-gradle-plugin") version "0.0.9"
 }
 sjl {
+    common {
+        tasksGroup = "sjl-custom"
+    }
     winGui {
         common {
             general {
@@ -48,6 +51,27 @@ sjl {
                 errorTitle = "Ошибка"
             }
 
+        }
+    }
+    nixShell {
+        common {
+            general {
+                allowMultipleInstances = false
+            }
+            java {
+                classPathProvider = {
+                    "../../../../sample-gui-app/dist/sample-gui-app.jar"
+                }
+                vmOptions = arrayListOf("-Xms128m", "-Xmx256m")
+                mainClass = "com.gridnine.sjl.example.winGui.WinGui"
+                vmOptionsFileRelativePath = "win-gui.options"
+                restartExitCode = 79
+                useEmbeddedJava {
+                    relativePath = ""
+                }
+            }
+        }
+        launcher("nix-shell-launcher-en-kotlin") {
         }
     }
 }

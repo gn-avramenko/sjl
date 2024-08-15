@@ -23,7 +23,6 @@ package com.gridnine.sjl.build.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
 
 open class SjlPlugin : Plugin<Project> {
     override fun apply(target: Project) {

@@ -31,7 +31,7 @@ dependencies {
 }
 
 group = "com.gridnine.sjl"
-version = "0.0.8"
+version = "0.0.9"
 
 gradlePlugin {
     website.set("http://gridnine.com")
@@ -40,7 +40,7 @@ gradlePlugin {
         create("sjl") {
             id = "sjl-gradle-plugin"
             displayName = "SJL plugin"
-            version = "0.0.8"
+            version = "0.0.9"
             description = "Create native wrappers for launching java applications"
             tags.set(listOf("java", "native", "wrappers"))
             implementationClass = "com.gridnine.sjl.build.gradle.SjlPlugin"
