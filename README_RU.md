@@ -257,5 +257,13 @@ c:\program\update\new-executable.exe //Абсолютный путь к обно
 2. Выполнить задачу sjl/create-all-launchers
 3. Запустить полученные исполняемые файлы из директорий
    examples/win-gui-launcher-kotlin/build/.sjl/launchers и examples/win-gui-launcher-groovy/build/.sjl/launchers 
+ 
+## Активация логирования
+Для диагностики проблем с работой лаунчера можно активировать подробное логирование, логи приложения будет находиться в файле .sjl/sjl.log
+
+```launcher.exe -sjl-debug```
+
+```launcher.sh -sjl-debug```
+
 ## Версия
 См [VERSION.md](VERSION.md) со списком версий.

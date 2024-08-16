@@ -27,7 +27,7 @@ import org.gradle.internal.os.OperatingSystem
 import java.io.File
 import javax.inject.Inject
 
-open class PrepareWorkDirTask(): DefaultTask() {
+open class PrepareWorkDirTask() : DefaultTask() {
     private lateinit var extension: SjlExtension
 
     @Inject
@@ -37,24 +37,29 @@ open class PrepareWorkDirTask(): DefaultTask() {
     }
 
     @TaskAction
-    fun execute(){
+    fun execute() {
         val workDirs = project.layout.buildDirectory.dir(".sjl/workdirs").get().asFile
         ensureDirectoryExists(workDirs)
         val launchersDir = project.layout.buildDirectory.dir(".sjl/launchers").get().asFile
         ensureDirectoryExists(launchersDir)
-        val fileNames = extension.winGuiConfig.launchers.map {  CreateWinGuiLauncherTask.getFileName(it.first)}
+        val winFileNames = extension.winGuiConfig.launchers.map { CreateWinGuiLauncherTask.getFileName(it.first) }
+        val nixFileNames = extension.nixShellConfig.launchers.map { CreateNixShellLauncherTask.getFileName(it.first) }
         launchersDir.listFiles()?.forEach {
-            if(!fileNames.contains(it.name)){
+            if (!winFileNames.contains(it.name) && !nixFileNames.contains(it.name)) {
                 delete(it)
             }
         }
+
         extension.winGuiConfig.launchers.forEach {
             val workDir = File(workDirs, CreateWinGuiLauncherTask.getDirectoryName(it.first))
             ensureDirectoryExists(workDir)
             val os = OperatingSystem.current()
-            copyIfDiffers(if(it.second.generalConfig.architecture == ARCH.WIN32) "launchers/win-gui-win32.exe" else "launchers/win-gui-x64.exe", File(workDir, "win-gui-prototype.exe"))
+            copyIfDiffers(
+                if (it.second.generalConfig.architecture == ARCH.WIN32) "launchers/win-gui-win32.exe" else "launchers/win-gui-x64.exe",
+                File(workDir, "win-gui-prototype.exe")
+            )
             val arch = System.getProperty("os.arch")
-            if(os.isLinux){
+            if (os.isLinux) {
                 if ("x86_64" == arch || "amd64" == arch) {
                     copyIfDiffers("sjl/buildTools/nix64/go-winres", File(workDir, "go-winres"), true)
                     return@forEach
@@ -64,8 +69,8 @@ open class PrepareWorkDirTask(): DefaultTask() {
                 }
                 throw Exception("unsupported operation system arch ${arch}")
             }
-            if(os.isWindows){
-                if ("i386" == arch){
+            if (os.isWindows) {
+                if ("i386" == arch) {
                     throw Exception("unsupported operation system arch ${arch}")
                 }
                 copyIfDiffers("sjl/buildTools/win64/go-winres.exe", File(workDir, "go-winres.exe"), true)
@@ -73,9 +78,15 @@ open class PrepareWorkDirTask(): DefaultTask() {
             }
             throw Exception("unsupported operation system ${os}")
         }
+
+        extension.nixShellConfig.launchers.forEach {
+            val workDir = File(workDirs, CreateNixShellLauncherTask.getDirectoryName(it.first))
+            ensureDirectoryExists(workDir)
+            copyIfDiffers("launchers/nix-shell-template.sh", File(workDir, "nix-shell-template.sh"))
+        }
     }
 
-    companion object{
+    companion object {
         fun getTaskName() = "_sjl-prepare-workdir-task"
     }
 }
