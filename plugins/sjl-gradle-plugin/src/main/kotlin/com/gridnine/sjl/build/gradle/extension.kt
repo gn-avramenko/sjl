@@ -76,7 +76,7 @@ open class SjlExtension @Inject constructor(private val project: Project) {
         }
     }
 
-    fun createTasks(){
+    internal fun createTasks(){
         this.project.tasks.create("create-all-launchers", CreateAllLaunchersTask::class.java, this)
         this.project.tasks.create(PrepareWorkDirTask.getTaskName(), PrepareWorkDirTask::class.java, this)
     }
