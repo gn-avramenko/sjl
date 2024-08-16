@@ -30,5 +30,9 @@ open class SjlPlugin : Plugin<Project> {
             "sjl",
             SjlExtension::class.java
         )
+        target.afterEvaluate { p ->
+            val sjlExtension: SjlExtension = p.getExtensions().getByType(SjlExtension::class.java)
+            sjlExtension.createTasks()
+        }
     }
 }

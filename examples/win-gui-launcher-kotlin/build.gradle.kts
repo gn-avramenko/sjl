@@ -2,7 +2,7 @@ plugins {
     id("sjl-gradle-plugin") version "0.0.9"
 }
 sjl {
-    common {
+    all {
         tasksGroup = "sjl-custom"
     }
     winGui {

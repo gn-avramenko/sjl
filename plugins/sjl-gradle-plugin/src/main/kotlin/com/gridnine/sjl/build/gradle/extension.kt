@@ -44,7 +44,7 @@ open class SjlExtension @Inject constructor(private val project: Project) {
 
     internal val nixShellConfig: SjlNixShellConfig = SjlNixShellConfig(project)
 
-    fun common(configure: SjlCommonConfig.() -> Unit) {
+    fun all(configure: SjlCommonConfig.() -> Unit) {
         val cl = getClosure(configure)
         if (cl != null) {
             cl.delegate = commonConfig
@@ -74,15 +74,13 @@ open class SjlExtension @Inject constructor(private val project: Project) {
                 this
             )
         }
-        if (tasksNames.isNotEmpty()) {
-            if (this.project.tasks.findByName("create-all-launchers") == null) {
-                this.project.tasks.create("create-all-launchers", CreateAllLaunchersTask::class.java, this)
-            }
-            if (this.project.tasks.findByName(PrepareWorkDirTask.getTaskName()) == null) {
-                this.project.tasks.create(PrepareWorkDirTask.getTaskName(), PrepareWorkDirTask::class.java, this)
-            }
-        }
     }
+
+    fun createTasks(){
+        this.project.tasks.create("create-all-launchers", CreateAllLaunchersTask::class.java, this)
+        this.project.tasks.create(PrepareWorkDirTask.getTaskName(), PrepareWorkDirTask::class.java, this)
+    }
+
 
     fun nixShell(configure: SjlNixShellConfig.() -> Unit) {
         val cl = getClosure(configure)
@@ -97,14 +95,6 @@ open class SjlExtension @Inject constructor(private val project: Project) {
             val taskName = CreateNixShellLauncherTask.getTaskName(it.first)
             tasksNames.add(taskName)
             this.project.tasks.create(taskName, CreateNixShellLauncherTask::class.java, it.first, this)
-        }
-        if (tasksNames.isNotEmpty()) {
-            if (this.project.tasks.findByName("create-all-launchers") == null) {
-                this.project.tasks.create("create-all-launchers", CreateAllLaunchersTask::class.java, this)
-            }
-            if (this.project.tasks.findByName(PrepareWorkDirTask.getTaskName()) == null) {
-                this.project.tasks.create(PrepareWorkDirTask.getTaskName(), PrepareWorkDirTask::class.java, this)
-            }
         }
     }
 }
