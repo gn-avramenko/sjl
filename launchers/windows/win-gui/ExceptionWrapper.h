@@ -8,6 +8,8 @@ private:
 
 public:
 	void ThrowException(std::wstring developerMessage, std::wstring message);
+	void SetUserMessage(std::wstring usrMsg);
+	void SetDeveloperMessage(std::wstring devMsg);
 	std::wstring GetUserMessage();
 	std::wstring GetDeveloperMessage();
 };

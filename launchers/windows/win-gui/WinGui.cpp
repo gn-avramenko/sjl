@@ -1,4 +1,6 @@
 #include <Windows.h>
+#include <exception>
+#include <stdexcept>
 #include "Resources.h"
 #include "Debug.h"
 #include "Locations.h"
@@ -8,6 +10,8 @@
 #include "SingleInstanceChecker.h"
 #include "JVM.h"
 #include "SplashScreen.h"
+
+std::wstring getCause(std::exception_ptr eptr);
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR pCmdLine, int nCmdShow) {
@@ -56,6 +60,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 	catch (...) {
+		std::exception_ptr eptr = std::current_exception();
+		std::wstring cause = getCause(eptr);
+		if (exception.GetDeveloperMessage().empty()) {
+			exception.SetDeveloperMessage(cause);
+		}
+		if (exception.GetUserMessage().empty()) {
+			exception.SetUserMessage(cause);
+		}
 		if (c != nullptr) {
 			c->MutexRelease();
 		}
@@ -66,4 +78,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		MessageBoxW(0, exception.GetUserMessage().c_str(), r == nullptr ? L"Error" : r->GetErrorTitle().c_str(), 0);
 		return 1;
 	}
+}
+
+std::wstring getCause(std::exception_ptr eptr) {
+	try
+	{
+		if (eptr)
+			std::rethrow_exception(eptr);
+	}
+	catch (const std::exception& ex)
+	{
+		const char* cause = ex.what();
+		return std::wstring(cause, cause + strlen(cause));
+	}
+	return L"Can't get exception cause, probably std::bad_exception (managed).";
 }
