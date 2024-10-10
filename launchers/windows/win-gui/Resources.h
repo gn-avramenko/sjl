@@ -35,6 +35,7 @@ private:
 	int maxJavaVersion;
 	int restartExitCode;
 	bool useInstalledJava;
+	bool useJni;
 	bool required64JRE;
 	std::wstring unableToCreateJVMMessage;
 	std::wstring unableToFindMainClassMessage;
@@ -88,6 +89,7 @@ public:
 	std::wstring GetUnableToCheckInstalledJavaMessage();
 	std::string GetMainClass();
 	bool IsUseInstalledJava();
+	bool IsUseJni();
 	bool IsRequired64JRE();
 	int GetMinJavaVersion();
 	int GetMaxJavaVersion();

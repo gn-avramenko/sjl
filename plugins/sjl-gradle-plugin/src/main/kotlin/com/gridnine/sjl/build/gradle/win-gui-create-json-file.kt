@@ -227,7 +227,9 @@ open class CreateWinGuiJsonFileTask() : DefaultTask() {
         val vmOptions = launcherConfig.javaConfig.vmOptions ?: commonConfig.javaConfig.vmOptions
         vmOptions?.let { addCommonParameter(rcDataEntry, "VM_OPTIONS", it.joinToString("|"), counter) }
         val useInstalledJava = (launcherConfig.javaConfig.useInstalledJava ?: commonConfig.javaConfig.useInstalledJava) == true
+        val useJni = (launcherConfig.javaConfig.useJni ?: commonConfig.javaConfig.useJni) == true
         addCommonParameter(rcDataEntry, "USE_INSTALLED_JAVA", useInstalledJava.toString(), counter)
+        addCommonParameter(rcDataEntry, "USE_JNI", useJni.toString(), counter)
         if (useInstalledJava) {
             addCommonParameter(
                 rcDataEntry,
@@ -252,11 +254,14 @@ open class CreateWinGuiJsonFileTask() : DefaultTask() {
                 counter
             )
         }
+        var mainClass = launcherConfig.javaConfig.mainClass ?: commonConfig.javaConfig.mainClass?: throw IllegalArgumentException("main class is not defined")
+        if(useJni){
+            mainClass = mainClass.replace(".", "/")
+        }
         addCommonParameter(
             rcDataEntry,
             "MAIN_CLASS",
-            (launcherConfig.javaConfig.mainClass ?: commonConfig.javaConfig.mainClass)?.replace(".", "/")
-            ?: throw IllegalArgumentException("main class is not defined"),
+            mainClass,
             counter
         )
         addCommonParameter(

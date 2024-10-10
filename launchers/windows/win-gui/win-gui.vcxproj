@@ -157,6 +157,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ExceptionWrapper.cpp" />
     <ClCompile Include="JVM.cpp" />
+    <ClCompile Include="JVMJni.cpp" />
     <ClCompile Include="Locations.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="SelfUpdater.cpp" />
@@ -169,9 +170,11 @@
     <ClInclude Include="AppUpdater.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="ExceptionWrapper.h" />
+    <ClInclude Include="ijvm.h" />
     <ClInclude Include="jni.h" />
     <ClInclude Include="jni_md.h" />
     <ClInclude Include="JVM.h" />
+    <ClInclude Include="JVMJni.h" />
     <ClInclude Include="Locations.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="SelfUpdater.h" />

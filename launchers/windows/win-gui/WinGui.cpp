@@ -8,8 +8,10 @@
 #include "AppUpdater.h"
 #include "SelfUpdater.h"
 #include "SingleInstanceChecker.h"
+#include "JVMJni.h"
 #include "JVM.h"
 #include "SplashScreen.h"
+#include "Utils.h"
 
 std::wstring getCause(std::exception_ptr eptr);
 
@@ -24,6 +26,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}*/
 	SingleInstanceChecker* c = nullptr;
 	try {
+		bool needRestart = false;
 		Resources resources(hInstance);
 		r = &resources;
 		Locations locations(&resources, &exception);
@@ -53,10 +56,24 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (!locations.GetSplashScreenFile().empty()) {
 			splashScreen.ShowSplash(locations.GetSplashScreenFile());
 		}
-		JVM jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
-		jvm.LaunchJVM();
+		IJVM* ijvm = nullptr;
+		if (resources.IsUseJni()) {
+			JVMJni jvm(&exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine);
+			ijvm = &jvm;
+		}
+		else {
+			JVM jvm(&hInstance, &exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine, &needRestart);
+			ijvm = &jvm;
+		}
+		ijvm->LaunchJVM();
+		debug.Log(L"need restart is %s", needRestart);
 		sic.MutexRelease();
 		debug.CloseHandle();
+		if (needRestart) {
+			std::string params = pCmdLine;
+			std::string newParams = params.find("-sjl-restart") == std::string::npos ? params + " -sjl-restart" : params;
+			ShellExecuteW(NULL, L"open", locations.GetExecutablePath().c_str(), to_wstring_(newParams).c_str(), NULL, SW_RESTORE);
+		}
 		return 0;
 	}
 	catch (...) {

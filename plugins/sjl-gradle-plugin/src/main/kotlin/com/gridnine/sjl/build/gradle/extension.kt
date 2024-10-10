@@ -355,6 +355,7 @@ open class SjlNixShellGeneralConfig {
 @SjlConfigMaker
 open class SjlWinGuiJavaConfig {
     internal var useInstalledJava: Boolean? = null
+    var useJni: Boolean? = null
     internal var embeddedJavaConfig: EmbeddedJavaConfig? = null
     internal var installedJavaConfig: InstalledJavaConfig? = null
     var classPathProvider: (() -> String)? = null

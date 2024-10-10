@@ -48,6 +48,9 @@
     <ClCompile Include="WinGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JVMJni.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppUpdater.h">
@@ -84,6 +87,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JVMJni.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ijvm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
