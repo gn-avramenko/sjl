@@ -106,7 +106,7 @@ void JVM::LaunchJVM() {
 	std::string vmOptions = "";
 	for (int n = 0; n < vmOptionLines.size(); n++)
 	{
-		vmOptions = " " + vmOptionLines[n];
+		vmOptions = vmOptions + " " + vmOptionLines[n];
 	}
 	debug->Log("vmoptions is %s", vmOptions.c_str());
 	STARTUPINFOW si;
