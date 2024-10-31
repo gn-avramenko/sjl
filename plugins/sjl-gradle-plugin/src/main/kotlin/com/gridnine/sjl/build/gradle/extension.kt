@@ -304,7 +304,7 @@ open class SjlWinManifestConfig {
     var description: String? = null
     var minimumOs: OS? = null
     var executionLevel: EXECUTION_LEVEL? = null
-    var uiAccess: Boolean = true
+    var uiAccess: Boolean = false
     var autoElevate: Boolean? = null
     var dpiAwareness: DPI_AWARENESS? = null
     var disableTheming: Boolean? = null
