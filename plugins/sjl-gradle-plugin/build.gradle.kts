@@ -26,7 +26,7 @@ buildscript {
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-    implementation("com.gridnine.sjl:sjl-build-tools:0.0.11")
+    implementation("com.gridnine.sjl:sjl-build-tools:0.0.12")
     implementation("com.google.code.gson:gson:2.10.1")
 }
 

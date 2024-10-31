@@ -61,7 +61,7 @@ open class CreateWinGuiLauncherTask() : Exec() {
             executable = "./go-winres"
             args = arguments
         } else if (os.isWindows) {
-            executable = ".\\go-winres.exe"
+            executable = File(workDir,"go-winres.exe").absolutePath
             args = arguments
         } else {
             throw Exception("unsupported operation system ${os}")

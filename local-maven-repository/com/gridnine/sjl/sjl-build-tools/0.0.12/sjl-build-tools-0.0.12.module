@@ -1,0 +1,60 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.gridnine.sjl",
+    "module": "sjl-build-tools",
+    "version": "0.0.12",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.6"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "sjl-build-tools-0.0.12.jar",
+          "url": "sjl-build-tools-0.0.12.jar",
+          "size": 5417729,
+          "sha512": "38eae6809137af1981bc2cbb3dfeba6558f01d64c2dd8b85aa6e3be4124bf243140ada847eab528b63813ddba05af92a102a666d4f9ab1edf473ad32512869d6",
+          "sha256": "53a14d268caeb2ebfcfb9af53dc28671a6c36b996fb293a2e78b3fbe5151e9bb",
+          "sha1": "3c1ade6da2243a7ae5292e2d28cd360b26eac059",
+          "md5": "8bd57b6214bc31b2beff7fff739f76b3"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "sjl-build-tools-0.0.12.jar",
+          "url": "sjl-build-tools-0.0.12.jar",
+          "size": 5417729,
+          "sha512": "38eae6809137af1981bc2cbb3dfeba6558f01d64c2dd8b85aa6e3be4124bf243140ada847eab528b63813ddba05af92a102a666d4f9ab1edf473ad32512869d6",
+          "sha256": "53a14d268caeb2ebfcfb9af53dc28671a6c36b996fb293a2e78b3fbe5151e9bb",
+          "sha1": "3c1ade6da2243a7ae5292e2d28cd360b26eac059",
+          "md5": "8bd57b6214bc31b2beff7fff739f76b3"
+        }
+      ]
+    }
+  ]
+}
