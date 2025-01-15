@@ -23,7 +23,7 @@ private:
 	void add_option(std::string token, std::vector<std::string>& vmOptionLines);
 	std::wstring findJavaHome();
 public:
-	JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::string programParams, bool* needRestart);
+	JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::wstring programParams, bool* needRestart);
 	void LaunchJVM();
 };
 

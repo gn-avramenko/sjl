@@ -12,12 +12,11 @@ private:
     Resources *resources;
     Locations *locations;
 public:
-    Debug(LPSTR pCmdLine, Locations* locations, Resources* res, ExceptionWrapper* ew);
+    Debug(PWSTR pCmdLine, Locations* locations, Resources* res, ExceptionWrapper* ew);
     void CloseHandle();
     void Log(std::wstring format, ...);
     void Log(std::string format, ...);
     void DumpLocations();
     void DumpResources();
-
 };
 

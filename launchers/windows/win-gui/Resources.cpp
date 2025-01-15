@@ -151,6 +151,7 @@ Resources::Resources(HINSTANCE inst) {
 	wrongJavaTypeMessage = LoadStringFromResourceW(inst, L"WRONG_JAVA_TYPE_MESSAGE", L"Wrong Java Version: required %s min version=%d max version %d, found %s version = %d");
 	useInstalledJava = L"true" == LoadStringFromResourceW(inst, L"USE_INSTALLED_JAVA", L"false");
 	useJni = L"true" == LoadStringFromResourceW(inst, L"USE_JNI", L"false");
+	sjlDebug = L"true" == LoadStringFromResourceW(inst, L"SJL_DEBUG", L"false");
 	required64JRE = L"true" == LoadStringFromResourceW(inst, L"REQUIRES_64_BIT", L"true");
 	minJavaVersion = std::stoi(LoadStringFromResource(inst, L"MIN_JAVA_VERSION", "0"));
 	maxJavaVersion = std::stoi(LoadStringFromResource(inst, L"MAX_JAVA_VERSION", "0"));
@@ -319,6 +320,11 @@ bool Resources::IsUseInstalledJava()
 bool Resources::IsUseJni()
 {
 	return useJni;
+}
+
+bool Resources::IsSjlDebug()
+{
+	return sjlDebug;
 }
 
 bool Resources::IsRequired64JRE()

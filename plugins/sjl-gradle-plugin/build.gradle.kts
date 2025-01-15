@@ -26,12 +26,12 @@ buildscript {
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-    implementation("com.gridnine.sjl:sjl-build-tools:0.0.12")
+    implementation("com.gridnine.sjl:sjl-build-tools:0.0.13")
     implementation("com.google.code.gson:gson:2.10.1")
 }
 
 group = "com.gridnine.sjl"
-version = "0.0.12"
+version = "0.0.13"
 
 gradlePlugin {
     website.set("http://gridnine.com")
@@ -40,7 +40,7 @@ gradlePlugin {
         create("sjl") {
             id = "sjl-gradle-plugin"
             displayName = "SJL plugin"
-            version = "0.0.12"
+            version = "0.0.13"
             description = "Create native wrappers for launching java applications"
             tags.set(listOf("java", "native", "wrappers"))
             implementationClass = "com.gridnine.sjl.build.gradle.SjlPlugin"

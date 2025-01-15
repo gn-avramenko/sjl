@@ -1,0 +1,175 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.gridnine.sjl",
+    "module": "sjl-gradle-plugin",
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+    "version": "0.0.12",
+========
+    "version": "0.0.13",
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.6"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+          "name": "sjl-gradle-plugin-0.0.12.jar",
+          "url": "sjl-gradle-plugin-0.0.12.jar",
+          "size": 203344,
+          "sha512": "ae5b5fa9f251ecb967fc999a18dc241fd131256ac83030c9afc5b4b302f91b800fafde86d9cf6ed948927ceb771d2e0fa8c8251ab98cf681a6e11db1b16dff2b",
+          "sha256": "e6e3912390110035991c34bd9b29468ae48a75d31473b6b8bb94f203440de609",
+          "sha1": "b58315eb4d34a2da8a70f5fc7c661a350f2874d6",
+          "md5": "b7800993151eef30da7aa6e956befec1"
+========
+          "name": "sjl-gradle-plugin-0.0.13.jar",
+          "url": "sjl-gradle-plugin-0.0.13.jar",
+          "size": 195949,
+          "sha512": "07a5c4bbbadddcb42133f80c5826d0e13105f8d8de489c054a6e273a2d0569b65527c4541351a3754b28f5a8eb68f7c8e1bf5c9085e45f9c3235bc0a8ec9b049",
+          "sha256": "7eab8250b519ade855f259197d6fbcdbf4dbbca41df420e38b604ad652f49b3c",
+          "sha1": "ea3ca200e2d270a8a9e4255e465fae3d6005205f",
+          "md5": "a9bbe76887bc8014f410085ae75a2864"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.7.10"
+          }
+        },
+        {
+          "group": "com.gridnine.sjl",
+          "module": "sjl-build-tools",
+          "version": {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+            "requires": "0.0.12"
+========
+            "requires": "0.0.13"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+          }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.10.1"
+          }
+        }
+      ],
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+          "name": "sjl-gradle-plugin-0.0.12.jar",
+          "url": "sjl-gradle-plugin-0.0.12.jar",
+          "size": 203344,
+          "sha512": "ae5b5fa9f251ecb967fc999a18dc241fd131256ac83030c9afc5b4b302f91b800fafde86d9cf6ed948927ceb771d2e0fa8c8251ab98cf681a6e11db1b16dff2b",
+          "sha256": "e6e3912390110035991c34bd9b29468ae48a75d31473b6b8bb94f203440de609",
+          "sha1": "b58315eb4d34a2da8a70f5fc7c661a350f2874d6",
+          "md5": "b7800993151eef30da7aa6e956befec1"
+========
+          "name": "sjl-gradle-plugin-0.0.13.jar",
+          "url": "sjl-gradle-plugin-0.0.13.jar",
+          "size": 195949,
+          "sha512": "07a5c4bbbadddcb42133f80c5826d0e13105f8d8de489c054a6e273a2d0569b65527c4541351a3754b28f5a8eb68f7c8e1bf5c9085e45f9c3235bc0a8ec9b049",
+          "sha256": "7eab8250b519ade855f259197d6fbcdbf4dbbca41df420e38b604ad652f49b3c",
+          "sha1": "ea3ca200e2d270a8a9e4255e465fae3d6005205f",
+          "md5": "a9bbe76887bc8014f410085ae75a2864"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+          "name": "sjl-gradle-plugin-0.0.12-javadoc.jar",
+          "url": "sjl-gradle-plugin-0.0.12-javadoc.jar",
+          "size": 261,
+          "sha512": "195122bfa7e3fc1e3368a67c8690017364673547a088b1cc79fdeec573db129f8cc4fafc9fda50989128e29e3c025ce83ba3e437d3de95f3da5c4a0006720f2a",
+          "sha256": "46654dcb7ba560ee31385d2da813b17980a426f79f5aac3c0bdc1f41de5cb122",
+          "sha1": "435a4948cb8bc552318901023e5ee9e550607ff2",
+          "md5": "8bf7defe5315a681b610e68493328420"
+========
+          "name": "sjl-gradle-plugin-0.0.13-javadoc.jar",
+          "url": "sjl-gradle-plugin-0.0.13-javadoc.jar",
+          "size": 261,
+          "sha512": "7b1cf751260bf721fcaec1ac0c79f535cd043dedb9efa4eb4fee3947d3b09350b3763aea2d145c09b89b6acd005929adb575a1aee1b958b85e5b85dec95ab948",
+          "sha256": "f5f0498d207f84e4f3f4e89529e87b7bbefdb9630212379bb0f93532c4240259",
+          "sha1": "9d5822d9e221b7cd5280be5275c592b51e83de57",
+          "md5": "52a570cb9fa7442ab195fb85c1266c22"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.12/sjl-gradle-plugin-0.0.12.module
+          "name": "sjl-gradle-plugin-0.0.12-sources.jar",
+          "url": "sjl-gradle-plugin-0.0.12-sources.jar",
+          "size": 111389,
+          "sha512": "d2658a4df135a0e2f6c72313aa4dd9204f06d9f4ffb0e7c8fc61732c70a4f324c93f5d7d716ddb8bebfea9657e3085427070b40fb7f70d070551f8b042550bc0",
+          "sha256": "eac0f0f538333a0da1d23518afaaff9ee7535e5c73fcdec8c4567850419dfb33",
+          "sha1": "ee708b75c5b5cd95de39b64119bac234ed47bf30",
+          "md5": "6a0beebb10940e7812e8c1ab2eb4aff4"
+========
+          "name": "sjl-gradle-plugin-0.0.13-sources.jar",
+          "url": "sjl-gradle-plugin-0.0.13-sources.jar",
+          "size": 104026,
+          "sha512": "93b8b09c579119c706b1215670cd2dc0ce035867af21cc3248d35267a26d3c0804f2b8ab3420c5c8eda3fe83dd0e71f5fd2b746c300f72194a31430aedbb7b0f",
+          "sha256": "f17646ca56ed44b71f0574e3e2c2f2e1df6d0d27ca9df268186b7cc3a258e809",
+          "sha1": "87a627772ef72212848b2a25a0688b1eafedb473",
+          "md5": "7847eecb6ab8152ad7f9c347cb745fba"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-gradle-plugin/0.0.13/sjl-gradle-plugin-0.0.13.module
+        }
+      ]
+    }
+  ]
+}

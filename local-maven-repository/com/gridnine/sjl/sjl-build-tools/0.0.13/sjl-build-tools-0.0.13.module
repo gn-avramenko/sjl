@@ -1,0 +1,84 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.gridnine.sjl",
+    "module": "sjl-build-tools",
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.12/sjl-build-tools-0.0.12.module
+    "version": "0.0.12",
+========
+    "version": "0.0.13",
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.13/sjl-build-tools-0.0.13.module
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.6"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.12/sjl-build-tools-0.0.12.module
+          "name": "sjl-build-tools-0.0.12.jar",
+          "url": "sjl-build-tools-0.0.12.jar",
+          "size": 5417729,
+          "sha512": "38eae6809137af1981bc2cbb3dfeba6558f01d64c2dd8b85aa6e3be4124bf243140ada847eab528b63813ddba05af92a102a666d4f9ab1edf473ad32512869d6",
+          "sha256": "53a14d268caeb2ebfcfb9af53dc28671a6c36b996fb293a2e78b3fbe5151e9bb",
+          "sha1": "3c1ade6da2243a7ae5292e2d28cd360b26eac059",
+          "md5": "8bd57b6214bc31b2beff7fff739f76b3"
+========
+          "name": "sjl-build-tools-0.0.13.jar",
+          "url": "sjl-build-tools-0.0.13.jar",
+          "size": 5417729,
+          "sha512": "66457b1541f07ce455e02015459e2f20639eb31930017047df80b95136a7e1518fe012c9331ce246b536d241d50f9e2ddff65ed7748a3198160700811c4ac390",
+          "sha256": "d721512a5723e6c0a1d6345bb2da5d6efcacc4e01c0b98f8461f120017149f37",
+          "sha1": "c35d01524df4da6e556df9819975f68f705c490b",
+          "md5": "d79594ca061c154002b4135772362a69"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.13/sjl-build-tools-0.0.13.module
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+<<<<<<<< HEAD:local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.12/sjl-build-tools-0.0.12.module
+          "name": "sjl-build-tools-0.0.12.jar",
+          "url": "sjl-build-tools-0.0.12.jar",
+          "size": 5417729,
+          "sha512": "38eae6809137af1981bc2cbb3dfeba6558f01d64c2dd8b85aa6e3be4124bf243140ada847eab528b63813ddba05af92a102a666d4f9ab1edf473ad32512869d6",
+          "sha256": "53a14d268caeb2ebfcfb9af53dc28671a6c36b996fb293a2e78b3fbe5151e9bb",
+          "sha1": "3c1ade6da2243a7ae5292e2d28cd360b26eac059",
+          "md5": "8bd57b6214bc31b2beff7fff739f76b3"
+========
+          "name": "sjl-build-tools-0.0.13.jar",
+          "url": "sjl-build-tools-0.0.13.jar",
+          "size": 5417729,
+          "sha512": "66457b1541f07ce455e02015459e2f20639eb31930017047df80b95136a7e1518fe012c9331ce246b536d241d50f9e2ddff65ed7748a3198160700811c4ac390",
+          "sha256": "d721512a5723e6c0a1d6345bb2da5d6efcacc4e01c0b98f8461f120017149f37",
+          "sha1": "c35d01524df4da6e556df9819975f68f705c490b",
+          "md5": "d79594ca061c154002b4135772362a69"
+>>>>>>>> 16708e4 (add Unicode support for command line arguments; add support for sjlDebug launcher build parameter):local-maven-repository/com/gridnine/sjl/sjl-build-tools/0.0.13/sjl-build-tools-0.0.13.module
+        }
+      ]
+    }
+  ]
+}

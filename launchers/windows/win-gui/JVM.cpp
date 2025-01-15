@@ -31,7 +31,7 @@ VOID CALLBACK TimerProc(
 }
 
 
-JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* aSic, SplashScreen* splash, std::string progParams, bool* nr)
+JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* aSic, SplashScreen* splash, std::wstring progParams, bool* nr)
 {
 	exceptionWrapper = ew;
 	locations = loc;
@@ -39,7 +39,7 @@ JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Reso
 	resources = res;
 	sic = aSic;
 	splashScreen = splash;
-	programParams = progParams;	
+	programParams = progParams;
 	hInstance = inst;
 	needRestart = nr;
 }

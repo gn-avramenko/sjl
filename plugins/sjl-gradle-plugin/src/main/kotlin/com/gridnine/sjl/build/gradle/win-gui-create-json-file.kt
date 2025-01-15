@@ -228,8 +228,10 @@ open class CreateWinGuiJsonFileTask() : DefaultTask() {
         vmOptions?.let { addCommonParameter(rcDataEntry, "VM_OPTIONS", it.joinToString("|"), counter) }
         val useInstalledJava = (launcherConfig.javaConfig.useInstalledJava ?: commonConfig.javaConfig.useInstalledJava) == true
         val useJni = (launcherConfig.javaConfig.useJni ?: commonConfig.javaConfig.useJni) == true
+        val sjlDebug = (launcherConfig.generalConfig.sjlDebug ?: commonConfig.generalConfig.sjlDebug) == true
         addCommonParameter(rcDataEntry, "USE_INSTALLED_JAVA", useInstalledJava.toString(), counter)
         addCommonParameter(rcDataEntry, "USE_JNI", useJni.toString(), counter)
+        addCommonParameter(rcDataEntry, "SJL_DEBUG", sjlDebug.toString(), counter)
         if (useInstalledJava) {
             addCommonParameter(
                 rcDataEntry,

@@ -15,12 +15,12 @@
 
 std::wstring getCause(std::exception_ptr eptr);
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR pCmdLine, int nCmdShow) {
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	PWSTR pCmdLine, int nCmdShow) {
 	ExceptionWrapper exception;
 	Debug* d = nullptr;
 	Resources* r = nullptr;
-	std::string commandLine = std::string(pCmdLine);
+	std::wstring commandLine = std::wstring(pCmdLine);
 	/*if (commandLine.find("-sjl-restart") != std::string::npos) {
 		Sleep(500);
 	}*/

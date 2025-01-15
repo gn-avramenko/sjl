@@ -327,6 +327,7 @@ open class SjlWinGuiGeneralConfig {
     var mutexName: String? = null
     var sjlDirRelativePath: String? = null
     var instanceAlreadyRunningExitCode: Int? = null
+    var sjlDebug: Boolean? = null
     internal var showSplashScreen: Boolean? = null
     internal var splashScreenConfig: SplashScreenConfig? = null
 
@@ -350,6 +351,7 @@ open class SjlNixShellGeneralConfig {
     var mutexName: String? = null
     var sjlDirRelativePath: String? = null
     var instanceAlreadyRunningExitCode: Int? = null
+    var sjlDebug: Boolean? = null
 }
 
 @SjlConfigMaker

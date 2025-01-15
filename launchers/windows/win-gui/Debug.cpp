@@ -3,11 +3,11 @@
 #include <string>
 #include <time.h>
 
-Debug::Debug(LPSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *ew) {
+Debug::Debug(PWSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *ew) {
 	resources = res;
 	locations = locs;
-	std::string cmdLineStr = pCmdLine;
-	debugFlag = (cmdLineStr.find("-sjl-debug") != std::string::npos);
+	std::wstring cmdLineStr = pCmdLine;
+	debugFlag = (cmdLineStr.find(L"-sjl-debug") != std::wstring::npos || res->IsSjlDebug());
 	handle = new FILE();
 	if (debugFlag) {
 		locs->EnsureDirectoryExists(locations->GetSjlPath());
