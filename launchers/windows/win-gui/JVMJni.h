@@ -19,7 +19,7 @@ private:
 	std::wstring findJavaHome();
 	SplashScreen* splashScreen;
 public:
-	JVMJni(ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::string programParams);
+	JVMJni(ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::wstring programParams);
 	void LaunchJVM();
 };
 

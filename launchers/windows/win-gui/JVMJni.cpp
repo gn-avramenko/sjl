@@ -13,7 +13,7 @@ typedef JNIIMPORT jint(JNICALL* JNI_createJavaVM)(JavaVM** pvm, JNIEnv** env, vo
 Debug* hDebug;
 Resources* hResources;
 SingleInstanceChecker* hSic;
-std::string programParams;
+std::wstring programParams;
 std::wstring executablePath;
 
 void JVMJni::add_option(std::string token, std::vector<std::string>& vmOptionLines)
@@ -247,13 +247,13 @@ void(JNICALL jniExitHook)(jint code)
 	hSic->MutexRelease();
 	if (code == restartCode)
 	{
-		std::string params = programParams;
-		std::string newParams = params.find("-sjl-restart") == std::string::npos ? params + " -sjl-restart" : params;
-		ShellExecuteW(NULL, L"open", executablePath.c_str(), to_wstring_(newParams).c_str(), NULL, SW_RESTORE);
+		std::wstring params = programParams;
+		std::wstring newParams = params.find(L"-sjl-restart") == std::wstring::npos ? params + L" -sjl-restart" : params;
+		ShellExecuteW(NULL, L"open", executablePath.c_str(), newParams.c_str(), NULL, SW_RESTORE);
 	}
 }
 
-JVMJni::JVMJni(ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::string progParams)
+JVMJni::JVMJni(ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::wstring progParams)
 {
 	exceptionWrapper = ew;
 	locations = loc;
