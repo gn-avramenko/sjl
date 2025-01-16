@@ -99,7 +99,7 @@ static std::string LoadStringFromResource(HINSTANCE hInstance, const wchar_t* Re
 
 Resources::Resources(HINSTANCE inst) {
 	sjlPath = LoadStringFromResourceW(inst, L"SJL_PATH", L".sjl");
-	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"SJL-MUTEX");
+	mutexName = LoadStringFromResourceW(inst, L"MUTEX_NAME", L"");
 	std::wstring arec = LoadStringFromResourceW(inst, L"INSTANCE_ALREADY_RUNNING_EXIT_CODE", L"0");
 	instanceAlreadyRunningExitCode = std::stoi(arec);
 	unableToOpenFileMessage = LoadStringFromResourceW(inst, L"UNABLE_TO_OPEN_FILE_MESSAGE", L"Unable to open file %s");

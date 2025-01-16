@@ -101,6 +101,7 @@ void Debug::DumpLocations() {
 
 void Debug::DumpResources()
 {
+	Log("sjlDebug is %s", std::to_string(resources->IsSjlDebug()).c_str());
 	Log(L"sjl path is %s", resources->GetSjlPath().c_str());
 	Log(L"mutex name is %s", resources->GetMutexName().c_str());
 	Log(L"instance already running exit code is %d", resources->GetInstanceAlreadyRunningExitCode());
