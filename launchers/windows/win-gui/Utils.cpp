@@ -47,3 +47,11 @@ std::wstring to_wstring_(std::string s)
 	ws.resize(size);
 	return ws;
 }
+
+std::wstring replace(std::wstring originalString, std::wstring fragment, std::wstring replacement)
+{
+	if (originalString.find(fragment) == std::wstring::npos) {
+		return originalString;
+	}
+	return originalString.replace(originalString.find(fragment), fragment.length(), replacement);
+}

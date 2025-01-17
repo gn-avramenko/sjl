@@ -31,7 +31,7 @@ VOID CALLBACK TimerProc(
 }
 
 
-JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* aSic, SplashScreen* splash, std::wstring progParams, bool* nr)
+JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* aSic, SplashScreen* splash, std::wstring* pCmdLine, bool* nr)
 {
 	exceptionWrapper = ew;
 	locations = loc;
@@ -39,7 +39,7 @@ JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Reso
 	resources = res;
 	sic = aSic;
 	splashScreen = splash;
-	programParams = progParams;
+	programParams = pCmdLine;
 	hInstance = inst;
 	needRestart = nr;
 }
@@ -120,7 +120,7 @@ void JVM::LaunchJVM() {
 	sa.bInheritHandle = TRUE;
 
 	si.cb = sizeof(STARTUPINFO);
-	std::wstring cmdLine = format_message(L"%s\\javaw.exe -cp %s %s %s %s", binDir.c_str(), to_wstring_(cp).c_str(), to_wstring_(vmOptions).c_str(), to_wstring_(resources->GetMainClass()).c_str(), programParams.c_str());
+	std::wstring cmdLine = format_message(L"%s\\javaw.exe -cp %s %s %s %s", binDir.c_str(), to_wstring_(cp).c_str(), to_wstring_(vmOptions).c_str(), to_wstring_(resources->GetMainClass()).c_str(), programParams->c_str());
 	debug->Log(L"command line is %s", cmdLine.c_str());
 	if (CreateProcessW(NULL, &cmdLine[0], NULL, NULL,
 		TRUE, 1000, NULL, locations->GetBasePath().c_str(), &si, &pi))

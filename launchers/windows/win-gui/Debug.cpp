@@ -6,21 +6,21 @@
 Debug::Debug(PWSTR pCmdLine, Locations *locs, Resources *res, ExceptionWrapper *ew) {
 	resources = res;
 	locations = locs;
-	std::wstring cmdLineStr = pCmdLine;
-	debugFlag = (cmdLineStr.find(L"-sjl-debug") != std::wstring::npos || res->IsSjlDebug());
+	this->commandLine = pCmdLine;
+	std::wstring commandLine = std::wstring(pCmdLine);
+	debugFlag = (commandLine.find(L"-sjl-debug") != std::wstring::npos || res->IsSjlDebug());
 	handle = new FILE();
 	if (debugFlag) {
 		locs->EnsureDirectoryExists(locations->GetSjlPath());
-		std::wstring logFile = locations->GetLogFile();
 		debugFlag = false;
 		//after restart old handle is not closed immideatly
 		for (size_t i = 0; i < 5; i++)
 		{
+			std::wstring logFile = locations->GetLogFile()+std::to_wstring(i)+L".log";
 			if (!_wfopen_s(&handle, logFile.c_str(), L"a, ccs=UTF-8")) {
 				debugFlag = true;
 				break;
-			}
-			Sleep(100);
+			}			
 		}
 		return;
 	}	
@@ -88,6 +88,7 @@ void Debug::Log(std::string format, ...) {
 }
 
 void Debug::DumpLocations() {
+	Log(L"command line is is %s", commandLine);
 	Log(L"SJL directory is %s", locations->GetSjlPath().c_str());
 	Log(L"SJL log file is %s", locations->GetLogFile().c_str());
 	Log(L"updateFile is %s", locations->GetUpdateFile().c_str());

@@ -21,9 +21,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Debug* d = nullptr;
 	Resources* r = nullptr;
 	std::wstring commandLine = std::wstring(pCmdLine);
-	/*if (commandLine.find(L"-sjl-restart") != std::wstring::npos) {
-		Sleep(500);
-	}*/
+	commandLine = replace(commandLine, L"-sjl-restart", L"");
+	/*
+	if (commandLine.find(L"-sjl-restart") != std::wstring::npos) {
+		commandLine.replace(str.find(str2), str2.length(), str3L"-sjl-restart", L"")
+	}
+	*/
 	SingleInstanceChecker* c = nullptr;
 	try {
 		bool needRestart = false;
@@ -62,7 +65,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			ijvm = &jvm;
 		}
 		else {
-			JVM jvm(&hInstance, &exception, &locations, &debug, &resources, &sic, &splashScreen, pCmdLine, &needRestart);
+			JVM jvm(&hInstance, &exception, &locations, &debug, &resources, &sic, &splashScreen, &commandLine, &needRestart);
 			ijvm = &jvm;
 		}
 		ijvm->LaunchJVM();

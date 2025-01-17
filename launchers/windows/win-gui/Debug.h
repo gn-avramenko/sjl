@@ -9,6 +9,7 @@ class Debug
 private:
     bool debugFlag;
     FILE* handle;
+    PWSTR commandLine;
     Resources *resources;
     Locations *locations;
 public:

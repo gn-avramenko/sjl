@@ -18,12 +18,12 @@ private:
 	Resources* resources;
 	bool* needRestart;
 	SingleInstanceChecker* sic;
-	std::wstring programParams;
+	std::wstring* programParams;
 	SplashScreen* splashScreen;
 	void add_option(std::string token, std::vector<std::string>& vmOptionLines);
 	std::wstring findJavaHome();
 public:
-	JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::wstring programParams, bool* needRestart);
+	JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* sic, SplashScreen* splash, std::wstring* programParams, bool* needRestart);
 	void LaunchJVM();
 };
 

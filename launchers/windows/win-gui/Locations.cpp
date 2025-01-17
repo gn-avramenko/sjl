@@ -14,7 +14,7 @@ Locations::Locations(Resources *res, ExceptionWrapper* ew) {
 	basePath = pathStr.substr(0, position);
 	jvmPath = basePath + L"\\" + resources->GetEmbeddedJavaHomePath();
 	sjlPath = basePath + L"\\" + resources->GetSjlPath();
-	logFile = sjlPath + L"\\sjl.log";
+	logFile = sjlPath + L"\\sjl";
 	updateDirectory = sjlPath + L"\\update";
 	updateFile = updateDirectory + L"\\update.script";
 	selfUpdateFile = updateDirectory + L"\\self-update.script";
