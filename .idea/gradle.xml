@@ -4,6 +4,17 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/plugins/sjl-gradle-plugin" name="sjl-gradle-plugin">
+                <projects>
+                  <project path="$PROJECT_DIR$/plugins/sjl-gradle-plugin" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="delegatedBuild" value="false" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -13,8 +24,6 @@
             <option value="$PROJECT_DIR$/examples/sample-gui-app" />
             <option value="$PROJECT_DIR$/examples/win-gui-launcher-groovy" />
             <option value="$PROJECT_DIR$/examples/win-gui-launcher-kotlin" />
-            <option value="$PROJECT_DIR$/plugins" />
-            <option value="$PROJECT_DIR$/plugins/sjl-build-tools" />
             <option value="$PROJECT_DIR$/plugins/sjl-gradle-plugin" />
           </set>
         </option>

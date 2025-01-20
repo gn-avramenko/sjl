@@ -61,7 +61,7 @@ open class PrepareWorkDirTask() : DefaultTask() {
             val arch = System.getProperty("os.arch")
             if (os.isLinux) {
                 if ("x86_64" == arch || "amd64" == arch) {
-                    copyIfDiffers("sjl/buildTools/nix64/go-winres", File(workDir, "go-winres"), true)
+                    copyIfDiffers("buildTools/nix64/go-winres", File(workDir, "go-winres"), true)
                     return@forEach
                 }
                 if ("x86" == arch) {
@@ -73,7 +73,7 @@ open class PrepareWorkDirTask() : DefaultTask() {
                 if ("i386" == arch) {
                     throw Exception("unsupported operation system arch ${arch}")
                 }
-                copyIfDiffers("sjl/buildTools/win64/go-winres.exe", File(workDir, "go-winres.exe"), true)
+                copyIfDiffers("buildTools/win64/go-winres.exe", File(workDir, "go-winres.exe"), true)
                 return@forEach
             }
             throw Exception("unsupported operation system ${os}")

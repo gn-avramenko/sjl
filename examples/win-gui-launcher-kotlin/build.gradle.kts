@@ -1,5 +1,5 @@
 plugins {
-    id("sjl-gradle-plugin") version "0.0.14"
+    id("sjl-gradle-plugin") version "0.0.15"
 }
 sjl {
     all {

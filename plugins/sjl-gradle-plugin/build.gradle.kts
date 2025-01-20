@@ -11,7 +11,6 @@ kotlin {
 
 repositories {
     mavenCentral()
-    maven(project.file("../../local-maven-repository"))
 }
 
 buildscript {
@@ -26,12 +25,12 @@ buildscript {
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-    implementation("com.gridnine.sjl:sjl-build-tools:0.0.14")
     implementation("com.google.code.gson:gson:2.10.1")
 }
 
 group = "com.gridnine.sjl"
-version = "0.0.14"
+val sjlVersion = "0.0.15"
+version = sjlVersion
 
 gradlePlugin {
     website.set("http://gridnine.com")
@@ -40,7 +39,7 @@ gradlePlugin {
         create("sjl") {
             id = "sjl-gradle-plugin"
             displayName = "SJL plugin"
-            version = "0.0.14"
+            version = sjlVersion
             description = "Create native wrappers for launching java applications"
             tags.set(listOf("java", "native", "wrappers"))
             implementationClass = "com.gridnine.sjl.build.gradle.SjlPlugin"
@@ -50,10 +49,6 @@ gradlePlugin {
 
 publishing {
     repositories {
-        maven {
-            name = "projectLocal"
-            url = uri("../../local-maven-repository")
-        }
         maven {
             name = "gridnineNexus"
             val gridnineNexusUrlRelease: String? by project
