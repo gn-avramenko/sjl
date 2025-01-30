@@ -69,7 +69,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			ijvm = &jvm;
 		}
 		ijvm->LaunchJVM();
-		debug.Log(L"need restart is %s", needRestart);
+		debug.Log(L"need restart is %s", needRestart? L"true": L"false");
 		sic.MutexRelease();
 		debug.CloseHandle();
 		if (needRestart) {

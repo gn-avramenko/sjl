@@ -29,7 +29,7 @@ dependencies {
 }
 
 group = "com.gridnine.sjl"
-val sjlVersion = "0.0.15"
+val sjlVersion = "0.0.16"
 version = sjlVersion
 
 gradlePlugin {
