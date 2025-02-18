@@ -2,91 +2,85 @@
 #include <string>
 #include "Utils.h"
 
-struct SelfUpdateInfo {
-	std::wstring newLauncherPath;	
-};
 
-SelfUpdater::SelfUpdater(Locations* locs, Resources* res, ExceptionWrapper* ew, Debug* deb)
+SelfUpdater::SelfUpdater(Locations* locs, Resources* res, PWSTR args,  ExceptionWrapper* ew, Debug* deb)
 {
 	locations = locs;
 	debug = deb;
 	exceptionWrapper = ew;
 	resources = res;
-
+	programParams = args;
 }
 
 BOOL SelfUpdater::IsUpdateRequired()
-{
+{	
+	std::wstring params = std::wstring(programParams);
+	if (params.find(L"-sjl-self-update-start") != std::wstring::npos) {
+		return true;
+	}
+	if (params.find(L"-sjl-self-update-finish") != std::wstring::npos) {
+		return true;
+	}
 	return locations->FileExists(locations->GetSelfUpdateFile());
+}
+
+
+std::wstring SelfUpdater::getCurrentLauncherFileName()
+{
+	std::wstring path = locations->GetBasePath() + L"\\current-launcher-path.txt";
+	std::wstring result = locations->ReadFileContent(path);
+	if (result.length() == 0) {
+		exceptionWrapper->ThrowException(format_message(L"content of file %s is empty", path.c_str()), resources->GetUnableToPerformSelfUpdateMessage());
+	}
+	return result;
+}
+
+std::wstring SelfUpdater::getNewLauncherFileName(BOOL updateStarted)
+{
+	if (updateStarted) {
+		return locations->GetExecutablePath();
+	}
+	std::wstring result = locations->ReadFileContent(locations->GetSelfUpdateFile());
+	if (result.length() == 0) {
+		exceptionWrapper->ThrowException(format_message(L"content of file %s is empty", locations->GetSelfUpdateFile().c_str()), resources->GetUnableToPerformSelfUpdateMessage());
+	}
+	return result;	
 }
 
 void SelfUpdater::PerformUpdate()
 {
-	debug->Log("performing self update");
-	SelfUpdateInfo selfupdateInfo;
-
-	FILE* f = NULL;
-	int fo_res = _wfopen_s(&f, locations->GetSelfUpdateFile().c_str(), L"rt, ccs=UTF-8");
-	if (!fo_res)
-	{
-		wchar_t buffer[4096];
-
-
-		if (fgetws(buffer, sizeof(buffer), f))
-		{
-			trim_line(buffer);
-			selfupdateInfo.newLauncherPath = buffer;
-		}
-
-		fclose(f);
-	}
-	else
-	{
-		exceptionWrapper->ThrowException(format_message(L"unable to open file %s, code %s", locations->GetSelfUpdateFile().c_str(), fo_res),
-			format_message(resources->GetUnableToOpenFileMessage(), locations->GetSelfUpdateFile().c_str()));
-	}
-	WCHAR currentFilePath[MAX_PATH];
-	swprintf_s(currentFilePath, L"%s", locations->GetExecutablePath().c_str());
-	WCHAR updateFilePath[MAX_PATH];
-	swprintf_s(updateFilePath, L"%s%s", locations->GetExecutablePath().c_str(), L".del");
-	// Rename the file
-	SHFILEOPSTRUCTW fileOp;
-	ZeroMemory(&fileOp, sizeof(fileOp));
-	fileOp.wFunc = FO_RENAME;
-	fileOp.pFrom = currentFilePath;
-	fileOp.pTo = updateFilePath;
-	fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;
-
-	int renameResult = SHFileOperationW(&fileOp);
-	if (renameResult != 0) {
-		exceptionWrapper->ThrowException(format_message(L"Unable to rename file %s to %s, code %d", std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pTo).c_str(), renameResult),
-			format_message(resources->GetUnableToRenameFileMessage(), std::wstring(fileOp.pFrom).c_str(), std::wstring(fileOp.pTo).c_str()));
-	}
-
-
-	WCHAR tempDir[MAX_PATH];
-	GetTempPathW(MAX_PATH, tempDir);
-
-	WCHAR tempFilePath[MAX_PATH];
-	swprintf_s(tempFilePath, L"%s\\sjl_tmp_del.exe", tempDir);
-
-	// Delete the original file
-	BOOL moveResult = MoveFileExW(updateFilePath, tempFilePath, MOVEFILE_REPLACE_EXISTING);
-	if (!moveResult) {
-		exceptionWrapper->ThrowException(format_message(L"Unable to move file %s to %s", std::wstring(updateFilePath).c_str(), std::wstring(tempFilePath).c_str()),
-			format_message(resources->GetUnableToRenameFileMessage(), std::wstring(updateFilePath).c_str(), std::wstring(tempFilePath).c_str()));
-	}
-
-	if (CopyFileW(selfupdateInfo.newLauncherPath.c_str(), locations->GetExecutablePath().c_str(), FALSE)) {
-		debug->Log(L"Self-update successful. Restarting...");
-
-		locations->DirectoryRemove(locations->GetUpdateDirectory());
-		
-		// Restart the application by launching the updated executable
-		ShellExecute(nullptr, L"open", locations->GetExecutablePath().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-
-		// Exit the current instance of the application
+	std::wstring params = std::wstring(programParams);
+	if (params.find(L"-sjl-self-update-start") != std::wstring::npos) {
+		debug->Log(L"flag -sjl-self-update-start exists");
+		Sleep(500);
+		std::wstring currentLauncherFileName = getCurrentLauncherFileName();
+		debug->Log(L"current launcher file name is %s", currentLauncherFileName.c_str());
+		locations->FileDelete(currentLauncherFileName);
+		locations->FileCopy(getNewLauncherFileName(true), currentLauncherFileName);
+		params = replace(params, L"-sjl-self-update-start", L"");
+		params = params + L" -sjl-self-update-finish";
+		std::wstring currentLauncher = getCurrentLauncherFileName();
+		debug->Log(L"executing command %s %s", currentLauncher.c_str(), params.c_str());
+		ShellExecuteW(NULL, L"open", currentLauncher.c_str(), params.c_str(), NULL, SW_RESTORE);
 		exit(0);
+		return;
 	}
-	exceptionWrapper->ThrowException(L"unable to perform self update", resources->GetUnableToPerformSelfUpdateMessage());
+	if (params.find(L"-sjl-self-update-finish") != std::wstring::npos) {
+		debug->Log(L"flag -sjl-self-update-finish exists");
+		Sleep(500);
+		return;
+	}
+	if (locations->FileExists(locations->GetSelfUpdateFile())) {
+		debug->Log(L"self update file %s exists", locations->GetSelfUpdateFile().c_str());
+		std::wstring newLauncherFileName = getNewLauncherFileName(false);
+		size_t position = newLauncherFileName.find_last_of(L"\\");
+		std::wstring basePath = newLauncherFileName.substr(0, position);
+		locations->WriteFileContent(basePath + L"\\current-launcher-path.txt", locations->GetExecutablePath());
+		params = params + L" -sjl-self-update-start";
+		debug->Log(L"executing command %s %s", newLauncherFileName.c_str(), params.c_str());
+		ShellExecuteW(NULL, L"open", newLauncherFileName.c_str(), params.c_str(), NULL, SW_RESTORE);
+		exit(0);
+		return;
+	}
+    exceptionWrapper->ThrowException(L"unable to perform self update", resources->GetUnableToPerformSelfUpdateMessage());
 }

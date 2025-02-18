@@ -21,6 +21,9 @@
 
 package com.gridnine.sjl.example.winGui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -31,6 +34,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class WinGui {
+
+    private final static Logger logger = LoggerFactory.getLogger(WinGui.class);
+
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Hello world");
         //Declare frame object
@@ -77,10 +83,10 @@ public class WinGui {
                 Path updateVersionFile = Paths.get(".sjl", "update", "version.txt");
                 Files.write(updateVersionFile, Collections.singletonList("" + (version + 1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 Path updateWinGuiJar = Paths.get(".sjl", "update", "sample-gui-app.jar");
-                Path currentWinGuiJar = Paths.get("..", "..", "..", "..", "..", "examples", "sample-gui-app", "dist", "sample-gui-app.jar");
+                Path currentWinGuiJar = Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "dist", "sample-gui-app.jar");
 //                Path currentWinGuiJar = Paths.get("..", "..", "win-gui", "dist", "sample-gui-app.jar");
                 Files.write(updateWinGuiJar, Files.readAllBytes(currentWinGuiJar), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-                Path splashFile = Paths.get("..", "..", "..", "..", "..", "examples", "sample-gui-app", "src", "main", "resources", "splash.bmp");
+                Path splashFile = Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "src", "main", "resources", "splash.bmp");
 //                Path splashFile = Paths.get("sample.bmp");
                 StringBuilder sb = new StringBuilder();
                 sb.append("show-splash:\n");
@@ -96,7 +102,8 @@ public class WinGui {
                 sb.append(versionFile.toAbsolutePath()).append("\n");
                 sb.append("sleep:\n2000\nhide-splash:");
                 Files.write(Paths.get(".sjl", "update", "update.script"), sb.toString().getBytes(StandardCharsets.UTF_8));
-            } catch (IOException ex) {
+            } catch (Throwable ex) {
+                logger.error("unable to update", ex);
                 throw new RuntimeException(ex);
             }
             System.exit(79);
@@ -117,7 +124,8 @@ public class WinGui {
                 Files.write(updatedLauncher, Files.readAllBytes(currentLauncher), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 Files.write(Paths.get(".sjl", "update", "self-update.script"), updatedLauncher.toAbsolutePath().toString().getBytes(StandardCharsets.UTF_8));
 //                Files.write(Paths.get(".sjl", "update", "self-update.script"), String.format("%s\n%s", currentLauncher.toAbsolutePath().toString(), updatedLauncher.toAbsolutePath().toString()).getBytes(StandardCharsets.UTF_8));
-            } catch (IOException ex) {
+            } catch (Throwable ex) {
+                logger.error("unable to self update", ex);
                 throw new RuntimeException(ex);
             }
             System.exit(79);

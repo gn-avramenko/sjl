@@ -9,8 +9,11 @@ private:
 	Debug* debug;	
 	ExceptionWrapper* exceptionWrapper;
 	Resources* resources;
+	PWSTR programParams;
+	std::wstring getNewLauncherFileName(BOOL updateStarted);
+	std::wstring getCurrentLauncherFileName();
 public:
-	SelfUpdater(Locations* aLocations, Resources *res, ExceptionWrapper* ew,  Debug* aDebug);
+	SelfUpdater(Locations* aLocations, Resources *res, PWSTR programParams, ExceptionWrapper* ew,  Debug* aDebug);
 	BOOL IsUpdateRequired();
 	void PerformUpdate();
 };

@@ -22,11 +22,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Resources* r = nullptr;
 	std::wstring commandLine = std::wstring(pCmdLine);
 	commandLine = replace(commandLine, L"-sjl-restart", L"");
-	/*
-	if (commandLine.find(L"-sjl-restart") != std::wstring::npos) {
-		commandLine.replace(str.find(str2), str2.length(), str3L"-sjl-restart", L"")
-	}
-	*/
+	commandLine = replace(commandLine, L"-sjl-self-update-start", L"");
+	commandLine = replace(commandLine, L"-sjl-self-update-finish", L"");
 	SingleInstanceChecker* c = nullptr;
 	try {
 		bool needRestart = false;
@@ -37,6 +34,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		d = &debug;
 		debug.DumpLocations();
 		debug.DumpResources();
+		SelfUpdater selfUpdater(&locations, &resources, pCmdLine, &exception, &debug);
+		bool selfUpdateRequired = selfUpdater.IsUpdateRequired();
+		if (selfUpdateRequired) {
+			selfUpdater.PerformUpdate();
+		}
 		SingleInstanceChecker sic(&resources, &exception, &debug);
 		if (!sic.Check()) {
 			sic.MutexRelease();
@@ -49,11 +51,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			appUpdater.PerformUpdate();
 			deleteUpdateDirectory = true;
 		}
-		SelfUpdater selfUpdater(&locations, &resources, &exception, &debug);
-		if (selfUpdater.IsUpdateRequired()) {
-			selfUpdater.PerformUpdate();
-		}
-		if (deleteUpdateDirectory) {
+		if (selfUpdateRequired || deleteUpdateDirectory) {
 			locations.DirectoryRemove(locations.GetUpdateDirectory());
 		}
 		if (!locations.GetSplashScreenFile().empty()) {

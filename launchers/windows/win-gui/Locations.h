@@ -37,5 +37,7 @@ public:
 	void FileCopy(std::wstring source, std::wstring target);
 	void FileDelete(std::wstring source);
 	void DirectoryRemove(std::wstring dir);
+	std::wstring ReadFileContent(std::wstring file);
+	void WriteFileContent(std::wstring file, std::wstring content);
 };
 

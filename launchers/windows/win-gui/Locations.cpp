@@ -148,3 +148,33 @@ void Locations::CopyDirectory(std::wstring source, std::wstring target)
 			target.c_str(), std::to_string(res)), format_message(resources->GetUnableToCopyDirectoryMessage(), source.c_str(), target.c_str(), std::to_string(res)));
 	}
 }
+
+std::wstring Locations::ReadFileContent(std::wstring fileName) {
+	FILE* f = NULL;
+	int fo_res = _wfopen_s(&f, fileName.c_str(), L"rt, ccs=UTF-8");
+	if (fo_res) {
+		exceptionWrapper->ThrowException(format_message(L"unable to open file %s, code %s", fileName.c_str()), format_message(resources->GetUnableToOpenFileMessage(), fileName.c_str()));
+	}
+	std::wstring result;
+	if (!fo_res)
+	{
+		wchar_t buffer[4096];
+		if (fgetws(buffer, sizeof(buffer), f))
+		{
+			trim_line(buffer);
+			result = buffer;
+		}
+		fclose(f);
+	}
+	return result;
+}
+
+void Locations::WriteFileContent(std::wstring fileName, std::wstring content) {
+	FILE* handle = new FILE();
+	if (_wfopen_s(&handle, fileName.c_str(), L"w, ccs=UTF-8")) {
+		exceptionWrapper->ThrowException(format_message(L"unable to write to file %s, code %s", fileName.c_str()), format_message(resources->GetUnableToOpenFileMessage(), fileName.c_str()));
+	}
+	fputws(content.c_str(), handle);
+	fflush(handle);
+	fclose(handle);
+}

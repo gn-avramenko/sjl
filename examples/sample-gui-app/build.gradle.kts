@@ -7,11 +7,16 @@ plugins {
 repositories{
     mavenCentral()
 }
+dependencies {
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.8")
+}
 java{
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
+
 
 buildscript {
     repositories{
@@ -20,6 +25,10 @@ buildscript {
     dependencies{
         classpath("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     }
+}
+
+configurations.create("sample-gui"){
+    extendsFrom(configurations.implementation.get())
 }
 
 task("dist") {
@@ -48,5 +57,8 @@ task("dist") {
             libFile.delete()
         }
         project.file("build/libs/sample-gui-app.jar").copyTo(libFile)
+        configurations.getByName("sample-gui").forEach {
+            it.copyTo(File(distDir, it.name), true)
+        }
     }
 }

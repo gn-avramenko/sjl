@@ -123,6 +123,7 @@ Resources::Resources(HINSTANCE inst) {
 		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\*");
 		vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
 		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.sjl.example.winGui.WinGui");
+
 		/*
 		splashScreenFileName = std::wstring();
 		vmOptionsFile = std::wstring();
