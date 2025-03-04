@@ -21,9 +21,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Debug* d = nullptr;
 	Resources* r = nullptr;
 	std::wstring commandLine = std::wstring(pCmdLine);
-	commandLine = replace(commandLine, L"-sjl-restart", L"");
-	commandLine = replace(commandLine, L"-sjl-self-update-start", L"");
-	commandLine = replace(commandLine, L"-sjl-self-update-finish", L"");
+	if (commandLine.find(L"-sjr") != std::wstring::npos) {
+		Sleep(500);
+	}
+	commandLine = replace(commandLine, L"-sjlr", L"");
+	commandLine = replace(commandLine, L"-sjlu1", L"");
+	commandLine = replace(commandLine, L"-sjlu2", L"");
 	SingleInstanceChecker* c = nullptr;
 	try {
 		bool needRestart = false;
@@ -72,7 +75,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		debug.CloseHandle();
 		if (needRestart) {
 			std::wstring params = pCmdLine;
-			std::wstring newParams = params.find(L"-sjl-restart") == std::wstring::npos ? params + L" -sjl-restart" : params;
+			std::wstring newParams = params.find(L"-sjlr") == std::wstring::npos ? params + L" -sjlr" : params;
 			ShellExecuteW(NULL, L"open", locations.GetExecutablePath().c_str(), newParams.c_str(), NULL, SW_RESTORE);
 		}
 		return 0;

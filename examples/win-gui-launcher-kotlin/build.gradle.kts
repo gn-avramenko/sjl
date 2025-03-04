@@ -1,77 +1,46 @@
 plugins {
-    id("sjl-gradle-plugin") version "0.0.17"
+    id("sjl-gradle-plugin") version "0.0.18"
 }
 sjl {
-    all {
-        tasksGroup = "sjl-custom"
-    }
     winGui {
         common {
             general {
-                allowMultipleInstances = false
+                allowMultipleInstances = true // for opening .xdsk files in agent
+                sjlDebug = true
                 architecture = com.gridnine.sjl.build.gradle.ARCH.X64
-                icon = project.file("../sample-gui-app/src/main/resources/wingui.ico")
+                icon = project.file("../sample-gui-app/src/main/resources/projectavatar.ico")
                 showSplashScreen {
-                    relativePath = "..\\..\\..\\..\\sample-gui-app\\src\\main\\resources\\splash.bmp"
-//                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp"
+                    relativePath = ""
                 }
             }
             java {
                 classPathProvider = {
-                    "..\\..\\..\\..\\sample-gui-app\\dist\\sample-gui-app.jar"
-//                    "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\sample-gui-app.jar"
+                    "lib\\*"
                 }
-                vmOptions = arrayListOf("-Xms128m", "-Xmx??256m")
-                mainClass = "com.gridnine.sjl.example.winGui.WinGui"
-                vmOptionsFileRelativePath = "win-gui.options"
-                restartExitCode = 79
+                vmOptions = arrayListOf(
+                    "-Xms128m", "-Xmx??256m",
+                    "--module-path=jre\\fx\\lib", "--add-modules=javafx.controls",
+                    "-Dlogback.configurationFile=config\\logback.xml", "-Dsun.jnu.encoding=UTF-8", "-Dfile.encoding=UTF-8"
+                )
+                mainClass = "com.gridnine.xdisk.agent.app.XdiskAgentApplication"
+                restartExitCode = 3
                 useEmbeddedJava {
-                    relativePath = "..\\..\\..\\..\\sample-gui-app\\dist\\jdk"
-//                    relativePath = "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk"
+                    relativePath = "jre"
                 }
             }
             version {
-                fileVersion = "0.0.1"
-                productVersion = "0.0.2"
+                fileVersion = "1.0"
+                productVersion = "1.0"
             }
             manifest {
-                description = "Sample application"
+                description = "Xdisk Agent"
             }
             messages {
                 standardErrorMessage = "Error occurred, consult with developers"
                 errorTitle = "Error"
             }
         }
-        launcher("win-gui-launcher-en-kotlin") {
-
-        }
-        launcher("win-gui-launcher-ru-kotlin") {
-            messages {
-                standardErrorMessage = "Произошла ошибка, обратитесь к разработчикам"
-                errorTitle = "Ошибка"
-            }
-
-        }
-    }
-    nixShell {
-        common {
-            general {
-                allowMultipleInstances = false
-            }
-            java {
-                classPathProvider = {
-                    "../../../../sample-gui-app/dist/sample-gui-app.jar"
-                }
-                vmOptions = arrayListOf("-Xms128m", "-Xmx256m")
-                mainClass = "com.gridnine.sjl.example.winGui.WinGui"
-                vmOptionsFileRelativePath = "win-gui.options"
-                restartExitCode = 79
-                useEmbeddedJava {
-                    relativePath = ""
-                }
-            }
-        }
-        launcher("nix-shell-launcher-en-kotlin") {
+        launcher("win-gui-launcher") {
         }
     }
 }

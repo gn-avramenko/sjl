@@ -248,7 +248,7 @@ void(JNICALL jniExitHook)(jint code)
 	if (code == restartCode)
 	{
 		std::wstring params = programParams;
-		std::wstring newParams = params.find(L"-sjl-restart") == std::wstring::npos ? params + L" -sjl-restart" : params;
+		std::wstring newParams = params.find(L"-sjlr") == std::wstring::npos ? params + L" -sjlr" : params;
 		ShellExecuteW(NULL, L"open", executablePath.c_str(), newParams.c_str(), NULL, SW_RESTORE);
 	}
 }

@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.9.10"
     id("com.gradle.plugin-publish") version "1.1.0"
 }
 
@@ -29,7 +29,7 @@ dependencies {
 }
 
 group = "com.gridnine.sjl"
-val sjlVersion = "0.0.17"
+val sjlVersion = "0.0.18"
 version = sjlVersion
 
 gradlePlugin {

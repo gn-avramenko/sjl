@@ -50,23 +50,23 @@ std::wstring SelfUpdater::getNewLauncherFileName(BOOL updateStarted)
 void SelfUpdater::PerformUpdate()
 {
 	std::wstring params = std::wstring(programParams);
-	if (params.find(L"-sjl-self-update-start") != std::wstring::npos) {
-		debug->Log(L"flag -sjl-self-update-start exists");
+	if (params.find(L"-sju1") != std::wstring::npos) {
+		debug->Log(L"flag -sjlu1 exists");
 		Sleep(500);
 		std::wstring currentLauncherFileName = getCurrentLauncherFileName();
 		debug->Log(L"current launcher file name is %s", currentLauncherFileName.c_str());
 		locations->FileDelete(currentLauncherFileName);
 		locations->FileCopy(getNewLauncherFileName(true), currentLauncherFileName);
-		params = replace(params, L"-sjl-self-update-start", L"");
-		params = params + L" -sjl-self-update-finish";
+		params = replace(params, L"-sjlu1", L"");
+		params = params + L" -sjlu2";
 		std::wstring currentLauncher = getCurrentLauncherFileName();
 		debug->Log(L"executing command %s %s", currentLauncher.c_str(), params.c_str());
 		ShellExecuteW(NULL, L"open", currentLauncher.c_str(), params.c_str(), NULL, SW_RESTORE);
 		exit(0);
 		return;
 	}
-	if (params.find(L"-sjl-self-update-finish") != std::wstring::npos) {
-		debug->Log(L"flag -sjl-self-update-finish exists");
+	if (params.find(L"-sjlu2") != std::wstring::npos) {
+		debug->Log(L"flag -sjlu2 exists");
 		Sleep(500);
 		return;
 	}
@@ -76,7 +76,7 @@ void SelfUpdater::PerformUpdate()
 		size_t position = newLauncherFileName.find_last_of(L"\\");
 		std::wstring basePath = newLauncherFileName.substr(0, position);
 		locations->WriteFileContent(basePath + L"\\current-launcher-path.txt", locations->GetExecutablePath());
-		params = params + L" -sjl-self-update-start";
+		params = params + L" -sjlu1";
 		debug->Log(L"executing command %s %s", newLauncherFileName.c_str(), params.c_str());
 		ShellExecuteW(NULL, L"open", newLauncherFileName.c_str(), params.c_str(), NULL, SW_RESTORE);
 		exit(0);

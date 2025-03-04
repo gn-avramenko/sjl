@@ -113,7 +113,8 @@ void JVM::LaunchJVM() {
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 	ZeroMemory(&si, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
-	si.dwFlags |= STARTF_USESTDHANDLES;
+	//si.dwFlags |= STARTF_USESTDHANDLES;
+	si.dwFlags |= STARTF_FORCEONFEEDBACK;
 	SECURITY_ATTRIBUTES sa;
 	sa.nLength = sizeof(sa);
 	sa.lpSecurityDescriptor = NULL;
@@ -121,6 +122,7 @@ void JVM::LaunchJVM() {
 
 	si.cb = sizeof(STARTUPINFO);
 	std::wstring cmdLine = format_message(L"%s\\javaw.exe -cp %s %s %s %s", binDir.c_str(), to_wstring_(cp).c_str(), to_wstring_(vmOptions).c_str(), to_wstring_(resources->GetMainClass()).c_str(), programParams->c_str());
+	//std::wstring cmdLine = L"c:\\vova\\Temp\\xdisk\\agent2\\jre\\bin\\javaw.exe -cp lib\\*  -Xms128m -Xmx256m --module-path=jre\\fx\\lib --add-modules=javafx.controls -Dlogback.configurationFile=config\\logback.xml -Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8 com.gridnine.xdisk.agent.app.XdiskAgentApplication";
 	debug->Log(L"command line is %s", cmdLine.c_str());
 	if (CreateProcessW(NULL, &cmdLine[0], NULL, NULL,
 		TRUE, 1000, NULL, locations->GetBasePath().c_str(), &si, &pi))
