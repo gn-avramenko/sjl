@@ -21,9 +21,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Debug* d = nullptr;
 	Resources* r = nullptr;
 	std::wstring commandLine = std::wstring(pCmdLine);
-	if (commandLine.find(L"-sjr") != std::wstring::npos) {
-		Sleep(500);
-	}
+	boolean restart = commandLine.find(L"-sjlr") != std::wstring::npos;
 	commandLine = replace(commandLine, L"-sjlr", L"");
 	commandLine = replace(commandLine, L"-sjlu1", L"");
 	commandLine = replace(commandLine, L"-sjlu2", L"");
@@ -38,16 +36,19 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		debug.DumpLocations();
 		debug.DumpResources();
 		SelfUpdater selfUpdater(&locations, &resources, pCmdLine, &exception, &debug);
+		SingleInstanceChecker sic(&resources, &exception, &debug);
 		bool selfUpdateRequired = selfUpdater.IsUpdateRequired();
+		SplashScreen splashScreen(hInstance, &exception, &resources, &locations, &debug);
 		if (selfUpdateRequired) {
 			selfUpdater.PerformUpdate();
 		}
-		SingleInstanceChecker sic(&resources, &exception, &debug);
 		if (!sic.Check()) {
 			sic.MutexRelease();
 			return resources.GetInstanceAlreadyRunningExitCode();
 		}
-		SplashScreen splashScreen(hInstance, &exception, &resources, &locations, &debug);
+		if (!locations.GetSplashScreenFile().empty()) {
+			splashScreen.ShowSplash(locations.GetSplashScreenFile());
+		}
 		AppUpdater appUpdater(&locations, &exception, &resources, nullptr, &debug);
 		bool deleteUpdateDirectory = false;
 		if (appUpdater.IsUpdateRequired()) {
@@ -56,9 +57,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		if (selfUpdateRequired || deleteUpdateDirectory) {
 			locations.DirectoryRemove(locations.GetUpdateDirectory());
-		}
-		if (!locations.GetSplashScreenFile().empty()) {
-			splashScreen.ShowSplash(locations.GetSplashScreenFile());
 		}
 		IJVM* ijvm = nullptr;
 		if (resources.IsUseJni()) {
@@ -76,7 +74,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (needRestart) {
 			std::wstring params = pCmdLine;
 			std::wstring newParams = params.find(L"-sjlr") == std::wstring::npos ? params + L" -sjlr" : params;
-			ShellExecuteW(NULL, L"open", locations.GetExecutablePath().c_str(), newParams.c_str(), NULL, SW_RESTORE);
+			ShellExecuteW(NULL, L"open", locations.GetExecutablePath().c_str(), newParams.c_str(), NULL, SW_SHOW);
+			Sleep(500);  
 		}
 		return 0;
 	}

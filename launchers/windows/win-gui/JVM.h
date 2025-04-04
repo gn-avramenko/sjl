@@ -19,7 +19,6 @@ private:
 	bool* needRestart;
 	SingleInstanceChecker* sic;
 	std::wstring* programParams;
-	SplashScreen* splashScreen;
 	void add_option(std::string token, std::vector<std::string>& vmOptionLines);
 	std::wstring findJavaHome();
 public:

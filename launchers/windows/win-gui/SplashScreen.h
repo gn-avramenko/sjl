@@ -12,6 +12,7 @@ class SplashScreen
 public:
 	SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res, Locations* locs, Debug* deb);
 	void ShowSplash(std::wstring image);
+	BOOLEAN isSplashVisibe();
 	void HideSplash();
 };
 

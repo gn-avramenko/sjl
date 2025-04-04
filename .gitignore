@@ -24,3 +24,4 @@ replay_pid*
 
 /.gradle/
 plugins/sjl-gradle-plugin/gradle.properties
+/examples/sample-gui-app/version.txt

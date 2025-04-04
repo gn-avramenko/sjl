@@ -84,16 +84,10 @@ public class WinGui {
                 Files.write(updateVersionFile, Collections.singletonList("" + (version + 1)), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
                 Path updateWinGuiJar = Paths.get(".sjl", "update", "sample-gui-app.jar");
                 Path currentWinGuiJar = Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "dist", "sample-gui-app.jar");
-//                Path currentWinGuiJar = Paths.get("..", "..", "win-gui", "dist", "sample-gui-app.jar");
                 Files.write(updateWinGuiJar, Files.readAllBytes(currentWinGuiJar), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-                Path splashFile = Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "src", "main", "resources", "splash.bmp");
-//                Path splashFile = Paths.get("sample.bmp");
+
                 StringBuilder sb = new StringBuilder();
-                sb.append("show-splash:\n");
-                sb.append(splashFile.toAbsolutePath()).append("\n");
                 sb.append("sleep:\n2000\nhide-splash:\n");
-                sb.append("show-splash:\n");
-                sb.append(splashFile.toAbsolutePath()).append("\n");
                 sb.append("file-move:\n");
                 sb.append(updateWinGuiJar.toAbsolutePath()).append("\n");
                 sb.append(currentWinGuiJar.toAbsolutePath()).append("\n");

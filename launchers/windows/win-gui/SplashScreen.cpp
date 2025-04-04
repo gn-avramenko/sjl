@@ -69,8 +69,11 @@ void registerMainWindowClass(HINSTANCE hInstance, ExceptionWrapper* exceptionWra
 	RegisterClassExW(&wcex);
 	HWND hwnd = CreateWindowExW(WS_EX_LAYERED, L"SjlParentWindow", L"Sjl", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
 		CW_USEDEFAULT, 300, 100, nullptr, nullptr, hInstance, nullptr);
-	SetWindowLong(hwnd, GWL_STYLE, 0);
 	ShowWindow(hwnd, SW_SHOW);
+	//keybd_event(VK_MENU, 0, 0, 0);  // Нажать Alt
+	//keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0);  // Отпустить Alt
+	//SetForegroundWindow(hwnd);  // Теперь можно
+	//
 	UpdateWindow(hwnd);
 }
 
@@ -81,6 +84,8 @@ LRESULT CALLBACK splashWindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 	switch (msg)
 	{
 	case WM_CREATE:
+		SetWindowLongPtr(hWnd, GWL_EXSTYLE, GetWindowLongPtr(hWnd, GWL_EXSTYLE) | WS_EX_TOOLWINDOW);
+		SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLongPtr(hWnd, GWL_STYLE) & ~WS_CAPTION);
 		h_dc = GetDC(hWnd);
 		h_dc_mem = CreateCompatibleDC(h_dc);
 		oldHBitmap = (HBITMAP)SelectObject(h_dc_mem, hBitmap);
@@ -108,6 +113,16 @@ LRESULT CALLBACK splashWindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	switch (uMsg) {
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default:
+		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
+}
+
 DWORD WINAPI showSplashFunction(LPVOID lpParam)
 {
 		WNDCLASSW wc;
@@ -131,7 +146,6 @@ DWORD WINAPI showSplashFunction(LPVOID lpParam)
 		splashWindowHandle = CreateWindowW(wc.lpszClassName, L"",
 			(WS_BORDER),
 			x, y, splashBm.bmWidth, splashBm.bmHeight, NULL, NULL, instance, NULL);
-		SetWindowLong(splashWindowHandle, GWL_STYLE, 0); // remove all window styles, check MSDN for details
 
 		ShowWindow(splashWindowHandle, SW_SHOW);
 		UpdateWindow(splashWindowHandle);
@@ -158,11 +172,11 @@ SplashScreen::SplashScreen(HINSTANCE hInst, ExceptionWrapper* ew, Resources* res
 	exceptionWrapper = ew;
     debug = deb;
 	resources = res;
-	instance = hInst;
-	registerMainWindowClass(hInst, ew, res);
+	instance = hInst;	
 }
 
 void SplashScreen::ShowSplash(std::wstring image)
+	
 {	
 	if (!locations->FileExists(image)) {
 		exceptionWrapper->ThrowException(format_message(L"Splash file %s does not exist", image.c_str()), format_message(resources->GetUnableToLoadBitmapMessage(), image.c_str()));
@@ -174,6 +188,7 @@ void SplashScreen::ShowSplash(std::wstring image)
 		exceptionWrapper->ThrowException(format_message(L"Unable to load bitmap from %s, probably bad format", image.c_str()), format_message(resources->GetUnableToLoadBitmapMessage(), image.c_str()));
 		return;
 	}
+	registerMainWindowClass(instance, exceptionWrapper, resources);
 	GetObject(hBitmap, sizeof(BITMAP), &splashBm);
 	DWORD threadId;
 	splash_screen_thread = CreateThread(
@@ -185,7 +200,12 @@ void SplashScreen::ShowSplash(std::wstring image)
 		&threadId);
 	splashVisible = true;
 	debug->Log("splash thread was created");
+	Sleep(100);
 
+}
+
+BOOLEAN SplashScreen::isSplashVisibe() {
+	return splashVisible;
 }
 
 void SplashScreen::HideSplash()
@@ -198,5 +218,6 @@ void SplashScreen::HideSplash()
 	PostMessage(splashWindowHandle, WM_CLOSE, 0, 0);
 	WaitForSingleObject(splash_screen_thread, INFINITE);
 	UnregisterClassW(SPLASH_WINDOW_CLASS_NAME, instance);
+	splashVisible = false;
 	debug->Log("splash screen is hidden");
 }

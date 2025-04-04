@@ -11,7 +11,24 @@ PROCESS_INFORMATION pi;
 #define ID_TIMER 1
 HWND hWnd;
 #define OTHER_ERROR_CODE 10
+SplashScreen* splashScreen;
 
+
+
+
+BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam) {
+	DWORD processId;
+	GetWindowThreadProcessId(hwnd, &processId);
+	if (pi.dwProcessId == processId) {
+		LONG styles = GetWindowLong(hwnd, GWL_STYLE);
+		if ((styles & WS_VISIBLE) != 0) {
+			BringWindowToTop(hWnd);
+			splashScreen->HideSplash();
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
 
 VOID CALLBACK TimerProc(
 	HWND hwnd,        // handle of window for timer messages
@@ -19,6 +36,9 @@ VOID CALLBACK TimerProc(
 	UINT_PTR idEvent, // timer identifier
 	DWORD dwTime)
 { // current system time
+	if(splashScreen->isSplashVisibe()){
+		EnumWindows(enumwndfn, 0);
+	}
 
 	GetExitCodeProcess(pi.hProcess, &dwExitCode);
 	if (dwExitCode != STILL_ACTIVE)
@@ -29,6 +49,7 @@ VOID CALLBACK TimerProc(
 		PostQuitMessage(dwExitCode);
 	}
 }
+
 
 
 JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Resources* res, SingleInstanceChecker* aSic, SplashScreen* splash, std::wstring* pCmdLine, bool* nr)
@@ -42,6 +63,7 @@ JVM::JVM(HINSTANCE* inst, ExceptionWrapper* ew, Locations* loc, Debug* deb, Reso
 	programParams = pCmdLine;
 	hInstance = inst;
 	needRestart = nr;
+	
 }
 
 void JVM::LaunchJVM() {
@@ -131,7 +153,7 @@ void JVM::LaunchJVM() {
 			WS_POPUP | SS_BITMAP,
 			0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, *hInstance, NULL);
 		debug->Log(L"process was created");
-		if (!SetTimer(hWnd, ID_TIMER, 1000 /* 1s */, TimerProc))
+		if (!SetTimer(hWnd, ID_TIMER, 100 /* 1s */, TimerProc))
 		{
 			debug->Log(L"unable to create timer");
 			dwExitCode = OTHER_ERROR_CODE;

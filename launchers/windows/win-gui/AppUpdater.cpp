@@ -18,21 +18,10 @@ struct UInfoSleep {
 };
 
 
-struct UInfoShowSplash {
-	std::wstring splashFile;
-};
-
-
-struct UInfoHideSplash {
-
-};
-
 enum UpdateOperationType {
 	FILE_MOVE,
 	FILE_DELETE,
-	SLEEP,
-	SHOW_SPLASH,
-	HIDE_SPLASH
+	SLEEP
 };
 
 struct UpdateInfo {
@@ -41,10 +30,6 @@ struct UpdateInfo {
 	UInfoFileMove fileMove;
 	UInfoFileDelete fileDelete;
 	UInfoSleep sleep;
-	UInfoShowSplash showSplash;
-	UInfoHideSplash hideSplash;
-
-
 };
 
 AppUpdater::AppUpdater(Locations *aLocations, ExceptionWrapper *ew, Resources *res, SplashScreen *splash, Debug *aDebug)
@@ -121,27 +106,6 @@ void AppUpdater::PerformUpdate()
 
 				updateInfoList.push_back(updateInfo);
 			}
-			else if (line.compare(L"show-splash:") == 0) {
-				
-				UpdateInfo updateInfo;
-				updateInfo.operationType = SHOW_SPLASH;
-
-				// Parse the next line as the splash file
-				if (fgetws(buffer, sizeof(buffer), f)) {
-					trim_line(buffer);
-					updateInfo.showSplash.splashFile = buffer;
-				}
-
-				updateInfoList.push_back(updateInfo);
-			}
-			else if (line.compare(L"hide-splash:") == 0) {
-				UpdateInfo updateInfo;
-				updateInfo.operationType = HIDE_SPLASH;
-
-				updateInfoList.push_back(updateInfo);
-			}
-
-
 		}
 		fclose(f);
 	}
@@ -199,20 +163,7 @@ void AppUpdater::PerformUpdate()
 			int timeout = sleep.timeout;
 			Sleep(timeout);
 			break;
-		}
-		case SHOW_SPLASH: {
-			const UInfoShowSplash& showSplash = updateInfo.showSplash;
-			// Process showSplash.splashFile
-			debug->Log(L"Show Splash: %s", showSplash.splashFile.c_str());
-			splashScreen->ShowSplash(showSplash.splashFile.c_str());
-			break;
-		}
-		case HIDE_SPLASH: {
-			// Process hideSplash (no specific data)
-			debug->Log("Hide Splash");
-			splashScreen->HideSplash();			
-			break;
-		}
+		}		
 		}
 	}
 }

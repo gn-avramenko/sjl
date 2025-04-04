@@ -117,20 +117,15 @@ Resources::Resources(HINSTANCE inst) {
 	unableToFindAdressOfJNI_CreateJavaVMMessage= LoadStringFromResourceW(inst, L"UNABLE_TO_FIND_ADDRESS_OF_CREATE_JVM_MESSAGE", L"Unable to find address of JNI_CreateJavaVM");
 	classPathIsNotDefinedMessage = LoadStringFromResourceW(inst, L"CLASS_PATH_IS_NOT_DEFINED_MESSAGE", L"Classpath is not defined");
 	if (developmentMode) {
-		splashScreenFileName = std::wstring();//LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
-		//vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
-		//embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
-		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"jre");
-		 
-		//classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\*");
-		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "lib\\*");
+		//Demo app
+		splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\splash.bmp");
+		//splashScreenFileName = std::wstring();
+		vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", L"..\\..\\..\\..\\examples\\sample-gui-app\\src\\main\\resources\\win-gui.options");
+		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"..\\..\\..\\..\\examples\\sample-gui-app\\dist\\jdk");
+		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "..\\..\\..\\..\\examples\\sample-gui-app\\dist\\*");
 		vmOptions = LoadStringFromResource(inst, L"VM_OPTIONS", "-Xms128m|-Xmx??256m");
-		//mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.sjl.example.winGui.WinTray");
-		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.xdisk.agent.app.XdiskAgentApplication");
-		vmOptions = std::string("--module-path=jre\\fx\\lib --add-modules=javafx.controls -Dlogback.configurationFile=config\\logback.xml");
-		restartExitCode = 3;
-		splashScreenFileName = std::wstring();
-		vmOptionsFile = std::wstring();
+		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.sjl.example.winGui.WinGui");
+		restartExitCode = 79;
 		/*
 		
 		vmOptionsFile = std::wstring();
@@ -139,9 +134,22 @@ Resources::Resources(HINSTANCE inst) {
 		vmOptions = std::string("--module-path=jre\\fx\\lib --add-modules=javafx.controls -Dlogback.configurationFile=config\\logback.xml");
 		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.xdisk.agent.app.XdiskAgentApplication");
 		*/
+
+		// XDisk
+		/*
+		splashScreenFileName = std::wstring();
+		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", L"jre");
+		classPath = LoadStringFromResource(inst, L"CLASS_PATH", "lib\\*");
+		mainClass = LoadStringFromResource(inst, L"MAIN_CLASS", "com.gridnine.xdisk.agent.app.XdiskAgentApplication");
+		vmOptions = std::string("--module-path=jre\\fx\\lib --add-modules=javafx.controls -Dlogback.configurationFile=config\\logback.xml");
+		restartExitCode = 3;
+		splashScreenFileName = std::wstring();
+		vmOptionsFile = std::wstring();
+		*/
 	}
 	else {
 		splashScreenFileName = LoadStringFromResourceW(inst, L"SPLASH_SCREEN_FILE", std::wstring());
+		splashScreenFileName = std::wstring();
 		vmOptionsFile = LoadStringFromResourceW(inst, L"VM_OPTIONS_FILE", std::wstring());
 		embeddedJavaHomePath = LoadStringFromResourceW(inst, L"EMBEDDED_JAVA_HOME", std::wstring());
 		classPath = LoadStringFromResource(inst, L"CLASS_PATH", std::string());
