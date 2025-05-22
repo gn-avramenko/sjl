@@ -15,10 +15,10 @@ SelfUpdater::SelfUpdater(Locations* locs, Resources* res, PWSTR args,  Exception
 BOOL SelfUpdater::IsUpdateRequired()
 {	
 	std::wstring params = std::wstring(programParams);
-	if (params.find(L"-sjl-self-update-start") != std::wstring::npos) {
+	if (params.find(L"-sjlu1") != std::wstring::npos) {
 		return true;
 	}
-	if (params.find(L"-sjl-self-update-finish") != std::wstring::npos) {
+	if (params.find(L"-sjlu2") != std::wstring::npos) {
 		return true;
 	}
 	return locations->FileExists(locations->GetSelfUpdateFile());
@@ -50,7 +50,7 @@ std::wstring SelfUpdater::getNewLauncherFileName(BOOL updateStarted)
 void SelfUpdater::PerformUpdate()
 {
 	std::wstring params = std::wstring(programParams);
-	if (params.find(L"-sju1") != std::wstring::npos) {
+	if (params.find(L"-sjlu1") != std::wstring::npos) {
 		debug->Log(L"flag -sjlu1 exists");
 		Sleep(500);
 		std::wstring currentLauncherFileName = getCurrentLauncherFileName();
