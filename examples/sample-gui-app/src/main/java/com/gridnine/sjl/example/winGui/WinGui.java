@@ -85,7 +85,10 @@ public class WinGui {
                 Path updateWinGuiJar = Paths.get(".sjl", "update", "sample-gui-app.jar");
                 Path currentWinGuiJar = Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "dist", "sample-gui-app.jar");
                 Files.write(updateWinGuiJar, Files.readAllBytes(currentWinGuiJar), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-
+                Path nestedFile =  Paths.get("..",  "..", "..", "..", "examples", "sample-gui-app", "dist", "nested", "sample-gui-app.jar");
+                if(Files.exists(nestedFile)) {
+                    deleteRecursive(nestedFile.getParent());
+                }
                 StringBuilder sb = new StringBuilder();
                 sb.append("sleep:\n2000\nhide-splash:\n");
                 sb.append("file-move:\n");
@@ -94,6 +97,9 @@ public class WinGui {
                 sb.append("file-move:\n");
                 sb.append(updateVersionFile.toAbsolutePath()).append("\n");
                 sb.append(versionFile.toAbsolutePath()).append("\n");
+                sb.append("file-move:\n");
+                sb.append(updateWinGuiJar.toAbsolutePath()).append("\n");
+                sb.append(nestedFile.toAbsolutePath()).append("\n");
                 sb.append("sleep:\n2000\nhide-splash:");
                 Files.write(Paths.get(".sjl", "update", "update.script"), sb.toString().getBytes(StandardCharsets.UTF_8));
             } catch (Throwable ex) {

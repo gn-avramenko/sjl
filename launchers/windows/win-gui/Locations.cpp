@@ -88,10 +88,47 @@ bool Locations::DirectoryExists(std::wstring path) {
 	return (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
+bool CreateDirectoriesRecursive(const std::wstring& path) {
+	size_t pos = 0;
+	std::wstring dir;
+
+	// Обработка UNC-путей (\\server\share\...)
+	if (path.size() >= 2 && path[0] == L'\\' && path[1] == L'\\') {
+		pos = path.find(L'\\', 2);
+		if (pos != std::wstring::npos) {
+			pos = path.find(L'\\', pos + 1);
+		}
+	}
+
+	while (pos != std::wstring::npos) {
+		dir = path.substr(0, pos);
+		if (!dir.empty() && dir.back() != L':') { // Пропускаем "C:" (диск)
+			if (!CreateDirectoryW(dir.c_str(), NULL)) {
+				DWORD err = GetLastError();
+				if (err != ERROR_ALREADY_EXISTS) {
+					return false;
+				}
+			}
+		}
+		pos = path.find(L'\\', pos + 1);
+	}
+	return true;
+}
+
+
 void Locations::FileCopy(std::wstring source, std::wstring target) {
+	size_t lastSlash = target.find_last_of(L'\\');
+	if (lastSlash != std::wstring::npos) {
+		std::wstring destDir = target.substr(0, lastSlash+1);
+		if (!CreateDirectoriesRecursive(destDir)) {
+			exceptionWrapper->ThrowException(format_message(L"Error: Failed to copy file from %s to %s, details: unable to create directory subtree", source.c_str(), target.c_str()),
+				format_message(resources->GetUnableToCopyFileMessage(), source.c_str(), target.c_str()));
+		}
+	}
+
 	if(CopyFileW(source.c_str(), target.c_str(), FALSE) == 0) {
 		DWORD error = GetLastError();
-		exceptionWrapper->ThrowException(format_message(L"Error: %d. Failed tot copy file from %s to %s.", error, source.c_str(), target.c_str()),
+		exceptionWrapper->ThrowException(format_message(L"Error: %d. Failed to copy file from %s to %s.", error, source.c_str(), target.c_str()),
 			format_message(resources->GetUnableToCopyFileMessage(), source.c_str(), target.c_str()));
 	}
 }
