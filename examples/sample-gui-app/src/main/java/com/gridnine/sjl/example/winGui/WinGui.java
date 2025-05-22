@@ -99,6 +99,7 @@ public class WinGui {
                 sb.append(versionFile.toAbsolutePath()).append("\n");
                 sb.append("file-move:\n");
                 sb.append(updateWinGuiJar.toAbsolutePath()).append("\n");
+
                 sb.append(nestedFile.toAbsolutePath()).append("\n");
                 sb.append("sleep:\n2000\nhide-splash:");
                 Files.write(Paths.get(".sjl", "update", "update.script"), sb.toString().getBytes(StandardCharsets.UTF_8));
